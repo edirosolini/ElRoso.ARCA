@@ -68,7 +68,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.16" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.12" />
 		<PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" />
 		<PackageReference Include="System.ServiceModel.Federation" Version="8.1.2" />
 		<PackageReference Include="System.ServiceModel.Http" Version="8.1.2" />
