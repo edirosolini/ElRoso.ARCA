@@ -364,7 +364,6 @@ public class BillingDocumentNumberingServiceTests
     [InlineData(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO)]
     [InlineData(VATConditionARCAEnum.IVA_SUJETO_EXENTO)]
     [InlineData(VATConditionARCAEnum.MONOTRIBUTO)]
-    [InlineData(VATConditionARCAEnum.SUJETO_NO_CATEGORIZADO)]
     public async Task Domestic_with_CUIT_should_use_the_condition_derived_by_the_padron(VATConditionARCAEnum padronCondition)
     {
         SetupValid();
@@ -426,6 +425,32 @@ public class BillingDocumentNumberingServiceTests
 
         response.Result.Should().BeTrue();
         request.Client.Condition.Should().Be(VATConditionARCAEnum.IVA_NO_ALCANZADO);
+    }
+
+    [Fact]
+    public async Task Padron_without_taxes_should_keep_the_condition_sent_by_the_consumer()
+    {
+        SetupValid();
+        SetupTokenCacheHit();
+        SetupApprovedCae();
+        var persona = new Padron.personaReturn
+        {
+            datosGenerales = new Padron.datosGenerales { tipoPersona = "JURIDICA", estadoClave = "ACTIVO", razonSocial = "EMPRESA DEMO SA" },
+            datosRegimenGeneral = new Padron.datosRegimenGeneral(),
+        };
+        padronMock
+            .Setup(p => p.GetPersonaAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new PadronPersonaResult { ClientName = "EMPRESA DEMO SA", Persona = PadronOperations.MapPersona(persona, 30711111111) });
+        var request = CuitRequest(BillingDocumentTypeARCAEnum.FA);
+        request.Client.SetCondition(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
+
+        var response = await CreateService().AuthorizeAsync(request);
+
+        response.Result.Should().BeTrue();
+        request.Client.Condition.Should().Be(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
+        wsfeMock.Verify(w => w.SolicitarCaeAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(),
+                                                 It.Is<BillingDocumentNumberingRequest>(r => r.Client.Condition == VATConditionARCAEnum.RESPONSABLE_INSCRIPTO),
+                                                 It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]

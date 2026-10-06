@@ -106,9 +106,7 @@ internal sealed class PadronOperations : IPadronOperations
         var activities = MapList(regime?.actividad, MapActivity);
         var isActive = string.Equals(general?.estadoClave, "ACTIVO", StringComparison.OrdinalIgnoreCase);
         var partialErrors = MapPartialErrors(persona);
-        var hasNotReachedTax = taxes.Concat(monotributoTaxes).Any(t => t.Id == TaxVATNotReached);
-        var vatCondition = DeriveVATCondition(monotributo is not null, taxes, monotributoTaxes)
-            ?? (found && isActive && partialErrors.Count == 0 && !hasNotReachedTax ? VATConditionARCAEnum.SUJETO_NO_CATEGORIZADO : null);
+        var vatCondition = DeriveVATCondition(monotributo is not null, taxes, monotributoTaxes);
 
         return new PadronPersonaResponse
         {
