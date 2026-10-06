@@ -41,6 +41,11 @@ public class ARCAOptions
     public int SoapTimeoutSeconds { get; set; } = 30;
 
     /// <summary>
+    /// Si la emisión consulta el Padrón A5 para el nombre y la condición de un receptor con CUIT; false usa la del consumidor.
+    /// </summary>
+    public bool ResolveReceiverFromPadron { get; set; } = true;
+
+    /// <summary>
     /// EN: WSCComu (e-Ventanilla / DFE) endpoint URL. By default it is resolved automatically from
     /// <see cref="IsProduction"/> — same convention used by every other ARCA WS in this lib. Override
     /// it only if ARCA migrates the URL or if you proxy through your own middleware.

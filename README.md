@@ -122,6 +122,20 @@ builder.Services.AddARCAClient(options =>
 });
 ```
 
+### Padrón dentro de la emisión (`ResolveReceiverFromPadron`)
+
+Por defecto (`true`), al emitir a un receptor con CUIT `AuthorizeAsync` consulta el Padrón A5 con el CUIT del emisor y usa la condición frente al IVA que deriva de ahí (si la puede determinar) y la razón social.
+
+Apagala cuando **ya resolvés la condición del receptor por tu cuenta** (por ejemplo, con tu propia consulta a `IPadronService` antes de elegir la letra del comprobante), o cuando el CUIT emisor no delegó el servicio `ws_sr_constancia_inscripcion` y ARCA responde *"Este token no le permite actuar en representacion de la CUIT …"*:
+
+```csharp
+options.ResolveReceiverFromPadron = false;
+```
+
+- Con `false` la emisión no pide el ticket del Padrón ni lo consulta: manda la condición que pusiste con `ClientRequest.SetCondition(...)`. Si no es una condición válida, tira `ARCAValidationException` antes de pedir el CAE.
+- Un receptor sin CUIT sigue saliendo como `CONSUMIDOR_FINAL`. WSFEv1 usa siempre el CUIT del emisor.
+- Si no la tocás, **no cambia nada**.
+
 ---
 
 ## 🔐 Manejo de certificados

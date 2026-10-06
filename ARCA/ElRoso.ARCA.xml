@@ -620,6 +620,11 @@
             Timeout de las llamadas SOAP en segundos.
             </summary>
         </member>
+        <member name="P:ElRoso.ARCA.Core.ARCAOptions.ResolveReceiverFromPadron">
+            <summary>
+            Si la emisión consulta el Padrón A5 para el nombre y la condición de un receptor con CUIT; false usa la del consumidor.
+            </summary>
+        </member>
         <member name="P:ElRoso.ARCA.Core.ARCAOptions.WsccomuUrl">
             <summary>
             EN: WSCComu (e-Ventanilla / DFE) endpoint URL. By default it is resolved automatically from
