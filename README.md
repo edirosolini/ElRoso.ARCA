@@ -13,7 +13,7 @@
 - ✅ Autenticación WSAA (PKCS#7 + token cache cifrado con `IDataProtection`)
 - ✅ Facturación doméstica WSFEv1 (FA / FB / FC + Notas de Crédito y Débito)
 - ✅ Facturación exportación WSFEXv1 (Factura, NC, ND)
-- ✅ Padrón A5 (consulta de inscripción AFIP por CUIT)
+- ✅ Padrón A5 (consulta de inscripción ARCA por CUIT, `IPadronService` desde v3.0.0)
 - ✅ Generación del QR oficial para impresión
 - ✅ **Verificación de comprobantes recibidos vía WSCDC** (desde v1.1.0)
 - ✅ **Notificaciones del Domicilio Fiscal Electrónico (e-Ventanilla) vía WSCComu** (desde v1.1.0)
@@ -32,6 +32,9 @@
   - [Factura B / Factura C (Monotributo)](#factura-b--factura-c-monotributo)
   - [Notas de Crédito y Débito](#notas-de-crédito-y-débito)
   - [Factura de Servicios](#factura-de-servicios)
+  - [Consultar un CUIT en el Padrón A5](#consultar-un-cuit-en-el-padrón-a5)
+  - [Verificar un comprobante recibido (WSCDC)](#verificar-un-comprobante-recibido-wscdc)
+  - [Leer notificaciones del DFE (e-Ventanilla)](#leer-notificaciones-del-dfe-e-ventanilla)
   - [Factura de Exportación](#factura-de-exportación)
 - [Manejo de errores](#-manejo-de-errores)
 - [Ambientes (Homologación vs Producción)](#-ambientes-homologación-vs-producción)
@@ -49,6 +52,8 @@ dotnet add package ElRoso.ARCA
 ```
 
 > **Requisitos:** .NET 9.0 o superior. Funciona en Windows, Linux y macOS. El cache de tokens se cifra con **`IDataProtection`** en todas las plataformas; `AddARCAClient` registra un provider por defecto y respeta el que ya tengas configurado (ver [Cookbook → cache de tokens](./docs/COOKBOOK.md#cache-de-tokens)).
+
+> ⚠️ **Upgrade a 3.0.0:** `VATConditionARCAEnum` cambió de valores (`RESPONSABLE_INSCRIPTO` pasa de 7 a 1). Si lo guardás como entero, migrá `7 → 1` antes de desplegar. Pasos en el [CHANGELOG](./CHANGELOG.md#300--2026-10-06).
 
 ---
 
@@ -194,7 +199,7 @@ new BillingDocumentNumberingRequest
 }
 ```
 
-> La lib consulta automáticamente el **Padrón** para resolver el nombre y la condición IVA del cliente.
+> La lib consulta automáticamente el **Padrón** para resolver el nombre y la condición IVA del cliente. Si el Padrón no permite determinar la condición, usa la que pusiste con `Client.SetCondition(...)`; sin ninguna, tira `ARCAValidationException` (ver [Consultar un CUIT en el Padrón A5](#consultar-un-cuit-en-el-padrón-a5)). La letra (`FA`, `FB`, `FC`) la elegís vos.
 
 ### Factura B / Factura C (Monotributo)
 
@@ -246,6 +251,33 @@ DateOfServicesFrom = new DateTime(2026, 3, 1),
 DateOfServicesTo   = new DateTime(2026, 3, 31),
 PaymentDue         = new DateTime(2026, 4, 10),
 ```
+
+### Consultar un CUIT en el Padrón A5
+
+Trae los datos de inscripción de cualquier CUIT: nombre, domicilio fiscal, condición frente al IVA, actividades, impuestos y monotributo.
+
+```csharp
+var padron = sp.GetRequiredService<IPadronService>();
+
+var persona = await padron.GetPersonaAsync(
+    representedCuit: 20123456789,   // CUIT que firma la consulta
+    cuit:            30987654321);  // CUIT a consultar
+
+if (!persona.Found)
+    Console.WriteLine("ARCA no tiene ese CUIT.");   // no tira excepción
+else
+{
+    Console.WriteLine($"{persona.DisplayName} — {persona.KeyStatus}");
+    Console.WriteLine($"IVA: {persona.VATCondition} (receptor WSFEv1: {persona.ReceiverVATConditionId})");
+    Console.WriteLine($"{persona.FiscalAddress?.Street}, {persona.FiscalAddress?.Locality} ({persona.FiscalAddress?.ProvinceName})");
+    Console.WriteLine($"Actividad principal: {persona.MainActivity?.Description}");
+    foreach (var error in persona.Errors) Console.WriteLine($"  {error}");
+}
+```
+
+> Requiere el servicio **`ws_sr_constancia_inscripcion`** adherido. `VATCondition` usa `VATConditionARCAEnum`, cuyo valor numérico es el código de condición IVA del receptor de ARCA. Se deriva así: monotributo (bloque de monotributo o impuesto 20) → Monotributo, IVA (30) → Responsable Inscripto, IVA exento (32) → Exento; persona activa sin ninguno de esos impuestos y sin errores parciales → Sujeto No Categorizado. Si aparece el impuesto 34, o en cualquier otro caso, queda en `null`. `ReceiverVATConditionId` es el mismo valor como entero. `Taxes` y `MonotributoTaxes` traen siempre la lista cruda.
+>
+> Al emitir a un CUIT, `IBillingDocumentNumberingService` usa esa misma condición. Si queda en `null`, respeta la que pusiste con `request.Client.SetCondition(...)`.
 
 ### Verificar un comprobante recibido (WSCDC)
 

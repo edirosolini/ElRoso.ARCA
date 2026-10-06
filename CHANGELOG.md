@@ -6,6 +6,61 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Unreleased]
 
+## [3.0.0] — 2026-10-06
+
+✨ **Consulta pública al Padrón A5** y **la emisión usa la condición frente al IVA real del receptor**.
+
+### Breaking changes
+
+- **`VATConditionARCAEnum` pasa a valer el código de condición IVA del receptor de ARCA** (`FEParamGetCondicionIvaReceptor`):
+
+  | Miembro | 2.x | 3.0.0 |
+  |---|---|---|
+  | `RESPONSABLE_INSCRIPTO` | 7 | **1** |
+  | `IVA_SUJETO_EXENTO` | — | 4 |
+  | `CONSUMIDOR_FINAL` | 5 | 5 |
+  | `MONOTRIBUTO` | 6 | 6 |
+  | `SUJETO_NO_CATEGORIZADO` | — | **7** |
+  | `PROVEEDOR_DEL_EXTERIOR` | — | 8 |
+  | `CLIENTE_DEL_EXTERIOR` | — | 9 |
+  | `IVA_LIBERADO_LEY_19640` | — | 10 |
+  | `MONOTRIBUTISTA_SOCIAL` | — | 13 |
+  | `IVA_NO_ALCANZADO` | — | 15 |
+  | `MONOTRIBUTO_TRABAJADOR_INDEPENDIENTE_PROMOVIDO` | — | 16 |
+
+  ⚠️ **Si persistís el enum como entero, migrá tus datos `7 → 1` ANTES de leerlos con 3.0.0.** Sin la migración, un Responsable Inscripto guardado se lee como `SUJETO_NO_CATEGORIZADO`. Si lo persistís por nombre (incluido el JSON con el `StringEnumConverter` del enum) no cambia nada. Afecta también a `IssuingCompanyRequest.VATCondition`, que usa el mismo enum.
+
+- **La emisión a un CUIT ya no asume Responsable Inscripto.** `AuthorizeAsync` resolvía la condición del receptor como `Monotributo` o `Responsable Inscripto`, así que un exento o un no categorizado salía como RI. Ahora usa la condición que deriva el Padrón (ver abajo). Si el Padrón no permite determinarla, **se conserva la que puso el consumidor** con `ClientRequest.SetCondition(...)`.
+
+- **`CondicionIVAReceptorId` en WSFEv1 es el valor del enum.** Una condición no definida en el enum (por ejemplo, un `ClientRequest` a CUIT sin condición y con un Padrón que no la determina) tira `ARCAValidationException` antes de pedir el CAE, en vez de mandar Consumidor Final en silencio.
+
+### Added
+
+- `IPadronService.GetPersonaAsync(representedCuit, cuit, ct)` → `PadronPersonaResponse`. Pide el ticket de `ws_sr_constancia_inscripcion` del CUIT representado con la misma caché que el resto de la lib. Registrado como Singleton en `AddARCAClient`.
+- `PadronPersonaResponse`: identidad (tipo de persona, clave y su estado, apellido, nombre, razón social, `DisplayName`), sucesión, fechas de contrato social y fallecimiento, mes de cierre, domicilio fiscal completo, dependencia de ARCA, caracterizaciones, impuestos, actividades (con `MainActivity` = orden 1), regímenes, categoría de autónomos y todo el bloque de monotributo (categoría, actividad, actividades, impuestos e integrantes de la sociedad). Los campos que el proxy marca con `*Specified` salen como `null` cuando ARCA no los informa.
+- `Found = false` cuando ARCA no tiene una persona con ese CUIT: no tira excepción. `Errors` trae `errorConstancia` (o el mensaje del fault de ARCA para el CUIT inexistente) y `PartialErrors` los errores del régimen general y del monotributo con su mensaje. Cualquier otra falla del servicio sale como `ARCAServiceException`.
+- `VATCondition` y `ReceiverVATConditionId`: monotributo (bloque de monotributo o impuesto 20) → `MONOTRIBUTO`; impuesto 30 → `RESPONSABLE_INSCRIPTO`; impuesto 32 → `IVA_SUJETO_EXENTO`; persona activa, sin errores parciales y sin ninguno de esos impuestos → `SUJETO_NO_CATEGORIZADO`. Si aparece el impuesto 34 (en régimen general o monotributo) queda en `null`, igual que cualquier otro caso no cubierto; la lista cruda de impuestos viene siempre. La emisión usa esta misma derivación.
+
+### Notes
+
+- La letra del comprobante (A/B/C) la sigue eligiendo el consumidor en `BillingDocumentType`.
+- A un receptor sin CUIT la emisión le sigue fijando `CONSUMIDOR_FINAL`.
+
+### Migration guide (2.3.0 → 3.0.0)
+
+1. **Antes de desplegar 3.0.0**, si guardás `VATConditionARCAEnum` como entero (columna, caché, cola), pasá los `7` a `1`. Ejemplo en SQL:
+
+   ```sql
+   UPDATE Clients SET VATCondition = 1 WHERE VATCondition = 7;
+   ```
+
+   Hacelo una sola vez: después del upgrade, `7` es `SUJETO_NO_CATEGORIZADO` y es un valor válido.
+2. Reemplazá cualquier comparación contra literales (`(int)condition == 7`) por el miembro del enum.
+3. Revisá los `switch` sobre `VATConditionARCAEnum`: ahora hay ocho miembros más y un `default` que asumía RI o Consumidor Final puede dejar de ser cierto.
+4. Si emitís a un CUIT, poné una condición de respaldo con `request.Client.SetCondition(...)`: se usa cuando el Padrón no la determina (por ejemplo, con el impuesto 34). Sin ella, `AuthorizeAsync` tira `ARCAValidationException`.
+5. Atrapá `ARCAValidationException` en la emisión si todavía no lo hacías.
+6. Para consultar un CUIT sin emitir, pedí `IPadronService` al contenedor; `AddARCAClient` ya lo registra.
+
 ## [2.3.0] — 2026-09-07
 
 ### Security

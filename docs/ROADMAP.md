@@ -13,6 +13,8 @@
 | **v2.0.0** | Refactor modular: sub-namespaces `Core` / `Billing` / `Read` |
 | **v2.1.x** | Coverage + polish · fix WSAA para WSCComu (`veconsumerws`) · soporte MTOM |
 | **v2.2.0** | Consulta de comprobantes emitidos: `GetLastAuthorizedNumberAsync` + `GetAuthorizedAsync` |
+| **v2.3.0** | Cache de tokens cifrado con `IDataProtection` en todas las plataformas |
+| **v3.0.0** | `IPadronService` público (Padrón A5 completo) · `VATConditionARCAEnum` con los códigos de condición IVA del receptor · la emisión usa la condición real del Padrón |
 
 ---
 
@@ -31,7 +33,7 @@ Sin features nuevos. Foco en pulir la lib post-refactor. Los ítems que quedaron
 
 ---
 
-## `v2.3.0` — Antifraude + sincronización
+## Próximo — Antifraude + sincronización
 
 | Feature | WS | Por qué |
 |---------|----|---------|
@@ -43,7 +45,7 @@ Estimación: 25 – 40 hs total.
 
 ---
 
-## `v2.4.0` y siguientes — Por demanda comunitaria
+## Siguientes — Por demanda comunitaria
 
 Implementación según pedido vía Issues / Discussions:
 
@@ -72,7 +74,7 @@ Si encontrás un WS oficial que cubra alguno de estos, **abrí un [Issue](https:
 
 ---
 
-## `v3.0.0` (futuro lejano, posible breaking)
+## Futuro lejano (posible breaking)
 
 - **Paquete `ElRoso.ARCA.Pro` privado** — modelo Open Core: features avanzados pagos (ej. integración con padrones IIBB provinciales — ARBA, AGIP, etc., que no son ARCA pero son la misma audiencia).
 - **Soporte multi-cert por proceso** — hoy el cert se setea en `ARCAOptions` global. Para SaaS multi-tenant donde cada empresa tiene su cert, refactorear `ICertificateService` para resolverlo por contexto.
@@ -93,7 +95,7 @@ Si tu caso de uso requiere alguno de estos, **abrí una [Discussion](https://git
 ## 🛠 Deuda técnica conocida
 
 - **`FECompConsultar` no devuelve importes** — el proxy generado expone `FECompConsResponse` con `Resultado`, `CodAutorizacion`, `FchVto`, `FchProceso`, `PtoVta`, `CbteTipo` y `Observaciones`, **sin `ImpTotal` ni `CbteFch`**. Para reconciliar un CAE alcanza (el importe lo tiene el propio consumidor), pero no permite validarlo contra ARCA. Regenerar el Connected Service y verificar si el WSDL real los trae.
-- **Wrappers SOAP sin cobertura unitaria** — `WsfeOperations`, `WsfexOperations` y `PadronOperations` no se testean sin extraer un factory para los clientes WCF. Afecta por igual a `SolicitarCaeAsync`, `GetLastNumberAsync` y `ConsultarComprobanteAsync`. (El puente de cancelación y el cierre del canal sí están cubiertos, vía `SoapInvoker`.)
+- **Wrappers SOAP sin cobertura unitaria** — `WsfeOperations`, `WsfexOperations` y `PadronOperations` no se testean sin extraer un factory para los clientes WCF. Afecta por igual a `SolicitarCaeAsync`, `GetLastNumberAsync`, `ConsultarComprobanteAsync` y `PadronOperations.GetPersonaAsync` (el mapeo a `PadronPersonaResponse` sí está cubierto). (El puente de cancelación y el cierre del canal sí están cubiertos, vía `SoapInvoker`.)
 - **400+ warnings de StyleCop** (`SA1101`, `SA1503`, `SA1407`) heredados. No fallan el build (`<TreatWarningsAsErrors>false</TreatWarningsAsErrors>`) pero ensucian el output.
 - **`tests` con duplicate `using` warnings (CS0105)** post-refactor v2.0.0. El bulk replace generó múltiples `using` por archivo y el dedup no fue 100% perfecto.
 - **`FileTokenCacheTests.Dispose()` warning CA1816** — agregar `GC.SuppressFinalize(this)`.

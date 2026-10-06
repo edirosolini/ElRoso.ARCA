@@ -34,7 +34,7 @@ Salida esperada (caso feliz):
 12:34:58 info: ElRoso.ARCA.Samples.QuickStart.Program[0] ✅ CAE: 75123456789012
 12:34:58 info: ElRoso.ARCA.Samples.QuickStart.Program[0] Document number: 1
 12:34:58 info: ElRoso.ARCA.Samples.QuickStart.Program[0] CAE expires: 2026-05-23
-12:34:58 info: ElRoso.ARCA.Samples.QuickStart.Program[0] Client (from Padrón): EMPRESA EJEMPLO SA (Responsable Inscripto)
+12:34:58 info: ElRoso.ARCA.Samples.QuickStart.Program[0] Client (from Padrón): EMPRESA EJEMPLO SA (RESPONSABLE_INSCRIPTO)
 12:34:58 info: ElRoso.ARCA.Samples.QuickStart.Program[0] QR URL: https://www.afip.gob.ar/fe/qr/?p=eyJ2ZXIi...
 ```
 

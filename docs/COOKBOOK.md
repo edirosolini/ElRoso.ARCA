@@ -80,7 +80,7 @@ ARCA emite certificados con vencimiento de 2 años. Marcalo en el calendario. Cu
 Tu CUIT no tiene habilitado el servicio en cuestión. En el portal:
 
 - **Administrador de Relaciones de Clave Fiscal → Adherir Servicio**
-- Buscar: `Facturación Electrónica`, `wsfe`, `ws_sr_padron_a5`, etc.
+- Buscar: `Facturación Electrónica`, `wsfe`, `ws_sr_constancia_inscripcion` (Padrón A5), etc.
 - Vincular con el certificado (CSR uploadeado)
 
 ### "The TA token is invalid / expired"
@@ -171,9 +171,15 @@ La lib consulta automáticamente el Padrón A5 cuando le pasás un `ClientReques
 
 ### "¿Tengo que pasar la Condición IVA del cliente?"
 
-No — la lib la resuelve sola desde el Padrón cuando el cliente tiene CUIT. Las propiedades `Condition` y `ClientName` del `ClientRequest` son **read-only** justamente por eso.
+Con CUIT, la lib la resuelve desde el Padrón y pisa lo que hayas puesto. Si el Padrón no permite determinarla (por ejemplo, la persona tiene el impuesto 34, o está inactiva y sin impuestos de IVA), usa la que fijaste con `request.Client.SetCondition(...)`. Si no fijaste ninguna, la emisión tira `ARCAValidationException` antes de pedir el CAE.
 
 Para consumidor final sin CUIT, la lib la fuerza a `CONSUMIDOR_FINAL` automáticamente.
+
+El valor numérico de `VATConditionARCAEnum` es el código de condición IVA del receptor de ARCA (`RESPONSABLE_INSCRIPTO = 1`, `CONSUMIDOR_FINAL = 5`, `MONOTRIBUTO = 6`, …). Hasta 2.3.0 `RESPONSABLE_INSCRIPTO` valía 7: si lo guardaste como entero, ver la migración en el [CHANGELOG](../CHANGELOG.md#300--2026-10-06).
+
+### "Quiero ver la condición IVA de un CUIT sin emitir"
+
+Usá `IPadronService.GetPersonaAsync(representedCuit, cuit)`. Devuelve `VATCondition` con la misma derivación que usa la emisión, más domicilio, actividades e impuestos. Un CUIT inexistente vuelve con `Found = false`, sin excepción. Ejemplo en el [README](../README.md#consultar-un-cuit-en-el-padrón-a5).
 
 ---
 

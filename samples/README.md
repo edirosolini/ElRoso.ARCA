@@ -7,7 +7,7 @@ Proyectos runnable que demuestran cómo usar `ElRoso.ARCA` en escenarios concret
 Para correr los samples necesitás:
 
 1. Un **certificado de homologación** de ARCA (`.pfx`). Si no tenés, ver [README → Manejo de certificados](../README.md#-manejo-de-certificados).
-2. Tu **CUIT emisor** con el servicio adherido (`wsfe` para facturación, `ws_sr_padron_a5` para Padrón).
+2. Tu **CUIT emisor** con el servicio adherido (`wsfe` para facturación, `ws_sr_constancia_inscripcion` para Padrón).
 3. .NET SDK 9.0 o superior.
 
 ## Configurar un sample

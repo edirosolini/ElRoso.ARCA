@@ -61,6 +61,7 @@ public static class ARCAServiceCollectionExtensions
         services.AddSingleton<IElectronicMailboxOperations, ElectronicMailboxOperations>();
 
         services.AddSingleton<IBillingDocumentNumberingService, BillingDocumentNumberingService>();
+        services.AddSingleton<IPadronService, PadronService>();
         services.AddSingleton<IInvoiceVerificationService, InvoiceVerificationService>();
         services.AddSingleton<IElectronicMailboxService, ElectronicMailboxService>();
 

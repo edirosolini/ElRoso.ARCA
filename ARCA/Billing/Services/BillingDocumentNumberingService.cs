@@ -92,9 +92,12 @@ internal sealed class BillingDocumentNumberingService : IBillingDocumentNumberin
             if (padronResult.Errors is { Count: > 0 })
                 return new BillingDocumentNumberingResponse { Errors = [.. padronResult.Errors] };
 
-            request.Client.SetCondition(padronResult.IsMonotributo
-                ? VATConditionARCAEnum.MONOTRIBUTO
-                : VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
+            // Sin condición determinable en el padrón se conserva la que mandó el consumidor.
+            if (padronResult.Persona.VATCondition is { } condition)
+            {
+                request.Client.SetCondition(condition);
+            }
+
             request.Client.SetClientName(padronResult.ClientName);
         }
         else
