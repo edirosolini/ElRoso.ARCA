@@ -85,6 +85,18 @@ public class ARCAServiceCollectionExtensionsTests
     }
 
     [Fact]
+    public void AddARCAClient_should_register_IPadronService_as_singleton()
+    {
+        using var sp = BuildProvider();
+
+        var first = sp.GetRequiredService<IPadronService>();
+        var second = sp.GetRequiredService<IPadronService>();
+
+        first.Should().NotBeNull();
+        second.Should().BeSameAs(first);
+    }
+
+    [Fact]
     public void AddARCAClient_should_register_FluentValidation_validator()
     {
         using var sp = BuildProvider();

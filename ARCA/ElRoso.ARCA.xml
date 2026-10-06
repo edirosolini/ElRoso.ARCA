@@ -13,6 +13,15 @@
         <member name="F:ElRoso.ARCA.Billing.ConceptTypeARCAEnum.Otros">
             <summary>Otros (productos y servicios).</summary>
         </member>
+        <member name="T:ElRoso.ARCA.Billing.PadronErrorSourceEnum">
+            <summary>Bloque del Padrón A5 que no se pudo emitir.</summary>
+        </member>
+        <member name="F:ElRoso.ARCA.Billing.PadronErrorSourceEnum.GeneralRegime">
+            <summary>Datos del régimen general (errorRegimenGeneral).</summary>
+        </member>
+        <member name="F:ElRoso.ARCA.Billing.PadronErrorSourceEnum.Monotributo">
+            <summary>Datos del monotributo (errorMonotributo).</summary>
+        </member>
         <member name="P:ElRoso.ARCA.Billing.BillingDocumentNumberingRequest.Version">
             <summary>QR code schema version. / Versión del esquema del QR.</summary>
         </member>
@@ -94,6 +103,114 @@
             Genera la URL del código QR de ARCA para imprimir en el comprobante.
             </summary>
         </member>
+        <member name="T:ElRoso.ARCA.Billing.PadronPersonaResponse">
+            <summary>Resultado de una consulta al Padrón A5, sin tipos WCF.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.Found">
+            <summary>False cuando ARCA no tiene una persona con ese CUIT.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.Errors">
+            <summary>Errores comunes de la constancia (errorConstancia).</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.PartialErrors">
+            <summary>Errores de un bloque puntual (régimen general o monotributo).</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.QueriedAt">
+            <summary>Fecha y hora de la respuesta según ARCA (metadata.fechaHora).</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.Server">
+            <summary>Servidor que respondió (metadata.servidor).</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.Cuit">
+            <summary>CUIT consultado (idPersona).</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.PersonType">
+            <summary>Tipo de persona tal como lo informa ARCA: FISICA o JURIDICA.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.KeyType">
+            <summary>Tipo de clave (tipoClave), por ejemplo CUIT.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.KeyStatus">
+            <summary>Estado de la clave tal como lo informa ARCA: ACTIVO o INACTIVO.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.IsActive">
+            <summary>True cuando <see cref="P:ElRoso.ARCA.Billing.PadronPersonaResponse.KeyStatus"/> es ACTIVO.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.DisplayName">
+            <summary>Razón social, o apellido y nombre si no hay razón social.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.IsSuccession">
+            <summary>True si es sucesión indivisa (esSucesion = SI); null si ARCA no lo informa.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.VATCondition">
+            <summary>Condición frente al IVA derivada de los impuestos informados; null si no se puede determinar.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.ReceiverVATConditionId">
+            <summary>Código de condición frente al IVA del receptor (RG 5616) para WSFEv1; null si no se puede derivar.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.Dependency">
+            <summary>Dependencia (agencia) de ARCA que corresponde a la persona.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.Taxes">
+            <summary>Impuestos del régimen general.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.Activities">
+            <summary>Actividades del régimen general.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.MainActivity">
+            <summary>Actividad del régimen general con orden 1.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.SelfEmployedCategory">
+            <summary>Categoría de autónomo (categoriaAutonomo).</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.MonotributoActivity">
+            <summary>Actividad declarada en el monotributo (actividadMonotributista).</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResponse.MonotributoCompanyMembers">
+            <summary>Integrantes de la sociedad monotributista (componenteDeSociedad).</summary>
+        </member>
+        <member name="T:ElRoso.ARCA.Billing.PadronPartialError">
+            <summary>Error de un bloque del Padrón A5 que no impide el resto de la respuesta.</summary>
+        </member>
+        <member name="T:ElRoso.ARCA.Billing.PadronAddress">
+            <summary>Domicilio informado por el Padrón A5.</summary>
+        </member>
+        <member name="T:ElRoso.ARCA.Billing.PadronDependency">
+            <summary>Dependencia de ARCA.</summary>
+        </member>
+        <member name="T:ElRoso.ARCA.Billing.PadronTax">
+            <summary>Impuesto inscripto.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronTax.Period">
+            <summary>Período inicial en formato AAAAMM.</summary>
+        </member>
+        <member name="T:ElRoso.ARCA.Billing.PadronActivity">
+            <summary>Actividad económica.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronActivity.Period">
+            <summary>Período inicial en formato AAAAMM.</summary>
+        </member>
+        <member name="T:ElRoso.ARCA.Billing.PadronRegime">
+            <summary>Régimen de un impuesto.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronRegime.Period">
+            <summary>Período inicial en formato AAAAMM.</summary>
+        </member>
+        <member name="T:ElRoso.ARCA.Billing.PadronCategory">
+            <summary>Categoría de un impuesto (monotributo o autónomos).</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronCategory.Period">
+            <summary>Período inicial en formato AAAAMM.</summary>
+        </member>
+        <member name="T:ElRoso.ARCA.Billing.PadronCharacterization">
+            <summary>Caracterización vigente.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronCharacterization.Period">
+            <summary>Período inicial en formato AAAAMM.</summary>
+        </member>
+        <member name="T:ElRoso.ARCA.Billing.PadronCompanyMember">
+            <summary>Integrante de una sociedad monotributista.</summary>
+        </member>
         <member name="T:ElRoso.ARCA.Billing.IBillingDocumentNumberingService">
             <summary>
             Requests a CAE (Electronic Authorization Code) from ARCA for a billing document.
@@ -140,6 +257,16 @@
             <param name="ct">Cancellation token.</param>
             <returns>The authorized voucher, or errors when ARCA rejects the query.</returns>
         </member>
+        <member name="T:ElRoso.ARCA.Billing.IPadronService">
+            <summary>Consulta de personas en el Padrón A5 de ARCA (ws_sr_constancia_inscripcion).</summary>
+        </member>
+        <member name="M:ElRoso.ARCA.Billing.IPadronService.GetPersonaAsync(System.Int64,System.Int64,System.Threading.CancellationToken)">
+            <summary>Devuelve los datos de inscripción de un CUIT; <c>Found = false</c> si ARCA no lo conoce.</summary>
+            <param name="representedCuit">CUIT que firma la consulta (titular del certificado o de la delegación).</param>
+            <param name="cuit">CUIT a consultar.</param>
+            <param name="ct">Cancellation token.</param>
+            <returns>Datos de la persona sin tipos WCF.</returns>
+        </member>
         <member name="M:ElRoso.ARCA.Billing.BillingDocumentNumberingService.GetLastAuthorizedNumberAsync(ElRoso.ARCA.Core.IssuingCompanyRequest,ElRoso.ARCA.Core.BillingDocumentTypeARCAEnum,System.Int32,System.Threading.CancellationToken)">
             <inheritdoc/>
         </member>
@@ -163,11 +290,11 @@
         <member name="P:ElRoso.ARCA.Billing.PadronPersonaResult.Errors">
             <summary>Errors returned by Padron, if any. / Errores devueltos por el Padrón.</summary>
         </member>
-        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResult.IsMonotributo">
-            <summary>True if the client is registered as Monotributo. / True si el cliente está como Monotributo.</summary>
-        </member>
         <member name="P:ElRoso.ARCA.Billing.PadronPersonaResult.ClientName">
             <summary>Resolved client name (razón social or apellido + nombre). / Nombre del cliente resuelto.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PadronPersonaResult.Persona">
+            <summary>Respuesta completa del Padrón mapeada a tipos públicos.</summary>
         </member>
         <member name="T:ElRoso.ARCA.Billing.IWsfeOperations">
             <summary>
@@ -354,14 +481,38 @@
         <member name="F:ElRoso.ARCA.Core.DocumentTypeARCAEnum.SIN_IDENTIFICAR">
             <summary>Sin identificar (consumidor final sin documento).</summary>
         </member>
+        <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.RESPONSABLE_INSCRIPTO">
+            <summary>IVA Responsable Inscripto (código ARCA 1).</summary>
+        </member>
+        <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.IVA_SUJETO_EXENTO">
+            <summary>IVA Sujeto Exento (código ARCA 4).</summary>
+        </member>
         <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.CONSUMIDOR_FINAL">
-            <summary>Consumidor final — sin responsabilidad de IVA.</summary>
+            <summary>Consumidor Final (código ARCA 5).</summary>
         </member>
         <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.MONOTRIBUTO">
-            <summary>Monotributista.</summary>
+            <summary>Responsable Monotributo (código ARCA 6).</summary>
         </member>
-        <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.RESPONSABLE_INSCRIPTO">
-            <summary>Responsable Inscripto en IVA.</summary>
+        <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.SUJETO_NO_CATEGORIZADO">
+            <summary>Sujeto No Categorizado (código ARCA 7).</summary>
+        </member>
+        <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.PROVEEDOR_DEL_EXTERIOR">
+            <summary>Proveedor del Exterior (código ARCA 8).</summary>
+        </member>
+        <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.CLIENTE_DEL_EXTERIOR">
+            <summary>Cliente del Exterior (código ARCA 9).</summary>
+        </member>
+        <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.IVA_LIBERADO_LEY_19640">
+            <summary>IVA Liberado – Ley N° 19.640 (código ARCA 10).</summary>
+        </member>
+        <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.MONOTRIBUTISTA_SOCIAL">
+            <summary>Monotributista Social (código ARCA 13).</summary>
+        </member>
+        <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.IVA_NO_ALCANZADO">
+            <summary>IVA No Alcanzado (código ARCA 15).</summary>
+        </member>
+        <member name="F:ElRoso.ARCA.Core.VATConditionARCAEnum.MONOTRIBUTO_TRABAJADOR_INDEPENDIENTE_PROMOVIDO">
+            <summary>Monotributo Trabajador Independiente Promovido (código ARCA 16).</summary>
         </member>
         <member name="T:ElRoso.ARCA.Core.LoginTicketRequest">
             <summary>

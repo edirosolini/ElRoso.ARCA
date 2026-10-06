@@ -76,12 +76,7 @@ internal sealed class WsfeOperations : IWsfeOperations
             BillingDocumentTypeARCAEnum.FA or BillingDocumentTypeARCAEnum.NDA or BillingDocumentTypeARCAEnum.NCA or
             BillingDocumentTypeARCAEnum.FB or BillingDocumentTypeARCAEnum.NDB or BillingDocumentTypeARCAEnum.NCB;
 
-        var condicionIva = doc.Client.Condition switch
-        {
-            VATConditionARCAEnum.RESPONSABLE_INSCRIPTO => 1,
-            VATConditionARCAEnum.MONOTRIBUTO => 6,
-            _ => 5,
-        };
+        var condicionIva = ReceiverConditionCode(doc.Client);
 
         var body = new WSFEv1.FECAESolicitarRequestBody
         {
@@ -294,6 +289,12 @@ internal sealed class WsfeOperations : IWsfeOperations
             throw new ARCAServiceException("ARCA WSFEv1 FECompConsultar failed.", ex);
         }
     }
+
+    // El valor del enum es el código de condición IVA del receptor de ARCA.
+    internal static int ReceiverConditionCode(ClientRequest client) =>
+        Enum.IsDefined(client.Condition)
+            ? (int)client.Condition
+            : throw new ARCAValidationException([$"Condición frente al IVA del receptor no válida: {(int)client.Condition}."]);
 
     /// <summary>
     /// EN: Parses an ARCA date field. Supports both yyyyMMdd and yyyyMMddHHmmss — FchVto comes

@@ -15,6 +15,40 @@ public class OperationsMappingTests
     // ElectronicMailboxOperations mapping helpers
     // =============================================================
 
+    [Theory]
+    [InlineData(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO, 1)]
+    [InlineData(VATConditionARCAEnum.IVA_SUJETO_EXENTO, 4)]
+    [InlineData(VATConditionARCAEnum.CONSUMIDOR_FINAL, 5)]
+    [InlineData(VATConditionARCAEnum.MONOTRIBUTO, 6)]
+    [InlineData(VATConditionARCAEnum.SUJETO_NO_CATEGORIZADO, 7)]
+    [InlineData(VATConditionARCAEnum.PROVEEDOR_DEL_EXTERIOR, 8)]
+    [InlineData(VATConditionARCAEnum.CLIENTE_DEL_EXTERIOR, 9)]
+    [InlineData(VATConditionARCAEnum.IVA_LIBERADO_LEY_19640, 10)]
+    [InlineData(VATConditionARCAEnum.MONOTRIBUTISTA_SOCIAL, 13)]
+    [InlineData(VATConditionARCAEnum.IVA_NO_ALCANZADO, 15)]
+    [InlineData(VATConditionARCAEnum.MONOTRIBUTO_TRABAJADOR_INDEPENDIENTE_PROMOVIDO, 16)]
+    public void ReceiverConditionCode_should_send_the_ARCA_code(VATConditionARCAEnum condition, int expected)
+    {
+        var client = new ClientRequest();
+        client.SetCondition(condition);
+
+        WsfeOps.ReceiverConditionCode(client).Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(2)]
+    [InlineData(99)]
+    public void ReceiverConditionCode_should_reject_an_undefined_condition(int value)
+    {
+        var client = new ClientRequest();
+        client.SetCondition((VATConditionARCAEnum)value);
+
+        var act = () => WsfeOps.ReceiverConditionCode(client);
+
+        act.Should().Throw<ARCAValidationException>();
+    }
+
     [Fact]
     public void BuildFilter_should_copy_pagination_and_dates()
     {

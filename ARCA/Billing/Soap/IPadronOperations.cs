@@ -28,9 +28,9 @@ internal sealed record PadronPersonaResult
     /// <summary>Errors returned by Padron, if any. / Errores devueltos por el Padrón.</summary>
     public IReadOnlyList<string>? Errors { get; init; }
 
-    /// <summary>True if the client is registered as Monotributo. / True si el cliente está como Monotributo.</summary>
-    public bool IsMonotributo { get; init; }
-
     /// <summary>Resolved client name (razón social or apellido + nombre). / Nombre del cliente resuelto.</summary>
     public string ClientName { get; init; } = string.Empty;
+
+    /// <summary>Respuesta completa del Padrón mapeada a tipos públicos.</summary>
+    public PadronPersonaResponse Persona { get; init; } = new();
 }

@@ -12,7 +12,7 @@
 		<AssemblyName>ElRoso.ARCA</AssemblyName>
 		<RootNamespace>ElRoso.ARCA</RootNamespace>
 		<PackageId>ElRoso.ARCA</PackageId>
-		<Version>2.3.0</Version>
+		<Version>3.0.0</Version>
 
 		<!-- Authoring -->
 		<Authors>Di Rosolini Ezequiel</Authors>
