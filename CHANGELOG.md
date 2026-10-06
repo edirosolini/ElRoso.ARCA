@@ -6,6 +6,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Unreleased]
 
+## [3.0.1] — 2026-10-06
+
+### Fixed
+
+- **El Padrón ya no deduce Sujeto No Categorizado.** Una persona activa sin monotributo ni impuestos 20, 30 o 32 salía como `SUJETO_NO_CATEGORIZADO`, y la emisión mandaba condición 7 aunque el consumidor hubiera puesto otra. Ahora, si el Padrón no determina la condición, `VATCondition` y `ReceiverVATConditionId` quedan en `null` y la emisión conserva la que puso el consumidor con `ClientRequest.SetCondition(...)`. `SUJETO_NO_CATEGORIZADO` sigue en el enum para setearlo a mano.
+- **Los impuestos y caracterizaciones del Padrón llegaban sin id.** ARCA agregó `estadoImpuesto` y `motivo` al impuesto y `fechaSolicitud` a la caracterización; el proxy no los tenía y el deserializador descartaba en silencio todo lo que venía después (`idImpuesto`, `idCaracterizacion`, `periodo`). Un Responsable Inscripto se leía sin el impuesto 30. El proxy se actualizó con el WSDL vigente.
+
 ## [3.0.0] — 2026-10-06
 
 ✨ **Consulta pública al Padrón A5** y **la emisión usa la condición frente al IVA real del receptor**.

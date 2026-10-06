@@ -202,12 +202,29 @@ public class PadronMappingTests
     }
 
     [Fact]
-    public void Active_person_without_VAT_or_monotributo_taxes_should_derive_no_categorizado()
+    public void Active_person_without_VAT_or_monotributo_taxes_should_not_derive_a_condition()
     {
         var result = PadronOperations.MapPersona(WithGeneralRegime(Tax(11, "GANANCIAS PERSONAS FISICAS")), Cuit);
 
-        result.VATCondition.Should().Be(VATConditionARCAEnum.SUJETO_NO_CATEGORIZADO);
-        result.ReceiverVATConditionId.Should().Be(7);
+        result.VATCondition.Should().BeNull();
+        result.ReceiverVATConditionId.Should().BeNull();
+    }
+
+    [Fact]
+    public void Active_person_without_taxes_should_not_derive_a_condition()
+    {
+        var result = PadronOperations.MapPersona(WithGeneralRegime(), Cuit);
+
+        result.VATCondition.Should().BeNull();
+        result.ReceiverVATConditionId.Should().BeNull();
+    }
+
+    [Fact]
+    public void Active_person_with_taxes_without_id_should_not_derive_a_condition()
+    {
+        var persona = WithGeneralRegime(new Padron.impuesto { descripcionImpuesto = "IVA" });
+
+        PadronOperations.MapPersona(persona, Cuit).VATCondition.Should().BeNull();
     }
 
     [Fact]
@@ -257,7 +274,7 @@ public class PadronMappingTests
     [Theory]
     [InlineData(true, false)]
     [InlineData(false, true)]
-    public void Any_partial_error_should_block_no_categorizado(bool generalRegimeError, bool monotributoError)
+    public void Any_partial_error_should_not_derive_a_condition(bool generalRegimeError, bool monotributoError)
     {
         var persona = WithGeneralRegime(Tax(11, "GANANCIAS PERSONAS FISICAS"));
         if (generalRegimeError)

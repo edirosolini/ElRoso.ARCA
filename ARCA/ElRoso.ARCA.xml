@@ -1085,10 +1085,16 @@
         <member name="P:Padron.impuesto.descripcionImpuesto">
             <remarks/>
         </member>
+        <member name="P:Padron.impuesto.estadoImpuesto">
+            <remarks/>
+        </member>
         <member name="P:Padron.impuesto.idImpuesto">
             <remarks/>
         </member>
         <member name="P:Padron.impuesto.idImpuestoSpecified">
+            <remarks/>
+        </member>
+        <member name="P:Padron.impuesto.motivo">
             <remarks/>
         </member>
         <member name="P:Padron.impuesto.periodo">
@@ -1212,6 +1218,12 @@
             <remarks/>
         </member>
         <member name="P:Padron.caracterizacion.descripcionCaracterizacion">
+            <remarks/>
+        </member>
+        <member name="P:Padron.caracterizacion.fechaSolicitud">
+            <remarks/>
+        </member>
+        <member name="P:Padron.caracterizacion.fechaSolicitudSpecified">
             <remarks/>
         </member>
         <member name="P:Padron.caracterizacion.idCaracterizacion">

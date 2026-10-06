@@ -732,9 +732,13 @@ namespace Padron
         
         private string descripcionImpuestoField;
         
+        private string estadoImpuestoField;
+        
         private int idImpuestoField;
         
         private bool idImpuestoFieldSpecified;
+        
+        private string motivoField;
         
         private int periodoField;
         
@@ -756,6 +760,20 @@ namespace Padron
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
+        public string estadoImpuesto
+        {
+            get
+            {
+                return this.estadoImpuestoField;
+            }
+            set
+            {
+                this.estadoImpuestoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
         public int idImpuesto
         {
             get
@@ -783,7 +801,21 @@ namespace Padron
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
+        public string motivo
+        {
+            get
+            {
+                return this.motivoField;
+            }
+            set
+            {
+                this.motivoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
         public int periodo
         {
             get
@@ -1380,6 +1412,10 @@ namespace Padron
         
         private string descripcionCaracterizacionField;
         
+        private int fechaSolicitudField;
+        
+        private bool fechaSolicitudFieldSpecified;
+        
         private int idCaracterizacionField;
         
         private bool idCaracterizacionFieldSpecified;
@@ -1404,6 +1440,34 @@ namespace Padron
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
+        public int fechaSolicitud
+        {
+            get
+            {
+                return this.fechaSolicitudField;
+            }
+            set
+            {
+                this.fechaSolicitudField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool fechaSolicitudSpecified
+        {
+            get
+            {
+                return this.fechaSolicitudFieldSpecified;
+            }
+            set
+            {
+                this.fechaSolicitudFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
         public int idCaracterizacion
         {
             get
@@ -1431,7 +1495,7 @@ namespace Padron
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
         public int periodo
         {
             get

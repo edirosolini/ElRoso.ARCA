@@ -275,7 +275,7 @@ else
 }
 ```
 
-> Requiere el servicio **`ws_sr_constancia_inscripcion`** adherido. `VATCondition` usa `VATConditionARCAEnum`, cuyo valor numérico es el código de condición IVA del receptor de ARCA. Se deriva así: monotributo (bloque de monotributo o impuesto 20) → Monotributo, IVA (30) → Responsable Inscripto, IVA exento (32) → Exento; persona activa sin ninguno de esos impuestos y sin errores parciales → Sujeto No Categorizado. Si aparece el impuesto 34, o en cualquier otro caso, queda en `null`. `ReceiverVATConditionId` es el mismo valor como entero. `Taxes` y `MonotributoTaxes` traen siempre la lista cruda.
+> Requiere el servicio **`ws_sr_constancia_inscripcion`** adherido. `VATCondition` usa `VATConditionARCAEnum`, cuyo valor numérico es el código de condición IVA del receptor de ARCA. Se deriva así: monotributo (bloque de monotributo o impuesto 20) → Monotributo, IVA (30) → Responsable Inscripto, IVA exento (32) → Exento. Si aparece el impuesto 34, o en cualquier otro caso, queda en `null`: el Padrón nunca deduce Sujeto No Categorizado. `ReceiverVATConditionId` es el mismo valor como entero. `Taxes` y `MonotributoTaxes` traen siempre la lista cruda.
 >
 > Al emitir a un CUIT, `IBillingDocumentNumberingService` usa esa misma condición. Si queda en `null`, respeta la que pusiste con `request.Client.SetCondition(...)`.
 
