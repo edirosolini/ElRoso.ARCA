@@ -79,7 +79,7 @@ internal sealed class BillingDocumentNumberingService : IBillingDocumentNumberin
     {
         // Padron lookup: only for CUIT recipients (determines VAT condition + name).
         // Consulta al padrón: solo para destinatarios con CUIT.
-        if (request.Client.DocumentType == DocumentTypeARCAEnum.CUIT)
+        if (request.Client.DocumentType == DocumentTypeARCAEnum.CUIT && this.options.ResolveReceiverFromPadron)
         {
             var padronTicket = await GetOrRefreshTokenAsync("ws_sr_constancia_inscripcion", request.IssuingCompany.DocumentNumber, ct);
             var padronResult = await padron.GetPersonaAsync(
@@ -100,7 +100,7 @@ internal sealed class BillingDocumentNumberingService : IBillingDocumentNumberin
 
             request.Client.SetClientName(padronResult.ClientName);
         }
-        else
+        else if (request.Client.DocumentType != DocumentTypeARCAEnum.CUIT)
         {
             request.Client.SetCondition(VATConditionARCAEnum.CONSUMIDOR_FINAL);
         }

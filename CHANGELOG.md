@@ -6,6 +6,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Unreleased]
 
+## [3.1.0] — 2026-10-06
+
+### Added
+
+- **`ARCAOptions.ResolveReceiverFromPadron`** (default `true`). En `false`, `AuthorizeAsync` no consulta el Padrón A5 para un receptor con CUIT: no pide el ticket de `ws_sr_constancia_inscripcion` ni llama a `getPersona`, y emite con la condición que puso el consumidor con `ClientRequest.SetCondition(...)`. Una condición no válida para WSFEv1 sigue cortando con `ARCAValidationException` antes de pedir el CAE. Sirve cuando el consumidor ya resuelve la condición del receptor por su cuenta, o cuando el CUIT emisor no delegó el Padrón (ARCA responde "Este token no le permite actuar en representacion de la CUIT …" y la emisión se cortaba). Con el default no cambia nada.
+
 ## [3.0.1] — 2026-10-06
 
 ### Fixed

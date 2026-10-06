@@ -534,6 +534,108 @@ public class BillingDocumentNumberingServiceTests
     }
 
     [Fact]
+    public void ARCAOptions_should_resolve_the_receiver_from_the_padron_by_default()
+    {
+        new ARCAOptions().ResolveReceiverFromPadron.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Default_should_query_the_padron_with_the_issuing_company_cuit()
+    {
+        SetupValid();
+        SetupTokenCacheHit();
+        SetupPadron(VATConditionARCAEnum.IVA_SUJETO_EXENTO);
+        SetupApprovedCae();
+        var request = CuitRequest(BillingDocumentTypeARCAEnum.FB);
+        request.Client.SetCondition(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
+
+        await CreateService().AuthorizeAsync(request);
+
+        tokenCacheMock.Verify(t => t.GetAsync("ws_sr_constancia_inscripcion", 20123456789L, It.IsAny<CancellationToken>()), Times.Once);
+        padronMock.Verify(p => p.GetPersonaAsync(
+            It.IsAny<string>(), It.IsAny<string>(), 20123456789L, 30711111111L, It.IsAny<CancellationToken>()),
+            Times.Once);
+        request.Client.Condition.Should().Be(VATConditionARCAEnum.IVA_SUJETO_EXENTO);
+        request.Client.ClientName.Should().Be("Cliente");
+    }
+
+    [Fact]
+    public async Task Default_should_stop_on_padron_errors()
+    {
+        SetupValid();
+        SetupTokenCacheHit();
+        padronMock
+            .Setup(p => p.GetPersonaAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new PadronPersonaResult { Errors = ["padron down"] });
+
+        var response = await CreateService().AuthorizeAsync(CuitRequest(BillingDocumentTypeARCAEnum.FA));
+
+        response.Errors.Should().Contain("padron down");
+        wsfeMock.Verify(w => w.SolicitarCaeAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(),
+                                                 It.IsAny<BillingDocumentNumberingRequest>(), It.IsAny<int>(), It.IsAny<CancellationToken>()),
+                        Times.Never);
+    }
+
+    [Fact]
+    public async Task Without_padron_resolution_should_not_query_the_padron_nor_request_its_ticket()
+    {
+        SetupValid();
+        SetupTokenCacheHit();
+        SetupApprovedCae();
+        options.ResolveReceiverFromPadron = false;
+        var request = CuitRequest(BillingDocumentTypeARCAEnum.FA);
+        request.Client.SetCondition(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
+
+        var response = await CreateService().AuthorizeAsync(request);
+
+        response.Result.Should().BeTrue();
+        padronMock.Verify(p => p.GetPersonaAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()),
+                          Times.Never);
+        tokenCacheMock.Verify(t => t.GetAsync("ws_sr_constancia_inscripcion", It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
+        loginTicketServiceMock.Verify(
+            l => l.GetLoginTicketAsync("ws_sr_constancia_inscripcion", It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    [Theory]
+    [InlineData(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO)]
+    [InlineData(VATConditionARCAEnum.IVA_SUJETO_EXENTO)]
+    [InlineData(VATConditionARCAEnum.MONOTRIBUTO)]
+    public async Task Without_padron_resolution_should_send_the_consumer_condition_with_the_issuing_cuit(VATConditionARCAEnum consumerCondition)
+    {
+        SetupValid();
+        SetupTokenCacheHit();
+        SetupApprovedCae();
+        options.ResolveReceiverFromPadron = false;
+        var request = CuitRequest(BillingDocumentTypeARCAEnum.FA);
+        request.Client.SetCondition(consumerCondition);
+
+        await CreateService().AuthorizeAsync(request);
+
+        tokenCacheMock.Verify(t => t.GetAsync("wsfe", 20123456789L, It.IsAny<CancellationToken>()), Times.Once);
+        wsfeMock.Verify(w => w.GetLastNumberAsync(It.IsAny<string>(), It.IsAny<string>(), 20123456789L,
+                                                  It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+        wsfeMock.Verify(w => w.SolicitarCaeAsync(It.IsAny<string>(), It.IsAny<string>(), 20123456789L,
+                                                 It.Is<BillingDocumentNumberingRequest>(r => r.Client.Condition == consumerCondition),
+                                                 It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Without_padron_resolution_a_receiver_without_CUIT_is_still_final_consumer()
+    {
+        SetupValid();
+        SetupTokenCacheHit();
+        SetupApprovedCae();
+        options.ResolveReceiverFromPadron = false;
+        var request = MinimalRequest(BillingDocumentTypeARCAEnum.FB);
+        request.Client.SetCondition(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
+
+        await CreateService().AuthorizeAsync(request);
+
+        request.Client.Condition.Should().Be(VATConditionARCAEnum.CONSUMIDOR_FINAL);
+    }
+
+    [Fact]
     public async Task Export_should_call_wsfex_and_return_CAE()
     {
         SetupValid();
