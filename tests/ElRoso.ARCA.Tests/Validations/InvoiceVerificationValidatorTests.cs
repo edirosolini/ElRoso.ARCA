@@ -35,6 +35,29 @@ public class InvoiceVerificationValidatorTests
     }
 
     [Fact]
+    public void Invalid_when_RequesterCuit_is_zero()
+    {
+        var request = ValidRequest();
+        request.RequesterCuit = 0;
+
+        var result = validator.Validate(request);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.PropertyName == nameof(InvoiceVerificationRequest.RequesterCuit));
+    }
+
+    [Fact]
+    public void Valid_when_RequesterCuit_is_positive()
+    {
+        var request = ValidRequest();
+        request.RequesterCuit = 30000000000;
+
+        var result = validator.Validate(request);
+
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Fact]
     public void Invalid_when_BookPrefix_is_zero()
     {
         var request = ValidRequest();

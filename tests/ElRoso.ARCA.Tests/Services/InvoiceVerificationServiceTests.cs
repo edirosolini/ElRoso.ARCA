@@ -207,4 +207,68 @@ public class InvoiceVerificationServiceTests
             "wscdc", It.IsAny<long>(), It.IsAny<ElRoso.ARCA.Core.LoginTicketResponse>(), It.IsAny<CancellationToken>()),
             Times.Once);
     }
+
+    [Fact]
+    public async Task VerifyAsync_with_RequesterCuit_should_authenticate_and_cache_ticket_as_requester()
+    {
+        const long requesterCuit = 33000000000;
+        validatorMock
+            .Setup(v => v.Validate(It.IsAny<InvoiceVerificationRequest>()))
+            .Returns(new ValidationResult());
+
+        tokenCacheMock
+            .Setup(t => t.GetAsync("wscdc", It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((ElRoso.ARCA.Core.LoginTicketResponse?)null);
+
+        loginTicketServiceMock
+            .Setup(l => l.GetLoginTicketAsync("wscdc", It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(FreshTicket());
+
+        operationsMock
+            .Setup(o => o.VerifyAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(),
+                                      It.IsAny<InvoiceVerificationRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new InvoiceVerificationOperationResult { IsAuthorized = true, Resultado = "A" });
+
+        var request = ValidRequest();
+        request.RequesterCuit = requesterCuit;
+
+        var service = CreateService();
+        await service.VerifyAsync(request);
+
+        tokenCacheMock.Verify(t => t.GetAsync("wscdc", requesterCuit, It.IsAny<CancellationToken>()), Times.Once);
+        tokenCacheMock.Verify(t => t.SetAsync(
+            "wscdc", requesterCuit, It.IsAny<ElRoso.ARCA.Core.LoginTicketResponse>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+        operationsMock.Verify(o => o.VerifyAsync(
+            "fake-sign", "fake-token", requesterCuit,
+            It.Is<InvoiceVerificationRequest>(r => r.IssuingCompany.DocumentNumber == 20123456789),
+            It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task VerifyAsync_without_RequesterCuit_should_authenticate_as_issuer()
+    {
+        validatorMock
+            .Setup(v => v.Validate(It.IsAny<InvoiceVerificationRequest>()))
+            .Returns(new ValidationResult());
+
+        tokenCacheMock
+            .Setup(t => t.GetAsync("wscdc", It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(FreshTicket());
+
+        operationsMock
+            .Setup(o => o.VerifyAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(),
+                                      It.IsAny<InvoiceVerificationRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new InvoiceVerificationOperationResult { IsAuthorized = true, Resultado = "A" });
+
+        var service = CreateService();
+        await service.VerifyAsync(ValidRequest());
+
+        tokenCacheMock.Verify(t => t.GetAsync("wscdc", 20123456789, It.IsAny<CancellationToken>()), Times.Once);
+        operationsMock.Verify(o => o.VerifyAsync(
+            It.IsAny<string>(), It.IsAny<string>(), 20123456789,
+            It.IsAny<InvoiceVerificationRequest>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
 }

@@ -28,5 +28,8 @@ internal class InvoiceVerificationValidator : AbstractValidator<InvoiceVerificat
         RuleFor(x => x.IssuingCompany.DocumentNumber).GreaterThan(0)
             .When(x => x.IssuingCompany is not null)
             .WithMessage("El CUIT del emisor es requerido.");
+        RuleFor(x => x.RequesterCuit).GreaterThan(0)
+            .When(x => x.RequesterCuit is not null)
+            .WithMessage("El CUIT que consulta debe ser mayor a 0.");
     }
 }

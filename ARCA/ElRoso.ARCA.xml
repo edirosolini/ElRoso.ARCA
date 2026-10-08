@@ -787,6 +787,9 @@
         <member name="P:ElRoso.ARCA.Read.InvoiceVerificationRequest.AuthorizationMode">
             <summary>Type of authorization being validated. Default: CAE. / Tipo de autorización a validar. Default: CAE.</summary>
         </member>
+        <member name="P:ElRoso.ARCA.Read.InvoiceVerificationRequest.RequesterCuit">
+            <summary>CUIT que consulta: autentica y es la clave del ticket de acceso. Sin valor, se usa el del emisor.</summary>
+        </member>
         <member name="T:ElRoso.ARCA.Read.MailboxConsumeRequest">
             <summary>
             EN: Request to consume (read + mark as read) a notification from ARCA's e-Ventanilla.

@@ -47,11 +47,12 @@ internal sealed class InvoiceVerificationService : IInvoiceVerificationService
             throw new ARCAValidationException(errors);
         }
 
-        var ticket = await GetOrRefreshTokenAsync("wscdc", request.IssuingCompany.DocumentNumber, ct);
+        var requesterCuit = request.RequesterCuit ?? request.IssuingCompany.DocumentNumber;
+        var ticket = await GetOrRefreshTokenAsync("wscdc", requesterCuit, ct);
         var result = await operations.VerifyAsync(
             ticket.Sign,
             ticket.Token,
-            request.IssuingCompany.DocumentNumber,
+            requesterCuit,
             request,
             ct);
 

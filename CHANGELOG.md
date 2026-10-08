@@ -6,6 +6,16 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Unreleased]
 
+## [3.2.0] — 2026-10-08
+
+### Added
+
+- **`InvoiceVerificationRequest.RequesterCuit`** (opcional). Es el CUIT que consulta: WSCDC lo recibe en `Auth.Cuit` y es la clave del ticket de acceso en la caché. `CuitEmisor` sigue siendo `IssuingCompany.DocumentNumber`. Sin `RequesterCuit` no cambia nada: se autentica con el CUIT del emisor.
+
+### Fixed
+
+- **No se podía constatar un comprobante de un tercero.** `IInvoiceVerificationService` autenticaba con el CUIT del emisor del comprobante y pedía el ticket a su nombre, así que solo andaba si el que consultaba era el propio emisor. Con un certificado de otro CUIT, ARCA rechazaba la consulta. Ahora se puede pasar el CUIT que consulta en `RequesterCuit`.
+
 ## [3.1.0] — 2026-10-06
 
 ### Added
