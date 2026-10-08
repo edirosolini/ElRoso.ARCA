@@ -16,7 +16,7 @@ internal interface IInvoiceVerificationOperations
     Task<InvoiceVerificationOperationResult> VerifyAsync(
         string sign,
         string token,
-        long issuingCuit,
+        long requesterCuit,
         InvoiceVerificationRequest request,
         CancellationToken ct);
 }

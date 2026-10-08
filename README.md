@@ -321,7 +321,18 @@ else
 }
 ```
 
-> Requiere el servicio **`wscdc`** adherido en el portal de ARCA. Sample runnable en [`samples/InvoiceVerification/`](./samples/InvoiceVerification/).
+Para constatar un comprobante de un tercero (por ejemplo, la factura de un proveedor), pasá en `RequesterCuit` el CUIT del certificado que consulta. Ese CUIT va en `Auth.Cuit` y pide el ticket de acceso; `IssuingCompany` sigue siendo el emisor del comprobante. Sin `RequesterCuit`, se autentica con el CUIT del emisor.
+
+```csharp
+var request = new InvoiceVerificationRequest
+{
+    // ...mismos campos que arriba...
+    IssuingCompany = new() { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 },
+    RequesterCuit  = 30000000000,                          // CUIT del certificado que consulta
+};
+```
+
+> Requiere el servicio **`wscdc`** adherido en el portal de ARCA al CUIT que autentica (`RequesterCuit`, o el emisor si no viene). Sample runnable en [`samples/InvoiceVerification/`](./samples/InvoiceVerification/).
 
 ### Leer notificaciones del DFE (e-Ventanilla)
 

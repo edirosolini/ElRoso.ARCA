@@ -294,6 +294,26 @@ public class OperationsMappingTests
         datos.DocNroReceptor.Should().BeNull();
     }
 
+    [Fact]
+    public void BuildCmpDatos_with_RequesterCuit_should_keep_issuer_as_CuitEmisor()
+    {
+        var req = new InvoiceVerificationRequest
+        {
+            BillingDocumentType = BillingDocumentTypeARCAEnum.FA,
+            BillingDocumentBookPrefix = 1,
+            BillingDocumentNumber = 1,
+            BillingDocumentDate = new DateTime(2026, 1, 1),
+            TotalAmount = 100,
+            AuthorizationCode = "75999",
+            IssuingCompany = new IssuingCompanyRequest { DocumentNumber = 20123456789 },
+            RequesterCuit = 33000000000,
+        };
+
+        var datos = InvoiceVerificationOps.BuildCmpDatos(req);
+
+        datos.CuitEmisor.Should().Be(20123456789);
+    }
+
     [Theory]
     [InlineData("20260513", 2026, 5, 13)]
     [InlineData("20260513120000", 2026, 5, 13)]

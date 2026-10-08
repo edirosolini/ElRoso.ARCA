@@ -20,7 +20,7 @@ internal sealed class InvoiceVerificationOperations : IInvoiceVerificationOperat
     public async Task<InvoiceVerificationOperationResult> VerifyAsync(
         string sign,
         string token,
-        long issuingCuit,
+        long requesterCuit,
         InvoiceVerificationRequest request,
         CancellationToken ct)
     {
@@ -35,7 +35,7 @@ internal sealed class InvoiceVerificationOperations : IInvoiceVerificationOperat
                 options.WscdcUrl);
             client.InnerChannel.OperationTimeout = TimeSpan.FromSeconds(options.SoapTimeoutSeconds);
 
-            var auth = new WSCDC.CmpAuthRequest { Sign = sign, Token = token, Cuit = issuingCuit };
+            var auth = new WSCDC.CmpAuthRequest { Sign = sign, Token = token, Cuit = requesterCuit };
             var cmpDatos = BuildCmpDatos(request);
 
             var result = await SoapInvoker.InvokeAsync(

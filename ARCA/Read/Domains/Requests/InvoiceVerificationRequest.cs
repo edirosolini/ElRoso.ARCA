@@ -39,4 +39,7 @@ public class InvoiceVerificationRequest
 
     /// <summary>Type of authorization being validated. Default: CAE. / Tipo de autorización a validar. Default: CAE.</summary>
     public AuthorizationModeARCAEnum AuthorizationMode { get; set; } = AuthorizationModeARCAEnum.CAE;
+
+    /// <summary>CUIT que consulta: autentica y es la clave del ticket de acceso. Sin valor, se usa el del emisor.</summary>
+    public long? RequesterCuit { get; set; }
 }
