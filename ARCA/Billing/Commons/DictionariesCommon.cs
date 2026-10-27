@@ -9,7 +9,7 @@ internal static class DictionariesCommon
     {
         { "Pesos",   "PES" },
         { "Dolares", "DOL" },
-        { "Euro",    "061" },
+        { "Euro",    "060" },
     };
 
     public static readonly IReadOnlyDictionary<string, int> Tax = new Dictionary<string, int>
