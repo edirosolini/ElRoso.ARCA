@@ -9,7 +9,7 @@ public class DictionariesCommonTests
     [Theory]
     [InlineData("Pesos", "PES")]
     [InlineData("Dolares", "DOL")]
-    [InlineData("Euro", "061")]
+    [InlineData("Euro", "060")]
     public void Currencies_should_contain_expected_arca_codes(string key, string expectedCode)
     {
         DictionariesCommon.Currencies.Should().ContainKey(key);

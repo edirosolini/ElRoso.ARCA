@@ -6,6 +6,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Unreleased]
 
+## [3.2.1] — 2026-10-27
+
+### Fixed
+
+- **Los comprobantes en Euros salían con un código de moneda inválido.** `Currency = "Euro"` se mandaba a WSFEv1 y WSFEXv1 como `061`; el código de ARCA para el Euro es `060`.
+
 ## [3.2.0] — 2026-10-08
 
 ### Added
