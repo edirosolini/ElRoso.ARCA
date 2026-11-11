@@ -34,6 +34,10 @@ updates:
       - dependency-name: "StyleCop.Analyzers"
         update-types: ["version-update:semver-major"]
 
+      # Mantiene DataProtection en la familia 9.x del target net9.0.
+      - dependency-name: "Microsoft.AspNetCore.DataProtection"
+        update-types: ["version-update:semver-major"]
+
     # EN: Group minor/patch updates so we don't drown in PRs. Major updates stay individual.
     # ES: Agrupa minor/patch para no ahogarnos en PRs. Major queda como PR individual.
     groups:

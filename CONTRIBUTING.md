@@ -54,11 +54,17 @@ ElRoso.ARCA.sln
 - Excepciones tipadas: nunca `throw new Exception(...)`. Usar `ARCAAuthException`, `ARCAServiceException`, `ARCAValidationException`.
 - Servicios internos: `internal sealed`. Las interfaces públicas viven en `Domains/Services/`.
 - DI: todos los services son **Singleton**.
+- **Dependencias:** `Directory.Build.props` activa `NuGetAudit` en modo `all` con `NU1903` (High) y `NU1904` (Critical) como error: un paquete con advisory High o Critical, directo o transitivo, rompe el restore. Se arregla subiendo el paquete a la versión parcheada. Si no hay parche, la única salida es `NuGetAuditSuppress` sobre ese advisory, con un comentario que lo justifique y enlace al seguimiento.
+- `dotnet list package` restaura solo y el gate corta antes del listado: usar `--no-restore` después de un `dotnet restore`.
 
 ## Tests
 
 - Mínimo de cobertura actual: **25%** global, irá creciendo con el tiempo. No subir un PR que la haga bajar.
 - Para tests que requieran ARCA real: usar **homologación**, nunca producción. Estos tests NO van en la suite automática — solo en samples.
+
+## CI
+
+- Los lunes a las 08:00 (hora argentina), *Audit* lista los paquetes NuGet vulnerables aunque no haya commits; si hay High o Critical, falla y avisa por Telegram con el link al run. Para que el aviso salga, el repo necesita los secrets `TELEGRAM_NOTIFIER_TOKEN` y `TELEGRAM_NOTIFIER_RECIPIENT_IDS`; sin ellos el job lo dice como warning y no avisa.
 
 ## Commits
 

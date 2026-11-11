@@ -6,6 +6,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Unreleased]
 
+## [3.3.1] — 2026-11-11
+
+### Security
+
+- **`System.Security.Cryptography.Xml` 9.0.16 tenía vulnerabilidades High** ([GHSA-cvvh-rhrc-wg4q](https://github.com/advisories/GHSA-cvvh-rhrc-wg4q), [GHSA-r955-8q5j-3h83](https://github.com/advisories/GHSA-r955-8q5j-3h83), [GHSA-g8r8-53c2-pm3f](https://github.com/advisories/GHSA-g8r8-53c2-pm3f), [GHSA-23rf-6693-g89p](https://github.com/advisories/GHSA-23rf-6693-g89p), [GHSA-8q5v-6pqq-x66h](https://github.com/advisories/GHSA-8q5v-6pqq-x66h), [GHSA-mmjf-rqrv-855v](https://github.com/advisories/GHSA-mmjf-rqrv-855v), [GHSA-7hqp-7c5m-4vq6](https://github.com/advisories/GHSA-7hqp-7c5m-4vq6), [GHSA-c399-9853-6jmj](https://github.com/advisories/GHSA-c399-9853-6jmj)). Llegaba transitiva por `Microsoft.AspNetCore.DataProtection` 9.0.16, que pasa a **9.0.23** y arrastra `System.Security.Cryptography.Xml` 9.0.23.
+- **El build rompe ante una dependencia con vulnerabilidad High o Critical**, directa o transitiva (`NuGetAudit` en modo `all`, NU1903/NU1904 como error).
+
 ## [3.3.0] — 2026-11-11
 
 ### Added
