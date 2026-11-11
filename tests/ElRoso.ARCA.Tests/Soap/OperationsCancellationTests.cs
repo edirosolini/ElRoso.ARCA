@@ -50,6 +50,8 @@ public class OperationsCancellationTests
             .Should().ThrowAsync<OperationCanceledException>();
         await FluentActions.Awaiting(() => ops.ConsultarComprobanteAsync("s", "t", 20123456789, 1, 1, 1, ct))
             .Should().ThrowAsync<OperationCanceledException>();
+        await FluentActions.Awaiting(() => ops.GetPointsOfSaleAsync("s", "t", 20123456789, ct))
+            .Should().ThrowAsync<OperationCanceledException>();
     }
 
     [Fact]

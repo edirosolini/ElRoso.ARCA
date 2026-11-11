@@ -290,6 +290,62 @@ internal sealed class WsfeOperations : IWsfeOperations
         }
     }
 
+    public async Task<WsfePointsOfSaleResult> GetPointsOfSaleAsync(
+        string sign,
+        string token,
+        long cuit,
+        CancellationToken ct)
+    {
+        ct.ThrowIfCancellationRequested();
+
+        try
+        {
+            var client = this.CreateClient();
+            var result = await SoapInvoker.InvokeAsync(
+                client,
+                () => client.FEParamGetPtosVentaAsync(new WSFEv1.FEParamGetPtosVentaRequest
+                {
+                    Body = new WSFEv1.FEParamGetPtosVentaRequestBody
+                    {
+                        Auth = new WSFEv1.FEAuthRequest { Sign = sign, Token = token, Cuit = cuit },
+                    },
+                }),
+                ct);
+            return MapPointsOfSale(result.Body.FEParamGetPtosVentaResult);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw new ARCAServiceException("ARCA WSFEv1 FEParamGetPtosVenta failed.", ex);
+        }
+    }
+
+    // Convierte la respuesta WCF de FEParamGetPtosVenta; FchBaja llega como "NULL" si el punto sigue vigente.
+    internal static WsfePointsOfSaleResult MapPointsOfSale(WSFEv1.FEPtoVentaResponse response)
+    {
+        if (response.Errors is { Length: > 0 })
+        {
+            return new WsfePointsOfSaleResult
+            {
+                Errors = [.. response.Errors.Select(e => new WsfeError { Code = e.Code, Message = e.Msg })],
+            };
+        }
+
+        return new WsfePointsOfSaleResult
+        {
+            PointsOfSale = [.. (response.ResultGet ?? []).Select(p => new PointOfSaleResponse
+            {
+                Number = p.Nro,
+                EmissionType = p.EmisionTipo ?? string.Empty,
+                IsBlocked = p.Bloqueado == "S",
+                DeactivationDate = TryParseArcaDate(p.FchBaja),
+            })],
+        };
+    }
+
     // El valor del enum es el código de condición IVA del receptor de ARCA.
     internal static int ReceiverConditionCode(ClientRequest client) =>
         Enum.IsDefined(client.Condition)

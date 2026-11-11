@@ -6,6 +6,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Unreleased]
 
+## [3.3.0] — 2026-11-11
+
+### Added
+
+- **`IBillingDocumentNumberingService.GetPointsOfSaleAsync`**: lista los puntos de venta de webservice del CUIT emisor (WSFEv1 `FEParamGetPtosVenta`) con número, tipo de emisión, bloqueo y fecha de baja. Sin puntos de venta (602) devuelve lista vacía; cualquier otro error de ARCA tira `ARCAServiceException` con el código en `ErrorCode` (600 = el CUIT no delegó el servicio).
+
 ## [3.2.1] — 2026-10-27
 
 ### Fixed

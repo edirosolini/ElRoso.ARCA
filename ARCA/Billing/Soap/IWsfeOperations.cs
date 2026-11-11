@@ -51,6 +51,44 @@ internal interface IWsfeOperations
         int bookPrefix,
         long number,
         CancellationToken ct);
+
+    /// <summary>
+    /// Consulta los puntos de venta de webservice del CUIT (FEParamGetPtosVenta).
+    /// </summary>
+    /// <param name="sign">WSAA sign.</param>
+    /// <param name="token">WSAA token.</param>
+    /// <param name="cuit">CUIT emisor.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Puntos de venta o errores de ARCA.</returns>
+    Task<WsfePointsOfSaleResult> GetPointsOfSaleAsync(
+        string sign,
+        string token,
+        long cuit,
+        CancellationToken ct);
+}
+
+/// <summary>
+/// Error de WSFEv1 con su código numérico.
+/// </summary>
+internal sealed record WsfeError
+{
+    /// <summary>Gets the ARCA error code. / Código de error de ARCA.</summary>
+    public int Code { get; init; }
+
+    /// <summary>Gets the ARCA error message. / Mensaje de ARCA.</summary>
+    public string Message { get; init; } = string.Empty;
+}
+
+/// <summary>
+/// Resultado POCO de FEParamGetPtosVenta: puntos de venta o errores de ARCA.
+/// </summary>
+internal sealed record WsfePointsOfSaleResult
+{
+    /// <summary>Gets the points of sale ARCA reported. / Puntos de venta informados por ARCA.</summary>
+    public IReadOnlyList<PointOfSaleResponse> PointsOfSale { get; init; } = [];
+
+    /// <summary>Gets the errors the query returned. / Errores devueltos por la consulta.</summary>
+    public IReadOnlyList<WsfeError> Errors { get; init; } = [];
 }
 
 /// <summary>

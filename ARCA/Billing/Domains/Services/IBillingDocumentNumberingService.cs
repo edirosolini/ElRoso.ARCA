@@ -63,5 +63,16 @@ using ElRoso.ARCA.Read;
             int billingDocumentBookPrefix,
             long billingDocumentNumber,
             CancellationToken ct = default);
+
+        /// <summary>
+        /// Lista los puntos de venta de webservice del CUIT emisor. Envuelve WSFEv1 FEParamGetPtosVenta.
+        /// </summary>
+        /// <param name="issuingCompany">Issuing company (CUIT that holds the delegation).</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>Puntos de venta informados por ARCA; lista vacía si no tiene ninguno (código 602).</returns>
+        /// <exception cref="ARCAServiceException">ARCA rechaza la consulta; <c>ErrorCode</c> lleva su código (600 = CUIT sin delegar).</exception>
+        Task<IReadOnlyList<PointOfSaleResponse>> GetPointsOfSaleAsync(
+            IssuingCompanyRequest issuingCompany,
+            CancellationToken ct = default);
     }
 }
