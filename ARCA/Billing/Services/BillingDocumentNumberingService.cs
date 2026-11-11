@@ -244,6 +244,27 @@ internal sealed class BillingDocumentNumberingService : IBillingDocumentNumberin
         };
     }
 
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<PointOfSaleResponse>> GetPointsOfSaleAsync(
+        IssuingCompanyRequest issuingCompany,
+        CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(issuingCompany);
+
+        var ticket = await this.GetOrRefreshTokenAsync("wsfe", issuingCompany.DocumentNumber, ct);
+
+        var result = await this.wsfe.GetPointsOfSaleAsync(ticket.Sign, ticket.Token, issuingCompany.DocumentNumber, ct);
+
+        // 602 "Sin Resultados": el CUIT no tiene puntos de venta de webservice.
+        var error = result.Errors.FirstOrDefault(e => e.Code != 602);
+        if (error is not null)
+        {
+            throw new ARCAServiceException(error.Code, error.Message);
+        }
+
+        return result.PointsOfSale;
+    }
+
     private async Task<LoginTicketResponse> GetOrRefreshTokenAsync(string service, long companyId, CancellationToken ct)
     {
         var cached = await tokenCache.GetAsync(service, companyId, ct);

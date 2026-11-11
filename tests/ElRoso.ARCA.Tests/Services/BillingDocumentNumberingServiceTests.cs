@@ -887,4 +887,70 @@ public class BillingDocumentNumberingServiceTests
             .Awaiting(() => service.GetAuthorizedAsync(null!, BillingDocumentTypeARCAEnum.FC, 3, 157))
             .Should().ThrowAsync<ArgumentNullException>();
     }
+
+    [Fact]
+    public async Task GetPointsOfSale_should_return_what_ARCA_reports()
+    {
+        SetupTokenCacheHit();
+
+        var pointOfSale = new PointOfSaleResponse { Number = 3, EmissionType = "CAE - RECE", IsBlocked = false };
+        wsfeMock
+            .Setup(w => w.GetPointsOfSaleAsync(It.IsAny<string>(), It.IsAny<string>(), 20123456789L, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new WsfePointsOfSaleResult { PointsOfSale = [pointOfSale] });
+
+        var service = CreateService();
+        var found = await service.GetPointsOfSaleAsync(
+            new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 });
+
+        found.Should().ContainSingle().Which.Should().Be(pointOfSale);
+        tokenCacheMock.Verify(t => t.GetAsync("wsfe", 20123456789L, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetPointsOfSale_should_return_an_empty_list_when_ARCA_has_no_results()
+    {
+        SetupTokenCacheHit();
+
+        // ARCA responde 602 cuando el CUIT no tiene puntos de venta de webservice.
+        wsfeMock
+            .Setup(w => w.GetPointsOfSaleAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new WsfePointsOfSaleResult { Errors = [new WsfeError { Code = 602, Message = "Sin Resultados" }] });
+
+        var service = CreateService();
+        var found = await service.GetPointsOfSaleAsync(
+            new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 });
+
+        found.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetPointsOfSale_should_throw_with_the_ARCA_code_when_the_query_is_rejected()
+    {
+        SetupTokenCacheHit();
+
+        wsfeMock
+            .Setup(w => w.GetPointsOfSaleAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new WsfePointsOfSaleResult
+            {
+                Errors = [new WsfeError { Code = 600, Message = "ValidacionDeToken: No apareció CUIT en lista de relaciones" }],
+            });
+
+        var service = CreateService();
+        var act = () => service.GetPointsOfSaleAsync(
+            new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 });
+
+        var exception = await act.Should().ThrowAsync<ARCAServiceException>();
+        exception.Which.ErrorCode.Should().Be(600);
+        exception.Which.Message.Should().Contain("No apareció CUIT en lista de relaciones");
+    }
+
+    [Fact]
+    public async Task GetPointsOfSale_should_reject_a_null_issuing_company()
+    {
+        var service = CreateService();
+
+        await FluentActions
+            .Awaiting(() => service.GetPointsOfSaleAsync(null!))
+            .Should().ThrowAsync<ArgumentNullException>();
+    }
 }

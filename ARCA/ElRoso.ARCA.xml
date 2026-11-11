@@ -211,6 +211,31 @@
         <member name="T:ElRoso.ARCA.Billing.PadronCompanyMember">
             <summary>Integrante de una sociedad monotributista.</summary>
         </member>
+        <member name="T:ElRoso.ARCA.Billing.PointOfSaleResponse">
+            <summary>
+            Punto de venta habilitado para webservices, tal como lo devuelve WSFEv1 FEParamGetPtosVenta.
+            </summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PointOfSaleResponse.Number">
+            <summary>
+            Gets the point of sale number. / Número del punto de venta.
+            </summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PointOfSaleResponse.EmissionType">
+            <summary>
+            Gets the emission type reported by ARCA. / Tipo de emisión informado por ARCA (por ejemplo "CAE - RECE" o "CAEA - RECE").
+            </summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PointOfSaleResponse.IsBlocked">
+            <summary>
+            Gets a value indicating whether ARCA reports it blocked (Bloqueado == "S").
+            </summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.PointOfSaleResponse.DeactivationDate">
+            <summary>
+            Gets the deactivation date; null while it is still active. / Fecha de baja; null si sigue vigente.
+            </summary>
+        </member>
         <member name="T:ElRoso.ARCA.Billing.IBillingDocumentNumberingService">
             <summary>
             Requests a CAE (Electronic Authorization Code) from ARCA for a billing document.
@@ -257,6 +282,15 @@
             <param name="ct">Cancellation token.</param>
             <returns>The authorized voucher, or errors when ARCA rejects the query.</returns>
         </member>
+        <member name="M:ElRoso.ARCA.Billing.IBillingDocumentNumberingService.GetPointsOfSaleAsync(ElRoso.ARCA.Core.IssuingCompanyRequest,System.Threading.CancellationToken)">
+            <summary>
+            Lista los puntos de venta de webservice del CUIT emisor. Envuelve WSFEv1 FEParamGetPtosVenta.
+            </summary>
+            <param name="issuingCompany">Issuing company (CUIT that holds the delegation).</param>
+            <param name="ct">Cancellation token.</param>
+            <returns>Puntos de venta informados por ARCA; lista vacía si no tiene ninguno (código 602).</returns>
+            <exception cref="T:ElRoso.ARCA.Core.ARCAServiceException">ARCA rechaza la consulta; <c>ErrorCode</c> lleva su código (600 = CUIT sin delegar).</exception>
+        </member>
         <member name="T:ElRoso.ARCA.Billing.IPadronService">
             <summary>Consulta de personas en el Padrón A5 de ARCA (ws_sr_constancia_inscripcion).</summary>
         </member>
@@ -271,6 +305,9 @@
             <inheritdoc/>
         </member>
         <member name="M:ElRoso.ARCA.Billing.BillingDocumentNumberingService.GetAuthorizedAsync(ElRoso.ARCA.Core.IssuingCompanyRequest,ElRoso.ARCA.Core.BillingDocumentTypeARCAEnum,System.Int32,System.Int64,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:ElRoso.ARCA.Billing.BillingDocumentNumberingService.GetPointsOfSaleAsync(ElRoso.ARCA.Core.IssuingCompanyRequest,System.Threading.CancellationToken)">
             <inheritdoc/>
         </member>
         <member name="T:ElRoso.ARCA.Billing.IPadronOperations">
@@ -321,6 +358,38 @@
             ES: Consulta un comprobante ya autorizado. Devuelve POCO para que el consumidor no vea
                 tipos WCF.
             </summary>
+        </member>
+        <member name="M:ElRoso.ARCA.Billing.IWsfeOperations.GetPointsOfSaleAsync(System.String,System.String,System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Consulta los puntos de venta de webservice del CUIT (FEParamGetPtosVenta).
+            </summary>
+            <param name="sign">WSAA sign.</param>
+            <param name="token">WSAA token.</param>
+            <param name="cuit">CUIT emisor.</param>
+            <param name="ct">Cancellation token.</param>
+            <returns>Puntos de venta o errores de ARCA.</returns>
+        </member>
+        <member name="T:ElRoso.ARCA.Billing.WsfeError">
+            <summary>
+            Error de WSFEv1 con su código numérico.
+            </summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.WsfeError.Code">
+            <summary>Gets the ARCA error code. / Código de error de ARCA.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.WsfeError.Message">
+            <summary>Gets the ARCA error message. / Mensaje de ARCA.</summary>
+        </member>
+        <member name="T:ElRoso.ARCA.Billing.WsfePointsOfSaleResult">
+            <summary>
+            Resultado POCO de FEParamGetPtosVenta: puntos de venta o errores de ARCA.
+            </summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.WsfePointsOfSaleResult.PointsOfSale">
+            <summary>Gets the points of sale ARCA reported. / Puntos de venta informados por ARCA.</summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.WsfePointsOfSaleResult.Errors">
+            <summary>Gets the errors the query returned. / Errores devueltos por la consulta.</summary>
         </member>
         <member name="T:ElRoso.ARCA.Billing.WsfeVoucherResult">
             <summary>
