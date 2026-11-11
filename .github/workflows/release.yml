@@ -38,6 +38,7 @@ jobs:
     permissions:
       contents: write   # required to create a GitHub Release
       packages: write   # not used (publishing to nuget.org, not GH Packages) but harmless
+      id-token: write   # OIDC token for NuGet Trusted Publishing
 
     steps:
       - name: Checkout
@@ -112,15 +113,16 @@ jobs:
             -p:ContinuousIntegrationBuild=true \
             --output ./nupkg
 
+      - name: NuGet login (OIDC -> temporary API key)
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: edirosolini
+
       - name: Publish to NuGet.org
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
-          if [ -z "$NUGET_API_KEY" ]; then
-            echo "::error::NUGET_API_KEY secret is not configured"
-            exit 1
-          fi
-
           # Push both nupkg and snupkg (symbols) so consumers can step into the source.
           # Pushea nupkg y snupkg (símbolos) para que consumidores puedan debuggear el código.
           dotnet nuget push './nupkg/*.nupkg' \
