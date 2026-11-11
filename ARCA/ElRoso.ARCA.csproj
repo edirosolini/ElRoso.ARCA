@@ -12,7 +12,7 @@
 		<AssemblyName>ElRoso.ARCA</AssemblyName>
 		<RootNamespace>ElRoso.ARCA</RootNamespace>
 		<PackageId>ElRoso.ARCA</PackageId>
-		<Version>3.3.0</Version>
+		<Version>3.3.1</Version>
 
 		<!-- Authoring -->
 		<Authors>Di Rosolini Ezequiel</Authors>
@@ -56,7 +56,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="12.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="9.0.16" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="9.0.23" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.14" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.14" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.400">

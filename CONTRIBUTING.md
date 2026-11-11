@@ -54,6 +54,8 @@ ElRoso.ARCA.sln
 - Excepciones tipadas: nunca `throw new Exception(...)`. Usar `ARCAAuthException`, `ARCAServiceException`, `ARCAValidationException`.
 - Servicios internos: `internal sealed`. Las interfaces públicas viven en `Domains/Services/`.
 - DI: todos los services son **Singleton**.
+- **Dependencias:** `Directory.Build.props` activa `NuGetAudit` en modo `all` con `NU1903` (High) y `NU1904` (Critical) como error: un paquete con advisory High o Critical, directo o transitivo, rompe el restore. Se arregla subiendo el paquete a la versión parcheada. Si no hay parche, la única salida es `NuGetAuditSuppress` sobre ese advisory, con un comentario que lo justifique y enlace al seguimiento.
+- `dotnet list package` restaura solo y el gate corta antes del listado: usar `--no-restore` después de un `dotnet restore`.
 
 ## Tests
 
