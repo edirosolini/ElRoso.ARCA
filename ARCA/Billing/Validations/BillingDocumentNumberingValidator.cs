@@ -43,12 +43,18 @@ internal class BillingDocumentNumberingValidator : AbstractValidator<BillingDocu
         RuleFor(x => x.Currency).Must(c => DictionariesCommon.Currencies.ContainsKey(c))
             .WithMessage("'{PropertyValue}' is not a supported currency.");
 
-        // Credit/Debit notes must include linked documents.
-        // Las notas de crédito/débito deben incluir comprobantes asociados.
-        RuleFor(x => x.BillingDocumentNumberingAssociateds)
-            .NotNull().NotEmpty()
+        // Credit/Debit notes must include linked documents or an associated period.
+        // Las notas de crédito/débito deben incluir comprobantes asociados o un período asociado.
+        RuleFor(x => x)
+            .Must(HaveAssociatedDocumentsOrPeriod)
             .When(x => NoteTypes.Contains(x.BillingDocumentType))
-            .WithMessage("Credit and debit notes must include associated receipts.");
+            .WithName(nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociateds))
+            .WithMessage("Credit and debit notes must include associated receipts or an associated period.");
+
+        RuleFor(x => x.BillingDocumentNumberingAssociatedPeriod)
+            .Must(period => period is null ||
+                            (period.DateFrom != default && period.DateTo != default && period.DateFrom <= period.DateTo))
+            .WithMessage("The associated period must include valid dates and DateFrom must not be after DateTo.");
 
         // Export documents require an ID and at least one item.
         // Los documentos de exportación requieren ID e ítems.
@@ -80,5 +86,11 @@ internal class BillingDocumentNumberingValidator : AbstractValidator<BillingDocu
             return x.PaymentDue != null;
 
         return x.DateOfServicesFrom != null && x.DateOfServicesTo != null && x.PaymentDue != null;
+    }
+
+    private static bool HaveAssociatedDocumentsOrPeriod(BillingDocumentNumberingRequest request)
+    {
+        return request.BillingDocumentNumberingAssociateds?.Any() == true ||
+               request.BillingDocumentNumberingAssociatedPeriod is not null;
     }
 }

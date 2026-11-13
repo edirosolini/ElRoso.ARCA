@@ -6,6 +6,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Unreleased]
 
+## [3.4.0] — 2026-11-13
+
+### Added
+
+- **Período asociado para notas de crédito y débito de WSFEv1.** `BillingDocumentNumberingRequest` ahora permite informar `BillingDocumentNumberingAssociatedPeriod` con `DateFrom` y `DateTo` como alternativa a `BillingDocumentNumberingAssociateds`. Las fechas se mapean a `FECAEDetRequest.PeriodoAsoc` y se validan antes de solicitar el CAE.
+
 ## [3.3.1] — 2026-11-11
 
 ### Security

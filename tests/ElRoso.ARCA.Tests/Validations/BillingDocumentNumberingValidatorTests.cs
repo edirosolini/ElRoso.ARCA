@@ -46,6 +46,51 @@ public class BillingDocumentNumberingValidatorTests
     }
 
     [Fact]
+    public void Valid_when_credit_note_with_associated_period()
+    {
+        var request = ValidFA();
+        request.BillingDocumentType = BillingDocumentTypeARCAEnum.NCA;
+        request.BillingDocumentNumberingAssociatedPeriod = new()
+        {
+            DateFrom = new DateTime(2026, 1, 1),
+            DateTo = new DateTime(2026, 1, 31),
+        };
+
+        var result = validator.Validate(request);
+
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Invalid_when_associated_period_dates_are_reversed()
+    {
+        var request = ValidFA();
+        request.BillingDocumentType = BillingDocumentTypeARCAEnum.NCA;
+        request.BillingDocumentNumberingAssociatedPeriod = new()
+        {
+            DateFrom = new DateTime(2026, 2, 1),
+            DateTo = new DateTime(2026, 1, 31),
+        };
+
+        var result = validator.Validate(request);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociatedPeriod));
+    }
+
+    [Fact]
+    public void Invalid_when_associated_period_has_default_date()
+    {
+        var request = ValidFA();
+        request.BillingDocumentType = BillingDocumentTypeARCAEnum.NCA;
+        request.BillingDocumentNumberingAssociatedPeriod = new() { DateTo = new DateTime(2026, 1, 31) };
+
+        var result = validator.Validate(request);
+
+        result.IsValid.Should().BeFalse();
+    }
+
+    [Fact]
     public void Valid_when_credit_note_with_associated_documents()
     {
         var request = ValidFA();
