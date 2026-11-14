@@ -22,6 +22,29 @@
         <member name="F:ElRoso.ARCA.Billing.PadronErrorSourceEnum.Monotributo">
             <summary>Datos del monotributo (errorMonotributo).</summary>
         </member>
+        <member name="T:ElRoso.ARCA.Billing.BillingDocumentNumberingAssociatedPeriodRequest">
+            <summary>
+            Date range associated with a credit or debit note. / Período asociado a una nota de crédito o débito.
+            </summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.BillingDocumentNumberingAssociatedPeriodRequest.DateFrom">
+            <summary>
+            Gets or sets the start date of the associated period.
+            / Obtiene o establece la fecha de inicio del período asociado.
+            </summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.BillingDocumentNumberingAssociatedPeriodRequest.DateTo">
+            <summary>
+            Gets or sets the end date of the associated period.
+            / Obtiene o establece la fecha de fin del período asociado.
+            </summary>
+        </member>
+        <member name="P:ElRoso.ARCA.Billing.BillingDocumentNumberingRequest.BillingDocumentNumberingAssociatedPeriod">
+            <summary>
+            Gets or sets the period associated with a credit or debit note when individual receipts are not provided.
+            / Obtiene o establece el período asociado a una nota de crédito o débito cuando no se informan comprobantes individuales.
+            </summary>
+        </member>
         <member name="P:ElRoso.ARCA.Billing.BillingDocumentNumberingRequest.Version">
             <summary>QR code schema version. / Versión del esquema del QR.</summary>
         </member>

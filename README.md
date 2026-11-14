@@ -235,7 +235,7 @@ new BillingDocumentNumberingRequest
 
 ### Notas de Crédito y Débito
 
-Deben incluir los comprobantes asociados:
+Deben incluir los comprobantes asociados o, cuando no se identifican comprobantes individuales, un período asociado:
 
 ```csharp
 new BillingDocumentNumberingRequest
@@ -254,6 +254,23 @@ new BillingDocumentNumberingRequest
     // resto de campos como Factura A...
 }
 ```
+
+Alternativamente, informá el período que abarca la nota:
+
+```csharp
+new BillingDocumentNumberingRequest
+{
+    BillingDocumentType = BillingDocumentTypeARCAEnum.NCA,
+    BillingDocumentNumberingAssociatedPeriod = new()
+    {
+        DateFrom = new DateTime(2026, 1, 1),
+        DateTo   = new DateTime(2026, 1, 31),
+    },
+    // resto de campos como Factura A...
+}
+```
+
+`DateFrom` y `DateTo` son obligatorias cuando se proporciona el período. Ambas deben ser posteriores al 01/01/2006, `DateFrom` no puede ser posterior a `DateTo` y `DateTo` no puede superar `BillingDocumentDate`. El período solo se admite en NC/ND.
 
 ### Factura de Servicios
 
