@@ -10,6 +10,8 @@ using FluentValidation;
 
 internal class BillingDocumentNumberingValidator : AbstractValidator<BillingDocumentNumberingRequest>
 {
+    private static readonly DateTime MinimumAssociatedPeriodDate = new(2006, 1, 1);
+
     private static readonly BillingDocumentTypeARCAEnum[] NoteTypes =
     [
         BillingDocumentTypeARCAEnum.NDA, BillingDocumentTypeARCAEnum.NCA,
@@ -49,12 +51,22 @@ internal class BillingDocumentNumberingValidator : AbstractValidator<BillingDocu
             .Must(HaveAssociatedDocumentsOrPeriod)
             .When(x => NoteTypes.Contains(x.BillingDocumentType))
             .WithName(nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociateds))
-            .WithMessage("Credit and debit notes must include associated receipts or an associated period.");
+            .WithMessage("Las notas de crédito y débito deben incluir comprobantes asociados o un período asociado.");
 
         RuleFor(x => x.BillingDocumentNumberingAssociatedPeriod)
-            .Must(period => period is null ||
-                            (period.DateFrom != default && period.DateTo != default && period.DateFrom <= period.DateTo))
-            .WithMessage("The associated period must include valid dates and DateFrom must not be after DateTo.");
+            .Null()
+            .Unless(x => NoteTypes.Contains(x.BillingDocumentType))
+            .WithMessage("El período asociado solo puede informarse en notas de crédito o débito.");
+
+        RuleFor(x => x.BillingDocumentNumberingAssociatedPeriod)
+            .Must(BeValidAssociatedPeriod)
+            .WithMessage("El período asociado debe tener fechas posteriores al 01/01/2006 y DateFrom no puede ser posterior a DateTo.");
+
+        RuleFor(x => x)
+            .Must(x => x.BillingDocumentNumberingAssociatedPeriod is null ||
+                       x.BillingDocumentNumberingAssociatedPeriod.DateTo.Date <= x.BillingDocumentDate.Date)
+            .WithName(nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociatedPeriod))
+            .WithMessage("DateTo del período asociado no puede ser posterior a la fecha de emisión del comprobante.");
 
         // Export documents require an ID and at least one item.
         // Los documentos de exportación requieren ID e ítems.
@@ -92,5 +104,12 @@ internal class BillingDocumentNumberingValidator : AbstractValidator<BillingDocu
     {
         return request.BillingDocumentNumberingAssociateds?.Any() == true ||
                request.BillingDocumentNumberingAssociatedPeriod is not null;
+    }
+
+    private static bool BeValidAssociatedPeriod(BillingDocumentNumberingAssociatedPeriodRequest? period)
+    {
+        return period is null || (period.DateFrom.Date > MinimumAssociatedPeriodDate &&
+                                  period.DateTo.Date > MinimumAssociatedPeriodDate &&
+                                  period.DateFrom.Date <= period.DateTo.Date);
     }
 }

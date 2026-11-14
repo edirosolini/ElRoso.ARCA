@@ -270,7 +270,7 @@ new BillingDocumentNumberingRequest
 }
 ```
 
-`DateFrom` y `DateTo` son obligatorias cuando se proporciona el período, y `DateFrom` no puede ser posterior a `DateTo`.
+`DateFrom` y `DateTo` son obligatorias cuando se proporciona el período. Ambas deben ser posteriores al 01/01/2006, `DateFrom` no puede ser posterior a `DateTo` y `DateTo` no puede superar `BillingDocumentDate`. El período solo se admite en NC/ND.
 
 ### Factura de Servicios
 

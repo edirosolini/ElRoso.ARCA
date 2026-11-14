@@ -100,14 +100,7 @@ internal sealed class WsfeOperations : IWsfeOperations
                         CbteDesde = next,
                         CbteHasta = next,
                         CbteFch = doc.BillingDocumentDate.ToString("yyyyMMdd"),
-                        CbtesAsoc = doc.BillingDocumentNumberingAssociateds?
-                                        .Select(x => new WSFEv1.CbteAsoc
-                                        {
-                                            CbteFch = x.BillingDocumentDate.ToString("yyyyMMdd"),
-                                            Nro = x.BillingDocumentNumber,
-                                            PtoVta = x.BillingDocumentBookPrefix,
-                                            Tipo = (int)x.BillingDocumentType,
-                                        }).ToArray(),
+                        CbtesAsoc = MapAssociatedDocuments(doc.BillingDocumentNumberingAssociateds)?.ToArray(),
                         PeriodoAsoc = MapAssociatedPeriod(doc.BillingDocumentNumberingAssociatedPeriod),
                         ImpTotal = Math.Round(doc.Total, 2),
                         ImpTotConc = isTypeWithVAT ? Math.Round(doc.AmountNotTax, 2) : 0,
@@ -357,6 +350,26 @@ internal sealed class WsfeOperations : IWsfeOperations
                                   FchDesde = period.DateFrom.ToString("yyyyMMdd"),
                                   FchHasta = period.DateTo.ToString("yyyyMMdd"),
                               };
+    }
+
+    // EN: ARCA rejects an empty CbtesAsoc (10062), so null or empty inputs map to null.
+    // ES: ARCA rechaza CbtesAsoc vacío (10062), por eso una entrada nula o vacía se mapea a null.
+    internal static List<WSFEv1.CbteAsoc>? MapAssociatedDocuments(IEnumerable<BillingDocumentNumberingAssociatedRequest>? associatedDocuments)
+    {
+        if (associatedDocuments is null)
+        {
+            return null;
+        }
+
+        var mapped = associatedDocuments.Select(x => new WSFEv1.CbteAsoc
+        {
+            CbteFch = x.BillingDocumentDate.ToString("yyyyMMdd"),
+            Nro = x.BillingDocumentNumber,
+            PtoVta = x.BillingDocumentBookPrefix,
+            Tipo = (int)x.BillingDocumentType,
+        }).ToList();
+
+        return mapped.Count == 0 ? null : mapped;
     }
 
     /// <summary>
