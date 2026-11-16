@@ -22,6 +22,7 @@
 | **v3.3.1** | Security: `System.Security.Cryptography.Xml` 9.0.23 · el build rompe ante dependencias con vulnerabilidad High/Critical |
 | **v3.4.0** | `BillingDocumentNumberingAssociatedPeriod`: NC/ND con período asociado (`PeriodoAsoc`) · fix: los `CbtesAsoc` de FA/FB/FC llegan a ARCA |
 | **v4.0.0** | **Breaking:** target `net10.0` (LTS); .NET 9 quedó sin soporte · DataProtection y Pkcs en 10.x |
+| **v4.1.0** | WCF (`System.ServiceModel.*`) en 10.1.0; sin Duplex/Security 6.0.0 |
 
 ---
 

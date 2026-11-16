@@ -19,9 +19,7 @@ updates:
     # EN: Block updates that are known to break or that conflict with project licensing.
     # ES: Bloquea updates conocidos por romper o por licencia incompatible.
     ignore:
-      # System.ServiceModel.* packages have inconsistent major versions across the family
-      # (Duplex/Security stuck on 6.x, Http/NetTcp/Federation on 8.x). Major bumps must be
-      # coordinated by hand to avoid mismatched APIs.
+      # System.ServiceModel.* se sube de major a mano y en conjunto, con prueba en homologación.
       - dependency-name: "System.ServiceModel.*"
         update-types: ["version-update:semver-major"]
 

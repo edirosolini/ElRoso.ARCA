@@ -6,6 +6,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Unreleased]
 
+## [4.1.0] — 2026-11-16
+
+### Changed
+
+- **WCF pasa a la familia 10.x.** `System.ServiceModel.Http`, `NetTcp` y `Federation` suben de 8.1.2 a 10.1.0. Se quitan `System.ServiceModel.Duplex` y `System.ServiceModel.Security` 6.0.0: sus fachadas ya vienen en `System.ServiceModel.Primitives` 10.1.0. Por transitividad suben `Microsoft.IdentityModel.*` (8.23.0) y `System.ServiceModel.Primitives` (10.1.0). La API pública no cambia.
+
 ## [4.0.0] — 2026-11-16
 
 ### Changed
