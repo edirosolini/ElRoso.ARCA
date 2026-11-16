@@ -74,7 +74,7 @@ public class ElectronicMailboxServiceTests
             });
 
         var service = CreateService();
-        var response = await service.ListAsync(new MailboxQueryRequest { IssuingCompany = ValidIssuer() });
+        var response = await service.ListAsync(new MailboxQueryRequest { IssuingCompany = ValidIssuer() }, TestContext.Current.CancellationToken);
 
         Assert.Equal(2, response.Messages.Count());
         Assert.Equal("Notificación de vencimiento", response.Messages[0].Subject);
@@ -101,7 +101,7 @@ public class ElectronicMailboxServiceTests
             .ReturnsAsync(new MailboxQueryResponse());
 
         var service = CreateService();
-        await service.ListAsync(new MailboxQueryRequest { IssuingCompany = ValidIssuer() });
+        await service.ListAsync(new MailboxQueryRequest { IssuingCompany = ValidIssuer() }, TestContext.Current.CancellationToken);
 
         loginTicketServiceMock.Verify(l => l.GetLoginTicketAsync(
             "veconsumerws", It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -167,7 +167,7 @@ public class ElectronicMailboxServiceTests
         {
             IssuingCompany = ValidIssuer(),
             MessageId = 100,
-        });
+        }, TestContext.Current.CancellationToken);
 
         Assert.True(response.Success);
         Assert.NotNull(response.Message);
@@ -196,7 +196,7 @@ public class ElectronicMailboxServiceTests
         {
             IssuingCompany = ValidIssuer(),
             MessageId = 999999,
-        });
+        }, TestContext.Current.CancellationToken);
 
         Assert.False(response.Success);
         Assert.NotEmpty(response.Errors);
@@ -228,7 +228,7 @@ public class ElectronicMailboxServiceTests
             IssuingCompany = ValidIssuer(),
             Page = 3,
             PageSize = 20,
-        });
+        }, TestContext.Current.CancellationToken);
 
         Assert.Equal(3, response.Page);
         Assert.Equal(10, response.TotalPages);

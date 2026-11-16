@@ -55,7 +55,7 @@ public class FileTokenCacheTests : IDisposable
     [Fact]
     public async Task GetAsync_should_return_null_when_no_file_exists()
     {
-        var result = await cache.GetAsync("wsfe", 20123456789);
+        var result = await cache.GetAsync("wsfe", 20123456789, TestContext.Current.CancellationToken);
 
         Assert.Null(result);
     }
@@ -65,8 +65,8 @@ public class FileTokenCacheTests : IDisposable
     {
         var ticket = FreshTicket();
 
-        await cache.SetAsync("wsfe", 20123456789, ticket);
-        var retrieved = await cache.GetAsync("wsfe", 20123456789);
+        await cache.SetAsync("wsfe", 20123456789, ticket, TestContext.Current.CancellationToken);
+        var retrieved = await cache.GetAsync("wsfe", 20123456789, TestContext.Current.CancellationToken);
 
         Assert.NotNull(retrieved);
         Assert.Equal(ticket.Token, retrieved!.Token);
@@ -77,7 +77,7 @@ public class FileTokenCacheTests : IDisposable
     [Fact]
     public async Task SetAsync_should_write_file_with_expected_name()
     {
-        await cache.SetAsync("wsfe", 20123456789, FreshTicket());
+        await cache.SetAsync("wsfe", 20123456789, FreshTicket(), TestContext.Current.CancellationToken);
 
         // EN: v2 in the name — the previous format stored the expiration in the host's local
         //     time, so those files must be ignored instead of read with the wrong meaning.
@@ -97,8 +97,8 @@ public class FileTokenCacheTests : IDisposable
         //     comparacion en UTC.
         var expired = FreshTicket(DateTime.UtcNow.AddHours(-1));
 
-        await cache.SetAsync("wsfe", 20123456789, expired);
-        var result = await cache.GetAsync("wsfe", 20123456789);
+        await cache.SetAsync("wsfe", 20123456789, expired, TestContext.Current.CancellationToken);
+        var result = await cache.GetAsync("wsfe", 20123456789, TestContext.Current.CancellationToken);
 
         Assert.Null(result);
     }
@@ -110,8 +110,8 @@ public class FileTokenCacheTests : IDisposable
         // ES: ExpirationBuffer = 2 min. Tickets que expiran dentro de esa ventana son tratados como expirados.
         var ticket = FreshTicket(DateTime.UtcNow.AddSeconds(30)); // expires in 30s — within buffer
 
-        await cache.SetAsync("wsfe", 20123456789, ticket);
-        var result = await cache.GetAsync("wsfe", 20123456789);
+        await cache.SetAsync("wsfe", 20123456789, ticket, TestContext.Current.CancellationToken);
+        var result = await cache.GetAsync("wsfe", 20123456789, TestContext.Current.CancellationToken);
 
         Assert.Null(result);
     }
@@ -124,13 +124,13 @@ public class FileTokenCacheTests : IDisposable
         var padronTicket = FreshTicket();
         padronTicket.Token = "padron-token";
 
-        await cache.SetAsync("wsfe", 20111111111, wsfeTicket);
-        await cache.SetAsync("ws_sr_constancia_inscripcion", 20111111111, padronTicket);
-        await cache.SetAsync("wsfe", 30222222222, wsfeTicket);  // different company
+        await cache.SetAsync("wsfe", 20111111111, wsfeTicket, TestContext.Current.CancellationToken);
+        await cache.SetAsync("ws_sr_constancia_inscripcion", 20111111111, padronTicket, TestContext.Current.CancellationToken);
+        await cache.SetAsync("wsfe", 30222222222, wsfeTicket, TestContext.Current.CancellationToken);  // different company
 
-        var wsfe1 = await cache.GetAsync("wsfe", 20111111111);
-        var padron1 = await cache.GetAsync("ws_sr_constancia_inscripcion", 20111111111);
-        var wsfe2 = await cache.GetAsync("wsfe", 30222222222);
+        var wsfe1 = await cache.GetAsync("wsfe", 20111111111, TestContext.Current.CancellationToken);
+        var padron1 = await cache.GetAsync("ws_sr_constancia_inscripcion", 20111111111, TestContext.Current.CancellationToken);
+        var wsfe2 = await cache.GetAsync("wsfe", 30222222222, TestContext.Current.CancellationToken);
 
         Assert.Equal("wsfe-token", wsfe1!.Token);
         Assert.Equal("padron-token", padron1!.Token);
@@ -145,9 +145,9 @@ public class FileTokenCacheTests : IDisposable
         var second = FreshTicket();
         second.Token = "second-token";
 
-        await cache.SetAsync("wsfe", 20123456789, first);
-        await cache.SetAsync("wsfe", 20123456789, second);
-        var result = await cache.GetAsync("wsfe", 20123456789);
+        await cache.SetAsync("wsfe", 20123456789, first, TestContext.Current.CancellationToken);
+        await cache.SetAsync("wsfe", 20123456789, second, TestContext.Current.CancellationToken);
+        var result = await cache.GetAsync("wsfe", 20123456789, TestContext.Current.CancellationToken);
 
         Assert.Equal("second-token", result!.Token);
     }
@@ -157,7 +157,7 @@ public class FileTokenCacheTests : IDisposable
     {
         // EN: SemaphoreSlim per-key must serialize without deadlock / corruption.
         // ES: SemaphoreSlim por clave debe serializar sin deadlock / corrupción.
-        await cache.SetAsync("wsfe", 20123456789, FreshTicket());
+        await cache.SetAsync("wsfe", 20123456789, FreshTicket(), TestContext.Current.CancellationToken);
 
         var tasks = Enumerable.Range(0, 20)
             .Select(_ => cache.GetAsync("wsfe", 20123456789))
@@ -175,10 +175,10 @@ public class FileTokenCacheTests : IDisposable
         //     in cleartext on disk, on any platform.
         // ES: El par Token+Sign autoriza a facturar ante ARCA por 12 h — nunca puede quedar en
         //     texto plano en disco, en ninguna plataforma.
-        await cache.SetAsync("wsfe", 20123456789, FreshTicket());
+        await cache.SetAsync("wsfe", 20123456789, FreshTicket(), TestContext.Current.CancellationToken);
 
         var file = Directory.GetFiles(tempDir).Single();
-        var raw = await File.ReadAllBytesAsync(file);
+        var raw = await File.ReadAllBytesAsync(file, TestContext.Current.CancellationToken);
         var asText = Encoding.UTF8.GetString(raw);
 
         Assert.DoesNotContain("fake-token-value", asText);
@@ -192,11 +192,11 @@ public class FileTokenCacheTests : IDisposable
         //     miss (a new ticket is requested), never parsed.
         // ES: Los archivos de la versión anterior son JSON plano. Se tratan como miss (se pide
         //     un ticket nuevo), nunca se parsean.
-        await cache.SetAsync("wsfe", 20123456789, FreshTicket());
+        await cache.SetAsync("wsfe", 20123456789, FreshTicket(), TestContext.Current.CancellationToken);
         var file = Directory.GetFiles(tempDir).Single();
-        await File.WriteAllTextAsync(file, "{\"Token\":\"legacy\",\"Sign\":\"legacy\",\"ExpirationTime\":\"2099-01-01T00:00:00\"}");
+        await File.WriteAllTextAsync(file, "{\"Token\":\"legacy\",\"Sign\":\"legacy\",\"ExpirationTime\":\"2099-01-01T00:00:00\"}", TestContext.Current.CancellationToken);
 
-        var result = await cache.GetAsync("wsfe", 20123456789);
+        var result = await cache.GetAsync("wsfe", 20123456789, TestContext.Current.CancellationToken);
 
         Assert.Null(result);
     }
@@ -206,10 +206,10 @@ public class FileTokenCacheTests : IDisposable
     {
         // EN: A cache file that this process cannot decrypt is a miss, not a crash.
         // ES: Un archivo que este proceso no puede descifrar es un miss, no una excepción.
-        await cache.SetAsync("wsfe", 20123456789, FreshTicket());
+        await cache.SetAsync("wsfe", 20123456789, FreshTicket(), TestContext.Current.CancellationToken);
 
         var otherCache = new FileTokenCache(tempDir, new EphemeralDataProtectionProvider(), NullLogger<FileTokenCache>.Instance);
-        var result = await otherCache.GetAsync("wsfe", 20123456789);
+        var result = await otherCache.GetAsync("wsfe", 20123456789, TestContext.Current.CancellationToken);
 
         Assert.Null(result);
     }
@@ -221,11 +221,11 @@ public class FileTokenCacheTests : IDisposable
         //     the ticket a validity window that is off by the machine's UTC offset.
         // ES: Los archivos anteriores a v2 guardan el vencimiento en hora local del host. Leerlos
         //     le daria al ticket una ventana de validez corrida por el offset de la maquina.
-        await cache.SetAsync("wsfe", 20123456789, FreshTicket());
+        await cache.SetAsync("wsfe", 20123456789, FreshTicket(), TestContext.Current.CancellationToken);
         var current = Path.Combine(tempDir, "ARCA_token_v2_wsfe_20123456789.bin");
         File.Move(current, Path.Combine(tempDir, "ARCA_token_wsfe_20123456789.bin"));
 
-        var result = await cache.GetAsync("wsfe", 20123456789);
+        var result = await cache.GetAsync("wsfe", 20123456789, TestContext.Current.CancellationToken);
 
         Assert.Null(result);
     }
@@ -237,9 +237,9 @@ public class FileTokenCacheTests : IDisposable
         //     against UtcNow-3h and would have served an already-dead ticket instead.
         // ES: Un ticket que vence en 10 minutos UTC todavia sirve. El lector anterior comparaba
         //     contra UtcNow-3h y habria servido uno ya muerto.
-        await cache.SetAsync("wsfe", 20123456789, FreshTicket(DateTime.UtcNow.AddMinutes(10)));
+        await cache.SetAsync("wsfe", 20123456789, FreshTicket(DateTime.UtcNow.AddMinutes(10)), TestContext.Current.CancellationToken);
 
-        var result = await cache.GetAsync("wsfe", 20123456789);
+        var result = await cache.GetAsync("wsfe", 20123456789, TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
     }

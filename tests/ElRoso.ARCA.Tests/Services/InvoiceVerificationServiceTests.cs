@@ -88,7 +88,7 @@ public class InvoiceVerificationServiceTests
             });
 
         var service = CreateService();
-        var response = await service.VerifyAsync(ValidRequest());
+        var response = await service.VerifyAsync(ValidRequest(), TestContext.Current.CancellationToken);
 
         Assert.True(response.IsAuthorized);
         Assert.Equal("A", response.Resultado);
@@ -119,7 +119,7 @@ public class InvoiceVerificationServiceTests
             });
 
         var service = CreateService();
-        var response = await service.VerifyAsync(ValidRequest());
+        var response = await service.VerifyAsync(ValidRequest(), TestContext.Current.CancellationToken);
 
         Assert.False(response.IsAuthorized);
         Assert.Equal("R", response.Resultado);
@@ -146,7 +146,7 @@ public class InvoiceVerificationServiceTests
             });
 
         var service = CreateService();
-        var response = await service.VerifyAsync(ValidRequest());
+        var response = await service.VerifyAsync(ValidRequest(), TestContext.Current.CancellationToken);
 
         Assert.False(response.IsAuthorized);
         Assert.Single(response.Errors, e => e.Contains("600"));
@@ -169,7 +169,7 @@ public class InvoiceVerificationServiceTests
             .ReturnsAsync(new InvoiceVerificationOperationResult { IsAuthorized = true, Resultado = "A" });
 
         var service = CreateService();
-        await service.VerifyAsync(ValidRequest());
+        await service.VerifyAsync(ValidRequest(), TestContext.Current.CancellationToken);
 
         // EN: With cache hit, ILoginTicketService must NOT be called.
         // ES: Con cache hit, ILoginTicketService NO debe ser llamado.
@@ -197,7 +197,7 @@ public class InvoiceVerificationServiceTests
             .ReturnsAsync(new InvoiceVerificationOperationResult { IsAuthorized = true, Resultado = "A" });
 
         var service = CreateService();
-        await service.VerifyAsync(ValidRequest());
+        await service.VerifyAsync(ValidRequest(), TestContext.Current.CancellationToken);
 
         loginTicketServiceMock.Verify(l => l.GetLoginTicketAsync(
             "wscdc", It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -233,7 +233,7 @@ public class InvoiceVerificationServiceTests
         request.RequesterCuit = requesterCuit;
 
         var service = CreateService();
-        await service.VerifyAsync(request);
+        await service.VerifyAsync(request, TestContext.Current.CancellationToken);
 
         tokenCacheMock.Verify(t => t.GetAsync("wscdc", requesterCuit, It.IsAny<CancellationToken>()), Times.Once);
         tokenCacheMock.Verify(t => t.SetAsync(
@@ -263,7 +263,7 @@ public class InvoiceVerificationServiceTests
             .ReturnsAsync(new InvoiceVerificationOperationResult { IsAuthorized = true, Resultado = "A" });
 
         var service = CreateService();
-        await service.VerifyAsync(ValidRequest());
+        await service.VerifyAsync(ValidRequest(), TestContext.Current.CancellationToken);
 
         tokenCacheMock.Verify(t => t.GetAsync("wscdc", 20123456789, It.IsAny<CancellationToken>()), Times.Once);
         operationsMock.Verify(o => o.VerifyAsync(
