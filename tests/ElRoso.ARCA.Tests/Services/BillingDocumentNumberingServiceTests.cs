@@ -42,15 +42,15 @@ public class BillingDocumentNumberingServiceTests
 
     private static BillingDocumentNumberingRequest MinimalRequest(BillingDocumentTypeARCAEnum type) => new()
     {
-        BillingDocumentType       = type,
+        BillingDocumentType = type,
         BillingDocumentBookPrefix = 1,
-        BillingDocumentDate       = new DateTime(2026, 5, 13),
-        Currency                  = "Pesos",
-        ExchangeRate              = 1,
-        ConceptType               = ConceptTypeARCAEnum.Products,
-        AmountTax                 = 100,
+        BillingDocumentDate = new DateTime(2026, 5, 13),
+        Currency = "Pesos",
+        ExchangeRate = 1,
+        ConceptType = ConceptTypeARCAEnum.Products,
+        AmountTax = 100,
         IssuingCompany = new() { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 },
-        Client         = new() { DocumentType = DocumentTypeARCAEnum.SIN_IDENTIFICAR, DocumentNumber = 0 },
+        Client = new() { DocumentType = DocumentTypeARCAEnum.SIN_IDENTIFICAR, DocumentNumber = 0 },
     };
 
     [Fact]

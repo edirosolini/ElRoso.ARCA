@@ -28,11 +28,11 @@ var services = new ServiceCollection();
 services.AddLogging(b => b.AddSimpleConsole(o => { o.SingleLine = true; o.TimestampFormat = "HH:mm:ss "; }));
 services.AddARCAClient(options =>
 {
-    options.IsProduction        = arca.GetValue<bool>("IsProduction");
-    options.CertificatePath     = arca["CertificatePath"]!;
+    options.IsProduction = arca.GetValue<bool>("IsProduction");
+    options.CertificatePath = arca["CertificatePath"]!;
     options.CertificatePassword = arca["CertificatePassword"];
     options.TokenCacheDirectory = arca["TokenCacheDirectory"] ?? Path.GetTempPath();
-    options.SoapTimeoutSeconds  = arca.GetValue<int>("SoapTimeoutSeconds", 30);
+    options.SoapTimeoutSeconds = arca.GetValue<int>("SoapTimeoutSeconds", 30);
 });
 
 await using var sp = services.BuildServiceProvider();
@@ -45,25 +45,25 @@ logger.LogInformation("Issuer CUIT: {Cuit}", issuerCuit);
 // --- Build the request ---
 var request = new BillingDocumentNumberingRequest
 {
-    BillingDocumentType       = BillingDocumentTypeARCAEnum.FA,
+    BillingDocumentType = BillingDocumentTypeARCAEnum.FA,
     BillingDocumentBookPrefix = 1,                               // Point of sale (Punto de venta)
-    BillingDocumentDate       = DateTime.Today,
-    Currency                  = "Pesos",
-    ExchangeRate              = 1,
-    ConceptType               = ConceptTypeARCAEnum.Products,
-    AmountTax                 = 1000.00,
+    BillingDocumentDate = DateTime.Today,
+    Currency = "Pesos",
+    ExchangeRate = 1,
+    ConceptType = ConceptTypeARCAEnum.Products,
+    AmountTax = 1000.00,
     BillingDocumentNumberingTaxes =
     [
         new() { PercentageTax = "21.00", BaseAmount = 1000.00, Amount = 210.00 }
     ],
     IssuingCompany = new()
     {
-        DocumentType   = DocumentTypeARCAEnum.CUIT,
+        DocumentType = DocumentTypeARCAEnum.CUIT,
         DocumentNumber = issuerCuit,
     },
     Client = new()
     {
-        DocumentType   = DocumentTypeARCAEnum.CUIT,
+        DocumentType = DocumentTypeARCAEnum.CUIT,
         DocumentNumber = clientCuit,
     },
 };

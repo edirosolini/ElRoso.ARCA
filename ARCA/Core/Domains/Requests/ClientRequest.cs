@@ -3,9 +3,9 @@
 // </copyright>
 namespace ElRoso.ARCA.Core
 {
+    using ElRoso.ARCA.Billing;
     using ElRoso.ARCA.Core;
-using ElRoso.ARCA.Billing;
-using ElRoso.ARCA.Read;
+    using ElRoso.ARCA.Read;
 
     public class ClientRequest
     {

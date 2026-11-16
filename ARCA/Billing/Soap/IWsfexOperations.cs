@@ -3,8 +3,8 @@
 // </copyright>
 namespace ElRoso.ARCA.Billing;
 
-using ElRoso.ARCA.Core;
 using ElRoso.ARCA.Billing;
+using ElRoso.ARCA.Core;
 using ElRoso.ARCA.Read;
 
 /// <summary>

@@ -114,12 +114,14 @@ internal sealed class WsfeOperations : IWsfeOperations
                         MonId = DictionariesCommon.Currencies[doc.Currency],
                         MonCotiz = Math.Round(doc.ExchangeRate, 2),
                         Iva = isTypeWithVAT
-                            ? [.. doc.BillingDocumentNumberingTaxes!.Select(x => new WSFEv1.AlicIva
+                            ? [
+                                .. doc.BillingDocumentNumberingTaxes!.Select(x => new WSFEv1.AlicIva
                                 {
                                     Id = DictionariesCommon.Tax[x.PercentageTax],
                                     BaseImp = Math.Round(x.BaseAmount, 2),
                                     Importe = Math.Round(x.Amount, 2),
-                                })]
+                                }),
+                              ]
                             : null,
                         Tributos = doc.BillingDocumentNumberingOtherTaxes?
                             .Select(x => new WSFEv1.Tributo
@@ -326,13 +328,16 @@ internal sealed class WsfeOperations : IWsfeOperations
 
         return new WsfePointsOfSaleResult
         {
-            PointsOfSale = [.. (response.ResultGet ?? []).Select(p => new PointOfSaleResponse
-            {
-                Number = p.Nro,
-                EmissionType = p.EmisionTipo ?? string.Empty,
-                IsBlocked = p.Bloqueado == "S",
-                DeactivationDate = TryParseArcaDate(p.FchBaja),
-            })],
+            PointsOfSale =
+            [
+                .. (response.ResultGet ?? []).Select(p => new PointOfSaleResponse
+                {
+                    Number = p.Nro,
+                    EmissionType = p.EmisionTipo ?? string.Empty,
+                    IsBlocked = p.Bloqueado == "S",
+                    DeactivationDate = TryParseArcaDate(p.FchBaja),
+                }),
+            ],
         };
     }
 
@@ -344,12 +349,13 @@ internal sealed class WsfeOperations : IWsfeOperations
 
     internal static WSFEv1.Periodo? MapAssociatedPeriod(BillingDocumentNumberingAssociatedPeriodRequest? period)
     {
-        return period is null ? null
-                              : new WSFEv1.Periodo
-                              {
-                                  FchDesde = period.DateFrom.ToString("yyyyMMdd"),
-                                  FchHasta = period.DateTo.ToString("yyyyMMdd"),
-                              };
+        return period is null
+            ? null
+            : new WSFEv1.Periodo
+            {
+                FchDesde = period.DateFrom.ToString("yyyyMMdd"),
+                FchHasta = period.DateTo.ToString("yyyyMMdd"),
+            };
     }
 
     // EN: ARCA rejects an empty CbtesAsoc (10062), so null or empty inputs map to null.

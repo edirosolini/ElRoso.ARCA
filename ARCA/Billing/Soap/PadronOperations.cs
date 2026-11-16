@@ -115,9 +115,11 @@ internal sealed class PadronOperations : IPadronOperations
             PartialErrors = partialErrors,
             QueriedAt = persona.metadata is { fechaHoraSpecified: true } ? persona.metadata.fechaHora : null,
             Server = persona.metadata?.servidor,
-            Cuit = general is { idPersonaSpecified: true } ? general.idPersona
-                : constancia is { idPersonaSpecified: true } ? constancia.idPersona
-                : cuit,
+            Cuit = general is { idPersonaSpecified: true }
+                ? general.idPersona
+                : constancia is { idPersonaSpecified: true }
+                    ? constancia.idPersona
+                    : cuit,
             PersonType = general?.tipoPersona,
             KeyType = general?.tipoClave,
             KeyStatus = general?.estadoClave,

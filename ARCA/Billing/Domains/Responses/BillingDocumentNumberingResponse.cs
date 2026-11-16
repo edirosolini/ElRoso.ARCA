@@ -3,11 +3,11 @@
 // </copyright>
 namespace ElRoso.ARCA.Billing;
 
-using ElRoso.ARCA.Core;
+using System.Text;
 using ElRoso.ARCA.Billing;
+using ElRoso.ARCA.Core;
 using ElRoso.ARCA.Read;
 using Newtonsoft.Json;
-using System.Text;
 
 public class BillingDocumentNumberingResponse
 {

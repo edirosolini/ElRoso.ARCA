@@ -3,9 +3,9 @@
 // </copyright>
 namespace ElRoso.ARCA.Billing
 {
+    using ElRoso.ARCA.Billing;
     using ElRoso.ARCA.Core;
-using ElRoso.ARCA.Billing;
-using ElRoso.ARCA.Read;
+    using ElRoso.ARCA.Read;
 
     /// <summary>
     /// Requests a CAE (Electronic Authorization Code) from ARCA for a billing document.

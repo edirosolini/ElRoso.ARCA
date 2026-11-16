@@ -12,16 +12,16 @@ public class BillingDocumentNumberingResponseTests
 {
     private static BillingDocumentNumberingRequest SampleRequest() => new()
     {
-        BillingDocumentType       = BillingDocumentTypeARCAEnum.FA,
+        BillingDocumentType = BillingDocumentTypeARCAEnum.FA,
         BillingDocumentBookPrefix = 3,
-        BillingDocumentDate       = new DateTime(2026, 5, 13),
-        Currency                  = "Pesos",
-        ExchangeRate              = 1,
-        ConceptType               = ConceptTypeARCAEnum.Products,
-        AmountTax                 = 1210.00,
-        Version                   = 1,
+        BillingDocumentDate = new DateTime(2026, 5, 13),
+        Currency = "Pesos",
+        ExchangeRate = 1,
+        ConceptType = ConceptTypeARCAEnum.Products,
+        AmountTax = 1210.00,
+        Version = 1,
         IssuingCompany = new() { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 },
-        Client         = new() { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 30987654321 },
+        Client = new() { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 30987654321 },
     };
 
     [Fact]

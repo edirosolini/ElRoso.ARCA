@@ -21,11 +21,11 @@ var services = new ServiceCollection();
 services.AddLogging(b => b.AddSimpleConsole(o => { o.SingleLine = true; o.TimestampFormat = "HH:mm:ss "; }));
 services.AddARCAClient(options =>
 {
-    options.IsProduction        = arca.GetValue<bool>("IsProduction");
-    options.CertificatePath     = arca["CertificatePath"]!;
+    options.IsProduction = arca.GetValue<bool>("IsProduction");
+    options.CertificatePath = arca["CertificatePath"]!;
     options.CertificatePassword = arca["CertificatePassword"];
     options.TokenCacheDirectory = arca["TokenCacheDirectory"] ?? Path.GetTempPath();
-    options.SoapTimeoutSeconds  = arca.GetValue<int>("SoapTimeoutSeconds", 30);
+    options.SoapTimeoutSeconds = arca.GetValue<int>("SoapTimeoutSeconds", 30);
 });
 
 await using var sp = services.BuildServiceProvider();
@@ -36,16 +36,16 @@ var verifier = sp.GetRequiredService<IInvoiceVerificationService>();
 // ES: Datos del comprobante que recibiste del proveedor (típicamente leídos del PDF / QR / archivo electrónico).
 var request = new InvoiceVerificationRequest
 {
-    BillingDocumentType       = Enum.Parse<BillingDocumentTypeARCAEnum>(sample["BillingDocumentType"] ?? "FA"),
+    BillingDocumentType = Enum.Parse<BillingDocumentTypeARCAEnum>(sample["BillingDocumentType"] ?? "FA"),
     BillingDocumentBookPrefix = sample.GetValue<int>("BillingDocumentBookPrefix"),
-    BillingDocumentNumber     = sample.GetValue<long>("BillingDocumentNumber"),
-    BillingDocumentDate       = sample.GetValue<DateTime>("BillingDocumentDate"),
-    TotalAmount               = sample.GetValue<double>("TotalAmount"),
-    AuthorizationCode         = sample["AuthorizationCode"]!,
-    AuthorizationMode         = AuthorizationModeARCAEnum.CAE,
+    BillingDocumentNumber = sample.GetValue<long>("BillingDocumentNumber"),
+    BillingDocumentDate = sample.GetValue<DateTime>("BillingDocumentDate"),
+    TotalAmount = sample.GetValue<double>("TotalAmount"),
+    AuthorizationCode = sample["AuthorizationCode"]!,
+    AuthorizationMode = AuthorizationModeARCAEnum.CAE,
     IssuingCompany = new IssuingCompanyRequest
     {
-        DocumentType   = DocumentTypeARCAEnum.CUIT,
+        DocumentType = DocumentTypeARCAEnum.CUIT,
         DocumentNumber = sample.GetValue<long>("IssuerCuit"),
     },
 };

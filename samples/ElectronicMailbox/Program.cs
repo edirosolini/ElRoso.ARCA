@@ -22,11 +22,11 @@ var services = new ServiceCollection();
 services.AddLogging(b => b.AddSimpleConsole(o => { o.SingleLine = true; o.TimestampFormat = "HH:mm:ss "; }));
 services.AddARCAClient(options =>
 {
-    options.IsProduction        = arca.GetValue<bool>("IsProduction");
-    options.CertificatePath     = arca["CertificatePath"]!;
+    options.IsProduction = arca.GetValue<bool>("IsProduction");
+    options.CertificatePath = arca["CertificatePath"]!;
     options.CertificatePassword = arca["CertificatePassword"];
     options.TokenCacheDirectory = arca["TokenCacheDirectory"] ?? Path.GetTempPath();
-    options.SoapTimeoutSeconds  = arca.GetValue<int>("SoapTimeoutSeconds", 30);
+    options.SoapTimeoutSeconds = arca.GetValue<int>("SoapTimeoutSeconds", 30);
     // EN: WsccomuUrl is now auto-resolved from IsProduction — no manual override required.
     //     Set options.WsccomuUrl only if ARCA migrates the endpoint or you proxy through middleware.
     // ES: WsccomuUrl ahora se resuelve automáticamente desde IsProduction — sin override manual.

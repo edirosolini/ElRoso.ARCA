@@ -95,12 +95,15 @@ internal sealed class WsfexOperations : IWsfexOperations
                 Moneda_ctz = (decimal)doc.ExchangeRate,
                 Imp_total = (decimal)doc.Total,
                 Idioma_cbte = DictionariesCommon.Language[doc.Client.ClientLanguage],
-                Items = [.. doc.Items!.Select(i => new WSFEXv1.Item
-                {
-                    Pro_ds = i.ItemDescription,
-                    Pro_umed = 0,
-                    Pro_total_item = (decimal)i.Amount,
-                })],
+                Items =
+                [
+                    .. doc.Items!.Select(i => new WSFEXv1.Item
+                    {
+                        Pro_ds = i.ItemDescription,
+                        Pro_umed = 0,
+                        Pro_total_item = (decimal)i.Amount,
+                    }),
+                ],
                 Fecha_pago = doc.ConceptType == ConceptTypeARCAEnum.Products
                     ? string.Empty
                     : doc.PaymentDue?.ToString("yyyyMMdd"),

@@ -3,15 +3,15 @@
 // </copyright>
 namespace ElRoso.ARCA.Core;
 
-using ElRoso.ARCA.Core;
+using System.Collections.Concurrent;
+using System.Security.Cryptography;
+using System.Text;
 using ElRoso.ARCA.Billing;
+using ElRoso.ARCA.Core;
 using ElRoso.ARCA.Read;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Collections.Concurrent;
-using System.Security.Cryptography;
-using System.Text;
 
 /// <summary>
 /// File-based token cache. One encrypted binary file per service+company combination.
