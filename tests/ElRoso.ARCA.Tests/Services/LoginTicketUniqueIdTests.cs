@@ -13,15 +13,13 @@ public class LoginTicketUniqueIdTests
         //     makes the first id after a restart pick up where the previous process left off.
         // ES: Un contador en memoria volvia a 1 en cada deploy. Sembrar desde los segundos unix
         //     hace que el primer id despues de un reinicio siga donde quedo el proceso anterior.
-        LoginTicketService.ComputeUniqueId(previous: 0, unixSeconds: 1_800_000_000)
-            .Should().Be(1_800_000_000);
+        Assert.Equal(1_800_000_000u, LoginTicketService.ComputeUniqueId(previous: 0, unixSeconds: 1_800_000_000));
     }
 
     [Fact]
     public void ComputeUniqueId_should_advance_within_the_same_second()
     {
-        LoginTicketService.ComputeUniqueId(previous: 1_800_000_000, unixSeconds: 1_800_000_000)
-            .Should().Be(1_800_000_001);
+        Assert.Equal(1_800_000_001u, LoginTicketService.ComputeUniqueId(previous: 1_800_000_000, unixSeconds: 1_800_000_000));
     }
 
     [Fact]
@@ -30,8 +28,7 @@ public class LoginTicketUniqueIdTests
         // EN: An NTP correction or a host clock jump must never reissue an id already sent.
         // ES: Una correccion de NTP o un salto del reloj del host nunca puede reemitir un id ya
         //     mandado.
-        LoginTicketService.ComputeUniqueId(previous: 1_800_000_005, unixSeconds: 1_700_000_000)
-            .Should().Be(1_800_000_006);
+        Assert.Equal(1_800_000_006u, LoginTicketService.ComputeUniqueId(previous: 1_800_000_005, unixSeconds: 1_700_000_000));
     }
 
     [Fact]
@@ -40,11 +37,11 @@ public class LoginTicketUniqueIdTests
         var first = LoginTicketService.NextUniqueId();
         var second = LoginTicketService.NextUniqueId();
 
-        second.Should().BeGreaterThan(first);
+        Assert.True(second > first);
 
         // EN: Well past any in-memory counter — proves the id is not restarting at 1.
         // ES: Muy por encima de cualquier contador en memoria — prueba que el id no reinicia en 1.
-        first.Should().BeGreaterThan(1_700_000_000);
+        Assert.True(first > 1_700_000_000);
     }
 
     [Fact]
@@ -54,6 +51,6 @@ public class LoginTicketUniqueIdTests
 
         Parallel.For(0, ids.Length, i => ids[i] = LoginTicketService.NextUniqueId());
 
-        ids.Distinct().Should().HaveCount(ids.Length);
+        Assert.Equal(ids.Length, ids.Distinct().Count());
     }
 }

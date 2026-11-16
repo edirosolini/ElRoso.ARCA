@@ -19,12 +19,14 @@ public class WsfePointsOfSaleMappingTests
 
         var result = WsfeOperations.MapPointsOfSale(response);
 
-        result.Errors.Should().BeEmpty();
-        result.PointsOfSale.Should().BeEquivalentTo(
-        [
-            new PointOfSaleResponse { Number = 3, EmissionType = "CAE - RECE", IsBlocked = false, DeactivationDate = null },
-            new PointOfSaleResponse { Number = 5, EmissionType = "CAEA - RECE", IsBlocked = true, DeactivationDate = new DateTime(2026, 1, 31) },
-        ]);
+        Assert.Empty(result.Errors);
+        Assert.Equivalent(
+            new PointOfSaleResponse[]
+            {
+                new PointOfSaleResponse { Number = 3, EmissionType = "CAE - RECE", IsBlocked = false, DeactivationDate = null },
+                new PointOfSaleResponse { Number = 5, EmissionType = "CAEA - RECE", IsBlocked = true, DeactivationDate = new DateTime(2026, 1, 31) },
+            },
+            result.PointsOfSale);
     }
 
     [Fact]
@@ -37,8 +39,10 @@ public class WsfePointsOfSaleMappingTests
 
         var result = WsfeOperations.MapPointsOfSale(response);
 
-        result.PointsOfSale.Should().BeEmpty();
-        result.Errors.Should().ContainSingle().Which.Should().Be(
-            new WsfeError { Code = 600, Message = "ValidacionDeToken: No apareció CUIT en lista de relaciones" });
+        Assert.Empty(result.PointsOfSale);
+        var error = Assert.Single(result.Errors);
+        Assert.Equal(
+            new WsfeError { Code = 600, Message = "ValidacionDeToken: No apareció CUIT en lista de relaciones" },
+            error);
     }
 }

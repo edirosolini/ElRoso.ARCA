@@ -13,7 +13,7 @@ public class BillingDocumentNumberingRequestTests
     {
         var request = new BillingDocumentNumberingRequest { AmountTax = 100.567 };
 
-        request.AmountTax.Should().Be(100.57);
+        Assert.Equal(100.57, request.AmountTax);
     }
 
     [Fact]
@@ -21,7 +21,7 @@ public class BillingDocumentNumberingRequestTests
     {
         var request = new BillingDocumentNumberingRequest { AmountNotTax = 50.444 };
 
-        request.AmountNotTax.Should().Be(50.44);
+        Assert.Equal(50.44, request.AmountNotTax);
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public class BillingDocumentNumberingRequestTests
     {
         var request = new BillingDocumentNumberingRequest { ExchangeRate = 1050.999 };
 
-        request.ExchangeRate.Should().Be(1051.00);
+        Assert.Equal(1051.00, request.ExchangeRate);
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class BillingDocumentNumberingRequestTests
             ],
         };
 
-        request.BillingDocumentNumberingTaxAmount.Should().Be(31.50);
+        Assert.Equal(31.50, request.BillingDocumentNumberingTaxAmount);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class BillingDocumentNumberingRequestTests
     {
         var request = new BillingDocumentNumberingRequest();
 
-        request.BillingDocumentNumberingTaxAmount.Should().Be(0);
+        Assert.Equal(0, request.BillingDocumentNumberingTaxAmount);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class BillingDocumentNumberingRequestTests
             ],
         };
 
-        request.BillingDocumentNumberingOtherTaxAmount.Should().Be(8);
+        Assert.Equal(8, request.BillingDocumentNumberingOtherTaxAmount);
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class BillingDocumentNumberingRequestTests
     {
         var request = new BillingDocumentNumberingRequest();
 
-        request.BillingDocumentNumberingOtherTaxAmount.Should().Be(0);
+        Assert.Equal(0, request.BillingDocumentNumberingOtherTaxAmount);
     }
 
     [Theory]
@@ -95,7 +95,7 @@ public class BillingDocumentNumberingRequestTests
             BillingDocumentNumberingOtherTaxes = [new() { Description = "Otros", BaseAmount = 100, PercentageTax = 3, Amount = 3 }],
         };
 
-        request.Total.Should().Be(1000);
+        Assert.Equal(1000, request.Total);
     }
 
     [Theory]
@@ -114,7 +114,7 @@ public class BillingDocumentNumberingRequestTests
             BillingDocumentNumberingOtherTaxes = [new() { Description = "Otros", BaseAmount = 100, PercentageTax = 3, Amount = 3 }],
         };
 
-        request.Total.Should().Be(1003);
+        Assert.Equal(1003, request.Total);
     }
 
     [Fact]
@@ -129,7 +129,7 @@ public class BillingDocumentNumberingRequestTests
             BillingDocumentNumberingOtherTaxes = [new() { Description = "Otros", BaseAmount = 100, PercentageTax = 3, Amount = 3 }],
         };
 
-        request.Total.Should().Be(1313);
+        Assert.Equal(1313, request.Total);
     }
 
     [Fact]
@@ -137,6 +137,6 @@ public class BillingDocumentNumberingRequestTests
     {
         var request = new BillingDocumentNumberingRequest();
 
-        request.Version.Should().Be(1);
+        Assert.Equal(1, request.Version);
     }
 }

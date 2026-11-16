@@ -44,14 +44,10 @@ public class OperationsCancellationTests
         var ops = new WsfeOperations(Options, NullLogger<WsfeOperations>.Instance);
         var ct = Cancelled();
 
-        await FluentActions.Awaiting(() => ops.GetLastNumberAsync("s", "t", 20123456789, 1, 1, ct))
-            .Should().ThrowAsync<OperationCanceledException>();
-        await FluentActions.Awaiting(() => ops.SolicitarCaeAsync("s", "t", 20123456789, Document(), 1, ct))
-            .Should().ThrowAsync<OperationCanceledException>();
-        await FluentActions.Awaiting(() => ops.ConsultarComprobanteAsync("s", "t", 20123456789, 1, 1, 1, ct))
-            .Should().ThrowAsync<OperationCanceledException>();
-        await FluentActions.Awaiting(() => ops.GetPointsOfSaleAsync("s", "t", 20123456789, ct))
-            .Should().ThrowAsync<OperationCanceledException>();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ops.GetLastNumberAsync("s", "t", 20123456789, 1, 1, ct));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ops.SolicitarCaeAsync("s", "t", 20123456789, Document(), 1, ct));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ops.ConsultarComprobanteAsync("s", "t", 20123456789, 1, 1, 1, ct));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ops.GetPointsOfSaleAsync("s", "t", 20123456789, ct));
     }
 
     [Fact]
@@ -60,10 +56,8 @@ public class OperationsCancellationTests
         var ops = new WsfexOperations(Options, NullLogger<WsfexOperations>.Instance);
         var ct = Cancelled();
 
-        await FluentActions.Awaiting(() => ops.GetLastNumberAsync("s", "t", 20123456789, 1, 1, ct))
-            .Should().ThrowAsync<OperationCanceledException>();
-        await FluentActions.Awaiting(() => ops.AuthorizeAsync("s", "t", 20123456789, Document(), 1, ct))
-            .Should().ThrowAsync<OperationCanceledException>();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ops.GetLastNumberAsync("s", "t", 20123456789, 1, 1, ct));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ops.AuthorizeAsync("s", "t", 20123456789, Document(), 1, ct));
     }
 
     [Fact]
@@ -71,8 +65,7 @@ public class OperationsCancellationTests
     {
         var ops = new PadronOperations(Options);
 
-        await FluentActions.Awaiting(() => ops.GetPersonaAsync("s", "t", 20123456789, 30987654321, Cancelled()))
-            .Should().ThrowAsync<OperationCanceledException>();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ops.GetPersonaAsync("s", "t", 20123456789, 30987654321, Cancelled()));
     }
 
     [Fact]
@@ -91,8 +84,7 @@ public class OperationsCancellationTests
             IssuingCompany = new() { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 },
         };
 
-        await FluentActions.Awaiting(() => ops.VerifyAsync("s", "t", 20123456789, request, Cancelled()))
-            .Should().ThrowAsync<OperationCanceledException>();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ops.VerifyAsync("s", "t", 20123456789, request, Cancelled()));
     }
 
     [Fact]
@@ -101,9 +93,7 @@ public class OperationsCancellationTests
         var ops = new ElectronicMailboxOperations(Options);
         var ct = Cancelled();
 
-        await FluentActions.Awaiting(() => ops.ListAsync("s", "t", 20123456789, new MailboxQueryRequest(), ct))
-            .Should().ThrowAsync<OperationCanceledException>();
-        await FluentActions.Awaiting(() => ops.ConsumeAsync("s", "t", 20123456789, 1, ct))
-            .Should().ThrowAsync<OperationCanceledException>();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ops.ListAsync("s", "t", 20123456789, new MailboxQueryRequest(), ct));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ops.ConsumeAsync("s", "t", 20123456789, 1, ct));
     }
 }

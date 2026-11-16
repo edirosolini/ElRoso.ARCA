@@ -89,11 +89,11 @@ public class PadronDeserializationTests
     {
         var persona = Deserialize(RegisteredLegalEntityEnvelope);
 
-        persona.datosRegimenGeneral.impuesto.Should().HaveCount(2);
-        persona.datosRegimenGeneral.impuesto.Select(t => t.idImpuesto).Should().Equal(10, 30);
-        persona.datosRegimenGeneral.impuesto.Should().OnlyContain(t => t.idImpuestoSpecified && t.periodoSpecified);
-        persona.datosRegimenGeneral.impuesto[1].estadoImpuesto.Should().Be("AC");
-        persona.datosRegimenGeneral.impuesto[1].motivo.Should().Be("INSCRIPCIÓN TRAMITADA EN AGENCIA");
+        Assert.Equal(2, persona.datosRegimenGeneral.impuesto.Count());
+        Assert.Equal(new[] { 10, 30 }, persona.datosRegimenGeneral.impuesto.Select(t => t.idImpuesto));
+        Assert.All(persona.datosRegimenGeneral.impuesto, t => Assert.True(t.idImpuestoSpecified && t.periodoSpecified));
+        Assert.Equal("AC", persona.datosRegimenGeneral.impuesto[1].estadoImpuesto);
+        Assert.Equal("INSCRIPCIÓN TRAMITADA EN AGENCIA", persona.datosRegimenGeneral.impuesto[1].motivo);
     }
 
     [Fact]
@@ -101,11 +101,11 @@ public class PadronDeserializationTests
     {
         var persona = Deserialize(RegisteredLegalEntityEnvelope);
 
-        var characterization = persona.datosGenerales.caracterizacion.Should().ContainSingle().Subject;
-        characterization.idCaracterizacion.Should().Be(639);
-        characterization.idCaracterizacionSpecified.Should().BeTrue();
-        characterization.periodo.Should().Be(20250101);
-        characterization.fechaSolicitud.Should().Be(20260220);
+        var characterization = Assert.Single(persona.datosGenerales.caracterizacion);
+        Assert.Equal(639, characterization.idCaracterizacion);
+        Assert.True(characterization.idCaracterizacionSpecified);
+        Assert.Equal(20250101, characterization.periodo);
+        Assert.Equal(20260220, characterization.fechaSolicitud);
     }
 
     [Fact]
@@ -113,9 +113,9 @@ public class PadronDeserializationTests
     {
         var result = PadronOperations.MapPersona(Deserialize(RegisteredLegalEntityEnvelope), Cuit);
 
-        result.Taxes.Select(t => t.Id).Should().Equal(10, 30);
-        result.VATCondition.Should().Be(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
-        result.ReceiverVATConditionId.Should().Be(1);
-        result.DisplayName.Should().Be("EMPRESA DEMO SA");
+        Assert.Equal(new int?[] { 10, 30 }, result.Taxes.Select(t => t.Id));
+        Assert.Equal(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO, result.VATCondition);
+        Assert.Equal(1, result.ReceiverVATConditionId);
+        Assert.Equal("EMPRESA DEMO SA", result.DisplayName);
     }
 }

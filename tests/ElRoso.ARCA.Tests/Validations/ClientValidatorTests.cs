@@ -21,7 +21,7 @@ public class ClientValidatorTests
 
         var result = validator.Validate(client);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class ClientValidatorTests
 
         var result = validator.Validate(client);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class ClientValidatorTests
 
         var result = validator.Validate(client);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -65,8 +65,8 @@ public class ClientValidatorTests
 
         var result = validator.Validate(client);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(ClientRequest.DocumentNumber));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(ClientRequest.DocumentNumber));
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public class ClientValidatorTests
 
         var result = validator.Validate(client);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(ClientRequest.DocumentType));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(ClientRequest.DocumentType));
     }
 }

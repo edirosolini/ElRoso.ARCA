@@ -11,11 +11,11 @@ public class ARCAOptionsTests
     {
         var options = new ARCAOptions();
 
-        options.IsProduction.Should().BeFalse("homologation must be the safe default — production requires explicit opt-in");
-        options.SoapTimeoutSeconds.Should().Be(30);
-        options.CertificatePath.Should().BeEmpty();
-        options.CertificatePassword.Should().BeNull();
-        options.TokenCacheDirectory.Should().Be(Path.GetTempPath());
+        Assert.False(options.IsProduction);
+        Assert.Equal(30, options.SoapTimeoutSeconds);
+        Assert.Empty(options.CertificatePath);
+        Assert.Null(options.CertificatePassword);
+        Assert.Equal(Path.GetTempPath(), options.TokenCacheDirectory);
     }
 
     [Theory]
@@ -29,7 +29,7 @@ public class ARCAOptionsTests
             .GetProperty("WsaaUrl", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
             .GetValue(options) as string;
 
-        url.Should().Contain(expectedHost);
+        Assert.Contains(expectedHost, url);
     }
 
     [Theory]
@@ -43,7 +43,7 @@ public class ARCAOptionsTests
             .GetProperty("WsfeUrl", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
             .GetValue(options) as string;
 
-        url.Should().Contain(expectedHost);
+        Assert.Contains(expectedHost, url);
     }
 
     [Theory]
@@ -57,7 +57,7 @@ public class ARCAOptionsTests
             .GetProperty("WsfexUrl", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
             .GetValue(options) as string;
 
-        url.Should().Contain(expectedHost);
+        Assert.Contains(expectedHost, url);
     }
 
     [Theory]
@@ -71,7 +71,7 @@ public class ARCAOptionsTests
             .GetProperty("PadronUrl", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
             .GetValue(options) as string;
 
-        url.Should().Contain(expectedHost);
+        Assert.Contains(expectedHost, url);
     }
 
     [Theory]
@@ -81,7 +81,7 @@ public class ARCAOptionsTests
     {
         var options = new ARCAOptions { IsProduction = isProduction };
 
-        options.WsccomuUrl.Should().Contain(expectedHost);
+        Assert.Contains(expectedHost, options.WsccomuUrl);
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class ARCAOptionsTests
             WsccomuUrl = "https://my-proxy.example.com/ve-ws/services/veconsumer",
         };
 
-        options.WsccomuUrl.Should().Be("https://my-proxy.example.com/ve-ws/services/veconsumer");
+        Assert.Equal("https://my-proxy.example.com/ve-ws/services/veconsumer", options.WsccomuUrl);
     }
 
     [Fact]
@@ -108,6 +108,6 @@ public class ARCAOptionsTests
         // Clearing the override should restore the environment-based default.
         options.WsccomuUrl = string.Empty;
 
-        options.WsccomuUrl.Should().Contain("infraestructura.afip.gob.ar");
+        Assert.Contains("infraestructura.afip.gob.ar", options.WsccomuUrl);
     }
 }

@@ -11,8 +11,8 @@ public class ARCAServiceExceptionTests
     {
         var exception = new ARCAServiceException("Service unavailable");
 
-        exception.Message.Should().Be("Service unavailable");
-        exception.ErrorCode.Should().BeNull();
+        Assert.Equal("Service unavailable", exception.Message);
+        Assert.Null(exception.ErrorCode);
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class ARCAServiceExceptionTests
 
         var exception = new ARCAServiceException("SOAP timeout", inner);
 
-        exception.InnerException.Should().BeSameAs(inner);
+        Assert.Same(inner, exception.InnerException);
     }
 
     [Fact]
@@ -30,8 +30,8 @@ public class ARCAServiceExceptionTests
     {
         var exception = new ARCAServiceException(1503, "Invalid CUIT");
 
-        exception.ErrorCode.Should().Be(1503);
-        exception.Message.Should().Contain("1503");
-        exception.Message.Should().Contain("Invalid CUIT");
+        Assert.Equal(1503, exception.ErrorCode);
+        Assert.Contains("1503", exception.Message);
+        Assert.Contains("Invalid CUIT", exception.Message);
     }
 }

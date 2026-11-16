@@ -42,7 +42,7 @@ ElRoso.ARCA.sln
 │   ├── Services/               # Implementaciones internal sealed
 │   └── Validations/            # Validators de FluentValidation
 └── tests/
-    └── ElRoso.ARCA.Tests/      # xUnit + Moq + FluentAssertions + Coverlet
+    └── ElRoso.ARCA.Tests/      # xUnit + Moq + Coverlet
 ```
 
 ## Convenciones de código

@@ -28,7 +28,7 @@ public class BillingDocumentNumberingOtherTaxValidatorTests
 
         var result = validator.Validate(tax);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -44,8 +44,8 @@ public class BillingDocumentNumberingOtherTaxValidatorTests
 
         var result = validator.Validate(tax);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingOtherTaxRequest.Description));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingOtherTaxRequest.Description));
     }
 
     [Fact]
@@ -61,8 +61,8 @@ public class BillingDocumentNumberingOtherTaxValidatorTests
 
         var result = validator.Validate(tax);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingOtherTaxRequest.BaseAmount));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingOtherTaxRequest.BaseAmount));
     }
 
     [Fact]
@@ -78,8 +78,8 @@ public class BillingDocumentNumberingOtherTaxValidatorTests
 
         var result = validator.Validate(tax);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingOtherTaxRequest.PercentageTax));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingOtherTaxRequest.PercentageTax));
     }
 
     [Fact]
@@ -95,7 +95,7 @@ public class BillingDocumentNumberingOtherTaxValidatorTests
 
         var result = validator.Validate(tax);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingOtherTaxRequest.Amount));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingOtherTaxRequest.Amount));
     }
 }

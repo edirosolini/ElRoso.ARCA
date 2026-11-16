@@ -61,7 +61,7 @@ public class InvoiceVerificationServiceTests
 
         var act = () => service.VerifyAsync(ValidRequest());
 
-        await act.Should().ThrowAsync<ARCAValidationException>();
+        await Assert.ThrowsAsync<ARCAValidationException>(act);
         operationsMock.VerifyNoOtherCalls();
         tokenCacheMock.VerifyNoOtherCalls();
     }
@@ -90,11 +90,11 @@ public class InvoiceVerificationServiceTests
         var service = CreateService();
         var response = await service.VerifyAsync(ValidRequest());
 
-        response.IsAuthorized.Should().BeTrue();
-        response.Resultado.Should().Be("A");
-        response.ProcessedDate.Should().Be(new DateTime(2026, 5, 14));
-        response.Observations.Should().BeEmpty();
-        response.Errors.Should().BeEmpty();
+        Assert.True(response.IsAuthorized);
+        Assert.Equal("A", response.Resultado);
+        Assert.Equal(new DateTime(2026, 5, 14), response.ProcessedDate);
+        Assert.Empty(response.Observations);
+        Assert.Empty(response.Errors);
     }
 
     [Fact]
@@ -121,9 +121,9 @@ public class InvoiceVerificationServiceTests
         var service = CreateService();
         var response = await service.VerifyAsync(ValidRequest());
 
-        response.IsAuthorized.Should().BeFalse();
-        response.Resultado.Should().Be("R");
-        response.Observations.Should().ContainSingle(o => o.Contains("10048"));
+        Assert.False(response.IsAuthorized);
+        Assert.Equal("R", response.Resultado);
+        Assert.Single(response.Observations, o => o.Contains("10048"));
     }
 
     [Fact]
@@ -148,8 +148,8 @@ public class InvoiceVerificationServiceTests
         var service = CreateService();
         var response = await service.VerifyAsync(ValidRequest());
 
-        response.IsAuthorized.Should().BeFalse();
-        response.Errors.Should().ContainSingle(e => e.Contains("600"));
+        Assert.False(response.IsAuthorized);
+        Assert.Single(response.Errors, e => e.Contains("600"));
     }
 
     [Fact]

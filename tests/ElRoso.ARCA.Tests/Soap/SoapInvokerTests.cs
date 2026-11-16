@@ -16,7 +16,7 @@ public class SoapInvokerTests
 
         var result = await SoapInvoker.InvokeAsync(client.Object, () => Task.FromResult(42), CancellationToken.None);
 
-        result.Should().Be(42);
+        Assert.Equal(42, result);
         client.Verify(c => c.Close(), Times.Once);
         client.Verify(c => c.Abort(), Times.Never);
     }
@@ -35,7 +35,7 @@ public class SoapInvokerTests
         var invocation = SoapInvoker.InvokeAsync(client.Object, () => neverCompletes.Task, cts.Token);
         await cts.CancelAsync();
 
-        await FluentActions.Awaiting(() => invocation).Should().ThrowAsync<OperationCanceledException>();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => invocation);
         client.Verify(c => c.Abort(), Times.Once);
         client.Verify(c => c.Close(), Times.Never);
     }
@@ -45,12 +45,11 @@ public class SoapInvokerTests
     {
         var client = new Mock<ICommunicationObject>();
 
-        await FluentActions
-            .Awaiting(() => SoapInvoker.InvokeAsync<int>(
+        await Assert.ThrowsAnyAsync<TimeoutException>(
+            () => SoapInvoker.InvokeAsync<int>(
                 client.Object,
                 () => Task.FromException<int>(new TimeoutException("ARCA took too long")),
-                CancellationToken.None))
-            .Should().ThrowAsync<TimeoutException>();
+                CancellationToken.None));
 
         client.Verify(c => c.Abort(), Times.Once);
         client.Verify(c => c.Close(), Times.Never);
@@ -68,7 +67,7 @@ public class SoapInvokerTests
 
         var result = await SoapInvoker.InvokeAsync(client.Object, () => Task.FromResult("cae"), CancellationToken.None);
 
-        result.Should().Be("cae");
+        Assert.Equal("cae", result);
         client.Verify(c => c.Abort(), Times.Once);
     }
 
@@ -79,9 +78,8 @@ public class SoapInvokerTests
         using var cts = new CancellationTokenSource();
         await cts.CancelAsync();
 
-        await FluentActions
-            .Awaiting(() => SoapInvoker.InvokeAsync(client.Object, () => new TaskCompletionSource<int>().Task, cts.Token))
-            .Should().ThrowAsync<OperationCanceledException>();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => SoapInvoker.InvokeAsync(client.Object, () => new TaskCompletionSource<int>().Task, cts.Token));
 
         client.Verify(c => c.Abort(), Times.Once);
     }

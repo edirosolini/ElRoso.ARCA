@@ -30,7 +30,7 @@ public class BillingDocumentNumberingTaxValidatorTests
 
         var result = validator.Validate(tax);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -45,8 +45,8 @@ public class BillingDocumentNumberingTaxValidatorTests
 
         var result = validator.Validate(tax);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingTaxRequest.PercentageTax));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingTaxRequest.PercentageTax));
     }
 
     [Fact]
@@ -61,8 +61,8 @@ public class BillingDocumentNumberingTaxValidatorTests
 
         var result = validator.Validate(tax);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingTaxRequest.BaseAmount));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingTaxRequest.BaseAmount));
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class BillingDocumentNumberingTaxValidatorTests
 
         var result = validator.Validate(tax);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingTaxRequest.Amount));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingTaxRequest.Amount));
     }
 }

@@ -32,7 +32,7 @@ public class OperationsMappingTests
         var client = new ClientRequest();
         client.SetCondition(condition);
 
-        WsfeOps.ReceiverConditionCode(client).Should().Be(expected);
+        Assert.Equal(expected, WsfeOps.ReceiverConditionCode(client));
     }
 
     [Theory]
@@ -44,9 +44,9 @@ public class OperationsMappingTests
         var client = new ClientRequest();
         client.SetCondition((VATConditionARCAEnum)value);
 
-        var act = () => WsfeOps.ReceiverConditionCode(client);
+        Action act = () => WsfeOps.ReceiverConditionCode(client);
 
-        act.Should().Throw<ARCAValidationException>();
+        Assert.Throws<ARCAValidationException>(act);
     }
 
     [Fact]
@@ -64,13 +64,13 @@ public class OperationsMappingTests
 
         var filter = ElectronicMailboxOps.BuildFilter(req);
 
-        filter.pagina.Should().Be(3);
-        filter.resultadosPorPagina.Should().Be(25);
-        filter.resultadosPorPaginaSpecified.Should().BeTrue();
-        filter.fechaDesde.Should().Be("2026-01-01");
-        filter.fechaHasta.Should().Be("2026-12-31");
-        filter.referencia1.Should().Be("ref-1");
-        filter.referencia2.Should().Be("ref-2");
+        Assert.Equal(3, filter.pagina);
+        Assert.Equal(25, filter.resultadosPorPagina);
+        Assert.True(filter.resultadosPorPaginaSpecified);
+        Assert.Equal("2026-01-01", filter.fechaDesde);
+        Assert.Equal("2026-12-31", filter.fechaHasta);
+        Assert.Equal("ref-1", filter.referencia1);
+        Assert.Equal("ref-2", filter.referencia2);
     }
 
     [Fact]
@@ -86,12 +86,12 @@ public class OperationsMappingTests
 
         var filter = ElectronicMailboxOps.BuildFilter(req);
 
-        filter.estadoSpecified.Should().BeTrue();
-        filter.estado.Should().Be(5);
-        filter.tieneAdjuntoSpecified.Should().BeTrue();
-        filter.tieneAdjunto.Should().BeTrue();
-        filter.sistemaPublicadorIdSpecified.Should().BeTrue();
-        filter.sistemaPublicadorId.Should().Be(42L);
+        Assert.True(filter.estadoSpecified);
+        Assert.Equal(5, filter.estado);
+        Assert.True(filter.tieneAdjuntoSpecified);
+        Assert.True(filter.tieneAdjunto);
+        Assert.True(filter.sistemaPublicadorIdSpecified);
+        Assert.Equal(42L, filter.sistemaPublicadorId);
     }
 
     [Fact]
@@ -101,10 +101,10 @@ public class OperationsMappingTests
 
         var filter = ElectronicMailboxOps.BuildFilter(req);
 
-        filter.estadoSpecified.Should().BeFalse();
-        filter.tieneAdjuntoSpecified.Should().BeFalse();
-        filter.sistemaPublicadorIdSpecified.Should().BeFalse();
-        filter.resultadosPorPaginaSpecified.Should().BeFalse();
+        Assert.False(filter.estadoSpecified);
+        Assert.False(filter.tieneAdjuntoSpecified);
+        Assert.False(filter.sistemaPublicadorIdSpecified);
+        Assert.False(filter.resultadosPorPaginaSpecified);
     }
 
     [Fact]
@@ -129,19 +129,19 @@ public class OperationsMappingTests
 
         var summary = ElectronicMailboxOps.MapSummary(src);
 
-        summary.Id.Should().Be(100);
-        summary.RecipientCuit.Should().Be(20123456789);
-        summary.PublishedDate.Should().Be(new DateTime(2026, 5, 13));
-        summary.ExpirationDate.Should().Be(new DateTime(2026, 5, 20));
-        summary.PublishingSystemId.Should().Be(42);
-        summary.PublishingSystem.Should().Be("ARCA");
-        summary.StateId.Should().Be(1);
-        summary.StateName.Should().Be("Nueva");
-        summary.Subject.Should().Be("Vencimiento Monotributo");
-        summary.Priority.Should().Be(2);
-        summary.HasAttachment.Should().BeTrue();
-        summary.Reference1.Should().Be("ref-a");
-        summary.Reference2.Should().Be("ref-b");
+        Assert.Equal(100, summary.Id);
+        Assert.Equal(20123456789, summary.RecipientCuit);
+        Assert.Equal(new DateTime(2026, 5, 13), summary.PublishedDate);
+        Assert.Equal(new DateTime(2026, 5, 20), summary.ExpirationDate);
+        Assert.Equal(42, summary.PublishingSystemId);
+        Assert.Equal("ARCA", summary.PublishingSystem);
+        Assert.Equal(1, summary.StateId);
+        Assert.Equal("Nueva", summary.StateName);
+        Assert.Equal("Vencimiento Monotributo", summary.Subject);
+        Assert.Equal(2, summary.Priority);
+        Assert.True(summary.HasAttachment);
+        Assert.Equal("ref-a", summary.Reference1);
+        Assert.Equal("ref-b", summary.Reference2);
     }
 
     [Fact]
@@ -157,9 +157,9 @@ public class OperationsMappingTests
 
         var summary = ElectronicMailboxOps.MapSummary(src);
 
-        summary.PublishingSystem.Should().BeEmpty();
-        summary.StateName.Should().BeEmpty();
-        summary.Subject.Should().BeEmpty();
+        Assert.Empty(summary.PublishingSystem);
+        Assert.Empty(summary.StateName);
+        Assert.Empty(summary.Subject);
     }
 
     [Fact]
@@ -184,16 +184,16 @@ public class OperationsMappingTests
 
         var message = ElectronicMailboxOps.MapMessage(src);
 
-        message.Id.Should().Be(200);
-        message.Subject.Should().Be("Importante");
-        message.Body.Should().Be("<p>Cuerpo del mensaje</p>");
-        message.PublishingSystem.Should().Be("ARCA");
-        message.StateName.Should().Be("Leída");
-        message.HasAttachment.Should().BeTrue();
-        message.Attachments.Should().HaveCount(2);
-        message.Attachments[0].FileName.Should().Be("doc.pdf");
-        message.Attachments[0].Content.Should().Equal(1, 2, 3);
-        message.Attachments[1].FileName.Should().Be("ticket.xml");
+        Assert.Equal(200, message.Id);
+        Assert.Equal("Importante", message.Subject);
+        Assert.Equal("<p>Cuerpo del mensaje</p>", message.Body);
+        Assert.Equal("ARCA", message.PublishingSystem);
+        Assert.Equal("Leída", message.StateName);
+        Assert.True(message.HasAttachment);
+        Assert.Equal(2, message.Attachments.Count);
+        Assert.Equal("doc.pdf", message.Attachments[0].FileName);
+        Assert.Equal(new byte[] { 1, 2, 3 }, message.Attachments[0].Content);
+        Assert.Equal("ticket.xml", message.Attachments[1].FileName);
     }
 
     [Fact]
@@ -203,9 +203,9 @@ public class OperationsMappingTests
 
         var att = ElectronicMailboxOps.MapAttachment(src);
 
-        att.FileName.Should().Be("empty.txt");
-        att.Content.Should().BeEmpty();
-        att.MimeType.Should().BeEmpty();
+        Assert.Equal("empty.txt", att.FileName);
+        Assert.Empty(att.Content);
+        Assert.Empty(att.MimeType);
     }
 
     [Theory]
@@ -217,7 +217,7 @@ public class OperationsMappingTests
     {
         var parsed = ElectronicMailboxOps.TryParseDate(input);
 
-        parsed.Should().Be(new DateTime(y, m, d, h, mi, s));
+        Assert.Equal(new DateTime(y, m, d, h, mi, s), parsed);
     }
 
     [Theory]
@@ -226,7 +226,7 @@ public class OperationsMappingTests
     [InlineData("not a date")]
     public void TryParseDate_should_return_null_for_unparseable(string? input)
     {
-        ElectronicMailboxOps.TryParseDate(input).Should().BeNull();
+        Assert.Null(ElectronicMailboxOps.TryParseDate(input));
     }
 
     // =============================================================
@@ -259,16 +259,16 @@ public class OperationsMappingTests
 
         var datos = InvoiceVerificationOps.BuildCmpDatos(req);
 
-        datos.CbteModo.Should().Be("CAE");
-        datos.CuitEmisor.Should().Be(20123456789);
-        datos.PtoVta.Should().Be(3);
-        datos.CbteTipo.Should().Be((int)BillingDocumentTypeARCAEnum.FA);
-        datos.CbteNro.Should().Be(42);
-        datos.CbteFch.Should().Be("20260513");
-        datos.ImpTotal.Should().Be(1210.57);                     // rounded
-        datos.CodAutorizacion.Should().Be("75123");
-        datos.DocTipoReceptor.Should().Be("96");                 // DNI = 96
-        datos.DocNroReceptor.Should().Be("12345678");
+        Assert.Equal("CAE", datos.CbteModo);
+        Assert.Equal(20123456789, datos.CuitEmisor);
+        Assert.Equal(3, datos.PtoVta);
+        Assert.Equal((int)BillingDocumentTypeARCAEnum.FA, datos.CbteTipo);
+        Assert.Equal(42, datos.CbteNro);
+        Assert.Equal("20260513", datos.CbteFch);
+        Assert.Equal(1210.57, datos.ImpTotal);                     // rounded
+        Assert.Equal("75123", datos.CodAutorizacion);
+        Assert.Equal("96", datos.DocTipoReceptor);                 // DNI = 96
+        Assert.Equal("12345678", datos.DocNroReceptor);
     }
 
     [Fact]
@@ -289,9 +289,9 @@ public class OperationsMappingTests
 
         var datos = InvoiceVerificationOps.BuildCmpDatos(req);
 
-        datos.CbteModo.Should().Be("CAEA");
-        datos.DocTipoReceptor.Should().BeNull();
-        datos.DocNroReceptor.Should().BeNull();
+        Assert.Equal("CAEA", datos.CbteModo);
+        Assert.Null(datos.DocTipoReceptor);
+        Assert.Null(datos.DocNroReceptor);
     }
 
     [Fact]
@@ -311,7 +311,7 @@ public class OperationsMappingTests
 
         var datos = InvoiceVerificationOps.BuildCmpDatos(req);
 
-        datos.CuitEmisor.Should().Be(20123456789);
+        Assert.Equal(20123456789, datos.CuitEmisor);
     }
 
     [Theory]
@@ -321,10 +321,10 @@ public class OperationsMappingTests
     {
         var parsed = InvoiceVerificationOps.TryParseFchProceso(input);
 
-        parsed.Should().NotBeNull();
-        parsed!.Value.Year.Should().Be(y);
-        parsed.Value.Month.Should().Be(m);
-        parsed.Value.Day.Should().Be(d);
+        Assert.NotNull(parsed);
+        Assert.Equal(y, parsed!.Value.Year);
+        Assert.Equal(m, parsed.Value.Month);
+        Assert.Equal(d, parsed.Value.Day);
     }
 
     [Theory]
@@ -333,7 +333,7 @@ public class OperationsMappingTests
     [InlineData("garbage")]
     public void TryParseFchProceso_should_return_null_for_invalid_input(string? input)
     {
-        InvoiceVerificationOps.TryParseFchProceso(input).Should().BeNull();
+        Assert.Null(InvoiceVerificationOps.TryParseFchProceso(input));
     }
 
     // =============================================================
@@ -352,8 +352,8 @@ public class OperationsMappingTests
     {
         var parsed = WsfeOps.TryParseArcaDate(input);
 
-        parsed.Should().NotBeNull();
-        parsed!.Value.Should().Be(new DateTime(y, mo, d, h, mi, sec));
+        Assert.NotNull(parsed);
+        Assert.Equal(new DateTime(y, mo, d, h, mi, sec), parsed!.Value);
     }
 
     [Theory]
@@ -363,6 +363,6 @@ public class OperationsMappingTests
     [InlineData("2026-08-02")]
     public void TryParseArcaDate_should_return_null_for_invalid_input(string? input)
     {
-        WsfeOps.TryParseArcaDate(input).Should().BeNull();
+        Assert.Null(WsfeOps.TryParseArcaDate(input));
     }
 }

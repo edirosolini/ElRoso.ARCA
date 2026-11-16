@@ -44,11 +44,11 @@ public class FileTokenCacheTests : IDisposable
     public void Constructor_should_create_cache_directory_if_missing()
     {
         var newDir = Path.Combine(Path.GetTempPath(), "ElRoso.ARCA.Tests", Guid.NewGuid().ToString("N"));
-        Directory.Exists(newDir).Should().BeFalse();
+        Assert.False(Directory.Exists(newDir));
 
         _ = new FileTokenCache(newDir, dataProtection, NullLogger<FileTokenCache>.Instance);
 
-        Directory.Exists(newDir).Should().BeTrue();
+        Assert.True(Directory.Exists(newDir));
         Directory.Delete(newDir, recursive: true);
     }
 
@@ -57,7 +57,7 @@ public class FileTokenCacheTests : IDisposable
     {
         var result = await cache.GetAsync("wsfe", 20123456789);
 
-        result.Should().BeNull();
+        Assert.Null(result);
     }
 
     [Fact]
@@ -68,10 +68,10 @@ public class FileTokenCacheTests : IDisposable
         await cache.SetAsync("wsfe", 20123456789, ticket);
         var retrieved = await cache.GetAsync("wsfe", 20123456789);
 
-        retrieved.Should().NotBeNull();
-        retrieved!.Token.Should().Be(ticket.Token);
-        retrieved.Sign.Should().Be(ticket.Sign);
-        retrieved.ExpirationTime.Should().BeCloseTo(ticket.ExpirationTime, TimeSpan.FromSeconds(1));
+        Assert.NotNull(retrieved);
+        Assert.Equal(ticket.Token, retrieved!.Token);
+        Assert.Equal(ticket.Sign, retrieved.Sign);
+        Assert.Equal(ticket.ExpirationTime, retrieved.ExpirationTime, TimeSpan.FromSeconds(1));
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class FileTokenCacheTests : IDisposable
         // ES: v2 en el nombre — el formato anterior guardaba el vencimiento en hora local del
         //     host, asi que esos archivos se ignoran en vez de leerse con otro significado.
         var expected = Path.Combine(tempDir, "ARCA_token_v2_wsfe_20123456789.bin");
-        File.Exists(expected).Should().BeTrue();
+        Assert.True(File.Exists(expected));
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class FileTokenCacheTests : IDisposable
         await cache.SetAsync("wsfe", 20123456789, expired);
         var result = await cache.GetAsync("wsfe", 20123456789);
 
-        result.Should().BeNull();
+        Assert.Null(result);
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class FileTokenCacheTests : IDisposable
         await cache.SetAsync("wsfe", 20123456789, ticket);
         var result = await cache.GetAsync("wsfe", 20123456789);
 
-        result.Should().BeNull();
+        Assert.Null(result);
     }
 
     [Fact]
@@ -132,9 +132,9 @@ public class FileTokenCacheTests : IDisposable
         var padron1 = await cache.GetAsync("ws_sr_constancia_inscripcion", 20111111111);
         var wsfe2 = await cache.GetAsync("wsfe", 30222222222);
 
-        wsfe1!.Token.Should().Be("wsfe-token");
-        padron1!.Token.Should().Be("padron-token");
-        wsfe2.Should().NotBeNull();
+        Assert.Equal("wsfe-token", wsfe1!.Token);
+        Assert.Equal("padron-token", padron1!.Token);
+        Assert.NotNull(wsfe2);
     }
 
     [Fact]
@@ -149,7 +149,7 @@ public class FileTokenCacheTests : IDisposable
         await cache.SetAsync("wsfe", 20123456789, second);
         var result = await cache.GetAsync("wsfe", 20123456789);
 
-        result!.Token.Should().Be("second-token");
+        Assert.Equal("second-token", result!.Token);
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public class FileTokenCacheTests : IDisposable
 
         await Task.WhenAll(tasks);
 
-        tasks.All(t => t.Result is not null).Should().BeTrue();
+        Assert.True(tasks.All(t => t.Result is not null));
     }
 
     [Fact]
@@ -181,8 +181,8 @@ public class FileTokenCacheTests : IDisposable
         var raw = await File.ReadAllBytesAsync(file);
         var asText = Encoding.UTF8.GetString(raw);
 
-        asText.Should().NotContain("fake-token-value");
-        asText.Should().NotContain("fake-sign-value");
+        Assert.DoesNotContain("fake-token-value", asText);
+        Assert.DoesNotContain("fake-sign-value", asText);
     }
 
     [Fact]
@@ -198,7 +198,7 @@ public class FileTokenCacheTests : IDisposable
 
         var result = await cache.GetAsync("wsfe", 20123456789);
 
-        result.Should().BeNull();
+        Assert.Null(result);
     }
 
     [Fact]
@@ -211,7 +211,7 @@ public class FileTokenCacheTests : IDisposable
         var otherCache = new FileTokenCache(tempDir, new EphemeralDataProtectionProvider(), NullLogger<FileTokenCache>.Instance);
         var result = await otherCache.GetAsync("wsfe", 20123456789);
 
-        result.Should().BeNull();
+        Assert.Null(result);
     }
 
     [Fact]
@@ -227,7 +227,7 @@ public class FileTokenCacheTests : IDisposable
 
         var result = await cache.GetAsync("wsfe", 20123456789);
 
-        result.Should().BeNull();
+        Assert.Null(result);
     }
 
     [Fact]
@@ -241,6 +241,6 @@ public class FileTokenCacheTests : IDisposable
 
         var result = await cache.GetAsync("wsfe", 20123456789);
 
-        result.Should().NotBeNull();
+        Assert.NotNull(result);
     }
 }
