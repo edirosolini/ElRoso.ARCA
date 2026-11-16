@@ -21,6 +21,7 @@
 | **v3.3.0** | `IBillingDocumentNumberingService.GetPointsOfSaleAsync`: puntos de venta de webservice del CUIT emisor (`FEParamGetPtosVenta`) |
 | **v3.3.1** | Security: `System.Security.Cryptography.Xml` 9.0.23 · el build rompe ante dependencias con vulnerabilidad High/Critical |
 | **v3.4.0** | `BillingDocumentNumberingAssociatedPeriod`: NC/ND con período asociado (`PeriodoAsoc`) · fix: los `CbtesAsoc` de FA/FB/FC llegan a ARCA |
+| **v4.0.0** | **Breaking:** target `net10.0` (LTS); .NET 9 quedó sin soporte · DataProtection y Pkcs en 10.x |
 
 ---
 
@@ -108,8 +109,8 @@ Si tu caso de uso requiere alguno de estos, **abrí una [Discussion](https://git
 - **`InvoiceVerificationOperations` constructor sin tests directos** — cubierto indirectamente por `OperationsMappingTests` pero no por test específico de la clase.
 - **Connected Services regenerables** — documentar en CLAUDE.md del repo cómo regenerar cada uno con `dotnet-svcutil`. Comandos:
   ```bash
-  dotnet dotnet-svcutil "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL" --outputDir "ARCA/Billing/Connected Services/WSFEv1" --outputFile "Reference.cs" --namespace "*,WSFEv1" --targetFramework "net9.0" --internal
-  dotnet dotnet-svcutil "https://wswhomo.afip.gov.ar/WSCDC/service.asmx?WSDL" --outputDir "ARCA/Read/Connected Services/WSCDC" --outputFile "Reference.cs" --namespace "*,WSCDC" --targetFramework "net9.0" --internal
+  dotnet dotnet-svcutil "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL" --outputDir "ARCA/Billing/Connected Services/WSFEv1" --outputFile "Reference.cs" --namespace "*,WSFEv1" --targetFramework "net10.0" --internal
+  dotnet dotnet-svcutil "https://wswhomo.afip.gov.ar/WSCDC/service.asmx?WSDL" --outputDir "ARCA/Read/Connected Services/WSCDC" --outputFile "Reference.cs" --namespace "*,WSCDC" --targetFramework "net10.0" --internal
   ```
 
 ---

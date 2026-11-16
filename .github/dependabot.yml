@@ -34,12 +34,16 @@ updates:
       - dependency-name: "StyleCop.Analyzers"
         update-types: ["version-update:semver-major"]
 
-      # Mantiene DataProtection en la familia 9.x del target net9.0.
+      # Mantiene DataProtection en la familia 10.x del target net10.0.
       - dependency-name: "Microsoft.AspNetCore.DataProtection"
         update-types: ["version-update:semver-major"]
 
       # Mantiene Microsoft.Extensions.* en la misma major que usa la lib.
       - dependency-name: "Microsoft.Extensions.*"
+        update-types: ["version-update:semver-major"]
+
+      # Mantiene Pkcs en la familia 10.x del target net10.0.
+      - dependency-name: "System.Security.Cryptography.Pkcs"
         update-types: ["version-update:semver-major"]
 
     # EN: Group minor/patch updates so we don't drown in PRs. Major updates stay individual.
