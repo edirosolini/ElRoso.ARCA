@@ -202,7 +202,32 @@ Usá `IPadronService.GetPersonaAsync(representedCuit, cuit)`. Devuelve `VATCondi
 
 ### "Olvidé el `BillingDocumentNumberingAssociateds` y ARCA lo aceptó"
 
-No siempre lo valida ARCA, pero **es obligatorio fiscalmente**. La lib lo valida con FluentValidation antes de mandar la request.
+Una NC/ND tiene que informar comprobantes asociados **o** un período asociado (error 10197 de ARCA). La lib lo valida con FluentValidation antes de mandar la request y, si no viene ninguno de los dos, tira `ARCAValidationException`.
+
+### "La NC no corresponde a una factura puntual, sino a un período"
+
+Desde `3.4.0`, en lugar de `BillingDocumentNumberingAssociateds` se puede informar `BillingDocumentNumberingAssociatedPeriod` (se envía como `PeriodoAsoc` de WSFEv1):
+
+```csharp
+request.BillingDocumentType = BillingDocumentTypeARCAEnum.NCA;
+request.BillingDocumentNumberingAssociatedPeriod = new()
+{
+    DateFrom = new DateTime(2026, 1, 1),
+    DateTo   = new DateTime(2026, 1, 31),
+};
+```
+
+Lo que la lib valida antes de pedir el CAE (con el código que devolvería ARCA):
+
+| Regla | Error ARCA |
+|-------|------------|
+| Solo en NC/ND A, B y C; no en facturas ni en FCE MiPyME | 10198 / 10196 |
+| `DateFrom` y `DateTo` obligatorias y posteriores al 01/01/2006 | 10199 / 10203 / 10206 |
+| `DateFrom` ≤ `DateTo` | 10207 |
+| `DateTo` ≤ `BillingDocumentDate` | 10208 |
+| `DateFrom` y `DateTo` en el mismo mes y año | 10209 |
+
+Se puede mandar el período junto con comprobantes asociados: ARCA no lo prohíbe.
 
 ### "El comprobante asociado tiene fecha de hace 5 años"
 
