@@ -15,6 +15,12 @@
 | **v2.2.0** | Consulta de comprobantes emitidos: `GetLastAuthorizedNumberAsync` + `GetAuthorizedAsync` |
 | **v2.3.0** | Cache de tokens cifrado con `IDataProtection` en todas las plataformas |
 | **v3.0.0** | `IPadronService` público (Padrón A5 completo) · `VATConditionARCAEnum` con los códigos de condición IVA del receptor · la emisión usa la condición real del Padrón |
+| **v3.1.0** | `ARCAOptions.ResolveReceiverFromPadron` (default `true`): en `false` emite sin consultar el Padrón A5 |
+| **v3.2.0** | `InvoiceVerificationRequest.RequesterCuit`: constatar (WSCDC) comprobantes de terceros |
+| **v3.2.1** | Fix: código de moneda del Euro (`060`, no `061`) en WSFEv1 y WSFEXv1 |
+| **v3.3.0** | `IBillingDocumentNumberingService.GetPointsOfSaleAsync`: puntos de venta de webservice del CUIT emisor (`FEParamGetPtosVenta`) |
+| **v3.3.1** | Security: `System.Security.Cryptography.Xml` 9.0.23 · el build rompe ante dependencias con vulnerabilidad High/Critical |
+| **v3.4.0** | `BillingDocumentNumberingAssociatedPeriod`: NC/ND con período asociado (`PeriodoAsoc`) · fix: los `CbtesAsoc` de FA/FB/FC llegan a ARCA |
 
 ---
 
