@@ -15,6 +15,12 @@ public class BillingDocumentNumberingRequest
 
     public IEnumerable<BillingDocumentNumberingAssociatedRequest>? BillingDocumentNumberingAssociateds { get; set; }
 
+    /// <summary>
+    /// Gets or sets the period associated with a credit or debit note when individual receipts are not provided.
+    /// / Obtiene o establece el período asociado a una nota de crédito o débito cuando no se informan comprobantes individuales.
+    /// </summary>
+    public BillingDocumentNumberingAssociatedPeriodRequest? BillingDocumentNumberingAssociatedPeriod { get; set; }
+
     public long? BillingDocumentId { get; set; }
 
     public int BillingDocumentBookPrefix { get; set; }

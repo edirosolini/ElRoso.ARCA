@@ -100,18 +100,8 @@ internal sealed class WsfeOperations : IWsfeOperations
                         CbteDesde = next,
                         CbteHasta = next,
                         CbteFch = doc.BillingDocumentDate.ToString("yyyyMMdd"),
-                        CbtesAsoc = doc.BillingDocumentType is
-                            BillingDocumentTypeARCAEnum.FA or
-                            BillingDocumentTypeARCAEnum.FB or
-                            BillingDocumentTypeARCAEnum.FC
-                            ? null
-                            : [.. doc.BillingDocumentNumberingAssociateds!.Select(x => new WSFEv1.CbteAsoc
-                            {
-                                CbteFch = x.BillingDocumentDate.ToString("yyyyMMdd"),
-                                Nro = x.BillingDocumentNumber,
-                                PtoVta = x.BillingDocumentBookPrefix,
-                                Tipo = (int)x.BillingDocumentType,
-                            })],
+                        CbtesAsoc = MapAssociatedDocuments(doc.BillingDocumentNumberingAssociateds)?.ToArray(),
+                        PeriodoAsoc = MapAssociatedPeriod(doc.BillingDocumentNumberingAssociatedPeriod),
                         ImpTotal = Math.Round(doc.Total, 2),
                         ImpTotConc = isTypeWithVAT ? Math.Round(doc.AmountNotTax, 2) : 0,
                         ImpNeto = Math.Round(doc.AmountTax, 2),
@@ -351,6 +341,36 @@ internal sealed class WsfeOperations : IWsfeOperations
         Enum.IsDefined(client.Condition)
             ? (int)client.Condition
             : throw new ARCAValidationException([$"Condición frente al IVA del receptor no válida: {(int)client.Condition}."]);
+
+    internal static WSFEv1.Periodo? MapAssociatedPeriod(BillingDocumentNumberingAssociatedPeriodRequest? period)
+    {
+        return period is null ? null
+                              : new WSFEv1.Periodo
+                              {
+                                  FchDesde = period.DateFrom.ToString("yyyyMMdd"),
+                                  FchHasta = period.DateTo.ToString("yyyyMMdd"),
+                              };
+    }
+
+    // EN: ARCA rejects an empty CbtesAsoc (10062), so null or empty inputs map to null.
+    // ES: ARCA rechaza CbtesAsoc vacío (10062), por eso una entrada nula o vacía se mapea a null.
+    internal static List<WSFEv1.CbteAsoc>? MapAssociatedDocuments(IEnumerable<BillingDocumentNumberingAssociatedRequest>? associatedDocuments)
+    {
+        if (associatedDocuments is null)
+        {
+            return null;
+        }
+
+        var mapped = associatedDocuments.Select(x => new WSFEv1.CbteAsoc
+        {
+            CbteFch = x.BillingDocumentDate.ToString("yyyyMMdd"),
+            Nro = x.BillingDocumentNumber,
+            PtoVta = x.BillingDocumentBookPrefix,
+            Tipo = (int)x.BillingDocumentType,
+        }).ToList();
+
+        return mapped.Count == 0 ? null : mapped;
+    }
 
     /// <summary>
     /// EN: Parses an ARCA date field. Supports both yyyyMMdd and yyyyMMddHHmmss — FchVto comes
