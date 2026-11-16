@@ -94,7 +94,7 @@ public class BillingDocumentNumberingServiceTests
         var service = CreateService();
 
         await Assert.ThrowsAsync<ARCAValidationException>(
-            () => service.AuthorizeAsync(MinimalRequest(BillingDocumentTypeARCAEnum.FA)));
+            () => service.AuthorizeAsync(MinimalRequest(BillingDocumentTypeARCAEnum.FA), TestContext.Current.CancellationToken));
 
         tokenCacheMock.Verify(t => t.GetAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
         loginTicketServiceMock.Verify(
@@ -130,7 +130,7 @@ public class BillingDocumentNumberingServiceTests
         var service = CreateService();
 
         await Assert.ThrowsAsync<ARCAValidationException>(
-            () => service.AuthorizeAsync(MinimalRequest(BillingDocumentTypeARCAEnum.FA)));
+            () => service.AuthorizeAsync(MinimalRequest(BillingDocumentTypeARCAEnum.FA), TestContext.Current.CancellationToken));
 
         validatorMock.Verify(
             v => v.Validate(It.IsAny<BillingDocumentNumberingRequest>()),
@@ -151,7 +151,7 @@ public class BillingDocumentNumberingServiceTests
 
         try
         {
-            await service.AuthorizeAsync(request);
+            await service.AuthorizeAsync(request, TestContext.Current.CancellationToken);
             Assert.Fail("Expected ARCAServiceException");
         }
         catch (ARCAServiceException ex)
@@ -220,7 +220,7 @@ public class BillingDocumentNumberingServiceTests
         };
 
         var service = CreateService();
-        var response = await service.AuthorizeAsync(request);
+        var response = await service.AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.True(response.Result);
         Assert.Equal("75123456789012", response.CAE);
@@ -262,7 +262,7 @@ public class BillingDocumentNumberingServiceTests
         var request = MinimalRequest(BillingDocumentTypeARCAEnum.FB);
 
         var service = CreateService();
-        var response = await service.AuthorizeAsync(request);
+        var response = await service.AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.True(response.Result);
         Assert.Equal(1, response.BillingDocumentNumber);
@@ -296,7 +296,7 @@ public class BillingDocumentNumberingServiceTests
         request.Client = new ClientRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20111111111 };
 
         var service = CreateService();
-        await service.AuthorizeAsync(request);
+        await service.AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.Equal(VATConditionARCAEnum.MONOTRIBUTO, request.Client.Condition);
         Assert.Equal("Juan Pérez", request.Client.ClientName);
@@ -319,7 +319,7 @@ public class BillingDocumentNumberingServiceTests
         request.Client = new ClientRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 30987654321 };
 
         var service = CreateService();
-        var response = await service.AuthorizeAsync(request);
+        var response = await service.AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.False(response.Result);
         Assert.Single(response.Errors, e => e.Contains("No existe persona"));
@@ -373,7 +373,7 @@ public class BillingDocumentNumberingServiceTests
         var request = CuitRequest(BillingDocumentTypeARCAEnum.FB);
         request.Client.SetCondition(VATConditionARCAEnum.CONSUMIDOR_FINAL);
 
-        var response = await CreateService().AuthorizeAsync(request);
+        var response = await CreateService().AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.True(response.Result);
         Assert.Equal(padronCondition, request.Client.Condition);
@@ -395,7 +395,7 @@ public class BillingDocumentNumberingServiceTests
         var request = CuitRequest(BillingDocumentTypeARCAEnum.FB);
         request.Client.SetCondition(consumerCondition);
 
-        var response = await CreateService().AuthorizeAsync(request);
+        var response = await CreateService().AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.True(response.Result);
         Assert.Equal(consumerCondition, request.Client.Condition);
@@ -421,7 +421,7 @@ public class BillingDocumentNumberingServiceTests
         var request = CuitRequest(BillingDocumentTypeARCAEnum.FB);
         request.Client.SetCondition(VATConditionARCAEnum.IVA_NO_ALCANZADO);
 
-        var response = await CreateService().AuthorizeAsync(request);
+        var response = await CreateService().AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.True(response.Result);
         Assert.Equal(VATConditionARCAEnum.IVA_NO_ALCANZADO, request.Client.Condition);
@@ -444,7 +444,7 @@ public class BillingDocumentNumberingServiceTests
         var request = CuitRequest(BillingDocumentTypeARCAEnum.FA);
         request.Client.SetCondition(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
 
-        var response = await CreateService().AuthorizeAsync(request);
+        var response = await CreateService().AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.True(response.Result);
         Assert.Equal(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO, request.Client.Condition);
@@ -462,7 +462,7 @@ public class BillingDocumentNumberingServiceTests
         SetupApprovedCae();
         var request = CuitRequest(BillingDocumentTypeARCAEnum.FA);
 
-        await CreateService().AuthorizeAsync(request);
+        await CreateService().AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.Equal(default(VATConditionARCAEnum), request.Client.Condition);
     }
@@ -476,7 +476,7 @@ public class BillingDocumentNumberingServiceTests
         var request = MinimalRequest(BillingDocumentTypeARCAEnum.FB);
         request.Client.SetCondition(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
 
-        await CreateService().AuthorizeAsync(request);
+        await CreateService().AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.Equal(VATConditionARCAEnum.CONSUMIDOR_FINAL, request.Client.Condition);
     }
@@ -526,7 +526,7 @@ public class BillingDocumentNumberingServiceTests
         var request = MinimalRequest(BillingDocumentTypeARCAEnum.FC);
 
         var service = CreateService();
-        var response = await service.AuthorizeAsync(request);
+        var response = await service.AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.False(response.Result);
         Assert.Null(response.CAE);
@@ -549,7 +549,7 @@ public class BillingDocumentNumberingServiceTests
         var request = CuitRequest(BillingDocumentTypeARCAEnum.FB);
         request.Client.SetCondition(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
 
-        await CreateService().AuthorizeAsync(request);
+        await CreateService().AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         tokenCacheMock.Verify(t => t.GetAsync("ws_sr_constancia_inscripcion", 20123456789L, It.IsAny<CancellationToken>()), Times.Once);
         padronMock.Verify(p => p.GetPersonaAsync(
@@ -568,7 +568,7 @@ public class BillingDocumentNumberingServiceTests
             .Setup(p => p.GetPersonaAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new PadronPersonaResult { Errors = ["padron down"] });
 
-        var response = await CreateService().AuthorizeAsync(CuitRequest(BillingDocumentTypeARCAEnum.FA));
+        var response = await CreateService().AuthorizeAsync(CuitRequest(BillingDocumentTypeARCAEnum.FA), TestContext.Current.CancellationToken);
 
         Assert.Contains("padron down", response.Errors);
         wsfeMock.Verify(w => w.SolicitarCaeAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(),
@@ -586,7 +586,7 @@ public class BillingDocumentNumberingServiceTests
         var request = CuitRequest(BillingDocumentTypeARCAEnum.FA);
         request.Client.SetCondition(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
 
-        var response = await CreateService().AuthorizeAsync(request);
+        var response = await CreateService().AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.True(response.Result);
         padronMock.Verify(p => p.GetPersonaAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()),
@@ -610,7 +610,7 @@ public class BillingDocumentNumberingServiceTests
         var request = CuitRequest(BillingDocumentTypeARCAEnum.FA);
         request.Client.SetCondition(consumerCondition);
 
-        await CreateService().AuthorizeAsync(request);
+        await CreateService().AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         tokenCacheMock.Verify(t => t.GetAsync("wsfe", 20123456789L, It.IsAny<CancellationToken>()), Times.Once);
         wsfeMock.Verify(w => w.GetLastNumberAsync(It.IsAny<string>(), It.IsAny<string>(), 20123456789L,
@@ -630,7 +630,7 @@ public class BillingDocumentNumberingServiceTests
         var request = MinimalRequest(BillingDocumentTypeARCAEnum.FB);
         request.Client.SetCondition(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
 
-        await CreateService().AuthorizeAsync(request);
+        await CreateService().AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.Equal(VATConditionARCAEnum.CONSUMIDOR_FINAL, request.Client.Condition);
     }
@@ -664,7 +664,7 @@ public class BillingDocumentNumberingServiceTests
         request.Client.ClientLanguage = "Inglés";
 
         var service = CreateService();
-        var response = await service.AuthorizeAsync(request);
+        var response = await service.AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.True(response.Result);
         Assert.Equal("75999999999999", response.CAE);
@@ -702,7 +702,7 @@ public class BillingDocumentNumberingServiceTests
         request.Items = [new ItemRequest { ItemDescription = "Refund", Amount = 100 }];
 
         var service = CreateService();
-        var response = await service.AuthorizeAsync(request);
+        var response = await service.AuthorizeAsync(request, TestContext.Current.CancellationToken);
 
         Assert.False(response.Result);
         Assert.Single(response.Errors, e => e.Contains("1500"));
@@ -733,7 +733,7 @@ public class BillingDocumentNumberingServiceTests
             .ReturnsAsync(new WsfeCaeResult { IsApproved = true, Cae = "75", CaeExpiration = DateTime.Today });
 
         var service = CreateService();
-        await service.AuthorizeAsync(MinimalRequest(BillingDocumentTypeARCAEnum.FB));
+        await service.AuthorizeAsync(MinimalRequest(BillingDocumentTypeARCAEnum.FB), TestContext.Current.CancellationToken);
 
         loginTicketServiceMock.Verify(l => l.GetLoginTicketAsync(
             "wsfe", It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -770,7 +770,7 @@ public class BillingDocumentNumberingServiceTests
         var last = await service.GetLastAuthorizedNumberAsync(
             new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 },
             BillingDocumentTypeARCAEnum.FC,
-            3);
+            3, TestContext.Current.CancellationToken);
 
         Assert.Equal(158, last);
     }
@@ -799,7 +799,7 @@ public class BillingDocumentNumberingServiceTests
             new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 },
             BillingDocumentTypeARCAEnum.FC,
             3,
-            157);
+            157, TestContext.Current.CancellationToken);
 
         Assert.True(found.IsApproved);
         Assert.Equal("86305060629012", found.CAE);
@@ -835,7 +835,7 @@ public class BillingDocumentNumberingServiceTests
             new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 },
             BillingDocumentTypeARCAEnum.FC,
             3,
-            9999);
+            9999, TestContext.Current.CancellationToken);
 
         Assert.False(found.IsApproved);
         Assert.Null(found.CAE);
@@ -868,7 +868,7 @@ public class BillingDocumentNumberingServiceTests
             new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 },
             BillingDocumentTypeARCAEnum.FC,
             3,
-            157);
+            157, TestContext.Current.CancellationToken);
 
         Assert.Equal(4, found.BillingDocumentBookPrefix);
         Assert.Equal(BillingDocumentTypeARCAEnum.NCC, found.BillingDocumentType);
@@ -879,9 +879,9 @@ public class BillingDocumentNumberingServiceTests
     {
         var service = CreateService();
 
-        await Assert.ThrowsAsync<ArgumentNullException>(() => service.GetLastAuthorizedNumberAsync(null!, BillingDocumentTypeARCAEnum.FC, 3));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => service.GetLastAuthorizedNumberAsync(null!, BillingDocumentTypeARCAEnum.FC, 3, TestContext.Current.CancellationToken));
 
-        await Assert.ThrowsAsync<ArgumentNullException>(() => service.GetAuthorizedAsync(null!, BillingDocumentTypeARCAEnum.FC, 3, 157));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => service.GetAuthorizedAsync(null!, BillingDocumentTypeARCAEnum.FC, 3, 157, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -896,7 +896,7 @@ public class BillingDocumentNumberingServiceTests
 
         var service = CreateService();
         var found = await service.GetPointsOfSaleAsync(
-            new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 });
+            new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 }, TestContext.Current.CancellationToken);
 
         Assert.Equal(pointOfSale, Assert.Single(found));
         tokenCacheMock.Verify(t => t.GetAsync("wsfe", 20123456789L, It.IsAny<CancellationToken>()), Times.Once);
@@ -914,7 +914,7 @@ public class BillingDocumentNumberingServiceTests
 
         var service = CreateService();
         var found = await service.GetPointsOfSaleAsync(
-            new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 });
+            new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 }, TestContext.Current.CancellationToken);
 
         Assert.Empty(found);
     }
@@ -945,6 +945,6 @@ public class BillingDocumentNumberingServiceTests
     {
         var service = CreateService();
 
-        await Assert.ThrowsAsync<ArgumentNullException>(() => service.GetPointsOfSaleAsync(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => service.GetPointsOfSaleAsync(null!, TestContext.Current.CancellationToken));
     }
 }

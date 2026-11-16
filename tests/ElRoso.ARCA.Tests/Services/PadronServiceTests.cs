@@ -50,7 +50,7 @@ public class PadronServiceTests
             .Setup(p => p.GetPersonaAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new PadronPersonaResult { Persona = persona });
 
-        var result = await CreateService().GetPersonaAsync(RepresentedCuit, QueriedCuit);
+        var result = await CreateService().GetPersonaAsync(RepresentedCuit, QueriedCuit, TestContext.Current.CancellationToken);
 
         Assert.Same(persona, result);
         tokenCacheMock.Verify(t => t.GetAsync("ws_sr_constancia_inscripcion", RepresentedCuit, It.IsAny<CancellationToken>()), Times.Once);
@@ -68,7 +68,7 @@ public class PadronServiceTests
             .Setup(p => p.GetPersonaAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new PadronPersonaResult { Persona = new PadronPersonaResponse { Found = true } });
 
-        await CreateService().GetPersonaAsync(RepresentedCuit, QueriedCuit);
+        await CreateService().GetPersonaAsync(RepresentedCuit, QueriedCuit, TestContext.Current.CancellationToken);
 
         tokenCacheMock.Verify(t => t.SetAsync("ws_sr_constancia_inscripcion", RepresentedCuit, ticket, It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -81,7 +81,7 @@ public class PadronServiceTests
             .Setup(p => p.GetPersonaAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new ARCAServiceException("ARCA Padron A5 getPersona failed.", new FaultException("No existe persona con ese Id")));
 
-        var result = await CreateService().GetPersonaAsync(RepresentedCuit, QueriedCuit);
+        var result = await CreateService().GetPersonaAsync(RepresentedCuit, QueriedCuit, TestContext.Current.CancellationToken);
 
         Assert.False(result.Found);
         Assert.Equal(QueriedCuit, result.Cuit);
