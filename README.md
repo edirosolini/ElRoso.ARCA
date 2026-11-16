@@ -1,7 +1,6 @@
 # ElRoso.ARCA
 
 [![CI](https://github.com/edirosolini/ElRoso.ARCA/actions/workflows/ci.yml/badge.svg?branch=mainline)](https://github.com/edirosolini/ElRoso.ARCA/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/edirosolini/ElRoso.ARCA/branch/mainline/graph/badge.svg)](https://codecov.io/gh/edirosolini/ElRoso.ARCA)
 [![NuGet](https://img.shields.io/nuget/v/ElRoso.ARCA.svg?label=NuGet)](https://www.nuget.org/packages/ElRoso.ARCA)
 [![Downloads](https://img.shields.io/nuget/dt/ElRoso.ARCA.svg)](https://www.nuget.org/packages/ElRoso.ARCA)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)

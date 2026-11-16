@@ -100,16 +100,6 @@ jobs:
           }
           echo "Coverage $COV% meets minimum $MIN%"
 
-      - name: Upload coverage to Codecov
-        if: always()
-        uses: codecov/codecov-action@v7
-        with:
-          files: ./TestResults/**/coverage.cobertura.xml
-          flags: unittests
-          name: codecov-elroso-arca
-          fail_ci_if_error: false
-          verbose: false
-
       - name: Upload coverage report (artifact)
         if: always()
         uses: actions/upload-artifact@v7

@@ -12,6 +12,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 - **BREAKING: el paquete apunta a `net10.0` (LTS) en lugar de `net9.0`.** .NET 9 quedó sin soporte de Microsoft el 10/11/2026. Los proyectos que consumen la lib tienen que apuntar a .NET 10 o superior; la API pública no cambia.
 - `Microsoft.AspNetCore.DataProtection` pasa de 9.0.23 a 10.0.15 y `System.Security.Cryptography.Pkcs` queda en 10.0.15, la misma familia que el runtime.
+- **Los consumidores necesitan `Microsoft.Extensions.*` 10.0.15 o superior.** La lib depende de `Microsoft.Extensions.DependencyInjection.Abstractions` y `Logging.Abstractions` 10.0.15; un proyecto con `Microsoft.Extensions.*` 10.0.14 o anterior falla el restore con NU1605 (downgrade). Subirlos a 10.0.15 lo resuelve.
 
 ### Fixed
 
