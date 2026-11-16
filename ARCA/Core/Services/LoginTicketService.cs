@@ -3,14 +3,14 @@
 // </copyright>
 namespace ElRoso.ARCA.Core;
 
-using ElRoso.ARCA.Core;
-using ElRoso.ARCA.Billing;
-using ElRoso.ARCA.Read;
-using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Net.Sockets;
 using System.Text;
 using System.Xml;
+using ElRoso.ARCA.Billing;
+using ElRoso.ARCA.Core;
+using ElRoso.ARCA.Read;
+using Microsoft.Extensions.Logging;
 
 internal sealed class LoginTicketService : ILoginTicketService
 {
@@ -277,9 +277,9 @@ internal sealed class LoginTicketService : ILoginTicketService
             if (data.Length < ntpDataLength)
                 throw new InvalidOperationException($"NTP response too short: {data.Length} bytes.");
 
-            ulong intPart = (ulong)data[40] << 24 | (ulong)data[41] << 16 | (ulong)data[42] << 8 | data[43];
-            ulong fracPart = (ulong)data[44] << 24 | (ulong)data[45] << 16 | (ulong)data[46] << 8 | data[47];
-            var ms = intPart * 1000 + fracPart * 1000 / 0x100000000L;
+            ulong intPart = ((ulong)data[40] << 24) | ((ulong)data[41] << 16) | ((ulong)data[42] << 8) | data[43];
+            ulong fracPart = ((ulong)data[44] << 24) | ((ulong)data[45] << 16) | ((ulong)data[46] << 8) | data[47];
+            var ms = (intPart * 1000) + (fracPart * 1000 / 0x100000000L);
             result = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds((long)ms);
         }
         catch (OperationCanceledException) when (!ct.IsCancellationRequested)

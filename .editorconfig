@@ -62,6 +62,8 @@ dotnet_diagnostic.SA1600.severity = none
 dotnet_diagnostic.SA1601.severity = none
 dotnet_diagnostic.SA1649.severity = none
 dotnet_diagnostic.SA1208.severity = none
+dotnet_diagnostic.SA1200.severity = none
+dotnet_diagnostic.SA1402.severity = none
 
 # APIs obsoletas - conviene al menos suggestion
 dotnet_diagnostic.SYSLIB0023.severity = suggestion

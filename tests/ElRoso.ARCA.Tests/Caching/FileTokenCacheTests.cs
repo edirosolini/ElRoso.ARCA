@@ -29,6 +29,8 @@ public class FileTokenCacheTests : IDisposable
             try { Directory.Delete(tempDir, recursive: true); }
             catch { /* best-effort cleanup */ }
         }
+
+        GC.SuppressFinalize(this);
     }
 
     private static LoginTicketResponse FreshTicket(DateTime? expirationUtc = null) => new()

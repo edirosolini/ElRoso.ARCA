@@ -55,12 +55,19 @@ public class ARCAOptions
     /// </summary>
     public string WsccomuUrl
     {
-        get => string.IsNullOrWhiteSpace(this.wscomuUrlOverride)
-            ? (this.IsProduction
-                ? "https://infraestructura.afip.gob.ar/ve-ws/services/veconsumer"
-                : "https://stable-middleware-tecno-ext.afip.gob.ar/ve-ws/services/veconsumer")
-            : this.wscomuUrlOverride;
-        set => this.wscomuUrlOverride = value;
+        get
+        {
+            return string.IsNullOrWhiteSpace(this.wscomuUrlOverride)
+                ? (this.IsProduction
+                    ? "https://infraestructura.afip.gob.ar/ve-ws/services/veconsumer"
+                    : "https://stable-middleware-tecno-ext.afip.gob.ar/ve-ws/services/veconsumer")
+                : this.wscomuUrlOverride;
+        }
+
+        set
+        {
+            this.wscomuUrlOverride = value;
+        }
     }
 
     private string? wscomuUrlOverride;

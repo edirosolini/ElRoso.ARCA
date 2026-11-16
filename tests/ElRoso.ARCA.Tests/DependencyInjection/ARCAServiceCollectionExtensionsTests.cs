@@ -20,11 +20,11 @@ public class ARCAServiceCollectionExtensionsTests
         services.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
         services.AddARCAClient(opts =>
         {
-            opts.IsProduction        = false;
-            opts.CertificatePath     = "/tmp/cert.pfx";
+            opts.IsProduction = false;
+            opts.CertificatePath = "/tmp/cert.pfx";
             opts.CertificatePassword = "pwd";
             opts.TokenCacheDirectory = Path.Combine(Path.GetTempPath(), "ElRoso.ARCA.Tests.DI");
-            opts.SoapTimeoutSeconds  = 15;
+            opts.SoapTimeoutSeconds = 15;
             configure?.Invoke(opts);
         });
         return services.BuildServiceProvider();

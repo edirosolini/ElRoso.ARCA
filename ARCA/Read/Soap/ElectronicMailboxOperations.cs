@@ -4,8 +4,8 @@
 namespace ElRoso.ARCA.Read;
 
 using System.Globalization;
-using ElRoso.ARCA.Core;
 using ElRoso.ARCA.Billing;
+using ElRoso.ARCA.Core;
 using ElRoso.ARCA.Read;
 
 internal sealed class ElectronicMailboxOperations : IElectronicMailboxOperations
