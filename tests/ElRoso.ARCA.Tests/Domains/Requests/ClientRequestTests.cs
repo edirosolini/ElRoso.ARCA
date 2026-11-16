@@ -13,11 +13,11 @@ public class ClientRequestTests
     {
         var client = new ClientRequest();
 
-        client.ClientName.Should().BeEmpty();
-        client.Address.Should().BeEmpty();
-        client.ClientLanguage.Should().BeEmpty();
-        client.DocumentNumber.Should().Be(0);
-        client.CountryId.Should().Be(0);
+        Assert.Empty(client.ClientName);
+        Assert.Empty(client.Address);
+        Assert.Empty(client.ClientLanguage);
+        Assert.Equal(0, client.DocumentNumber);
+        Assert.Equal(0, client.CountryId);
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class ClientRequestTests
 
         client.SetCondition(VATConditionARCAEnum.CONSUMIDOR_FINAL);
 
-        client.Condition.Should().Be(VATConditionARCAEnum.CONSUMIDOR_FINAL);
+        Assert.Equal(VATConditionARCAEnum.CONSUMIDOR_FINAL, client.Condition);
     }
 
     [Fact]
@@ -37,6 +37,6 @@ public class ClientRequestTests
 
         client.SetClientName("Juan Pérez SA");
 
-        client.ClientName.Should().Be("Juan Pérez SA");
+        Assert.Equal("Juan Pérez SA", client.ClientName);
     }
 }

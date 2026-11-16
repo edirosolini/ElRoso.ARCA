@@ -37,11 +37,11 @@ public class ARCAServiceCollectionExtensionsTests
 
         var options = sp.GetRequiredService<ARCAOptions>();
 
-        options.IsProduction.Should().BeFalse();
-        options.CertificatePath.Should().Be("/tmp/cert.pfx");
-        options.CertificatePassword.Should().Be("pwd");
-        options.TokenCacheDirectory.Should().EndWith("ElRoso.ARCA.Tests.DI");
-        options.SoapTimeoutSeconds.Should().Be(15);
+        Assert.False(options.IsProduction);
+        Assert.Equal("/tmp/cert.pfx", options.CertificatePath);
+        Assert.Equal("pwd", options.CertificatePassword);
+        Assert.EndsWith("ElRoso.ARCA.Tests.DI", options.TokenCacheDirectory);
+        Assert.Equal(15, options.SoapTimeoutSeconds);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class ARCAServiceCollectionExtensionsTests
 
         var service = sp.GetRequiredService<ICertificateService>();
 
-        service.Should().NotBeNull();
+        Assert.NotNull(service);
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class ARCAServiceCollectionExtensionsTests
 
         var cache = sp.GetRequiredService<ITokenCache>();
 
-        cache.Should().BeOfType<FileTokenCache>();
+        Assert.IsType<FileTokenCache>(cache);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class ARCAServiceCollectionExtensionsTests
 
         var service = sp.GetRequiredService<ILoginTicketService>();
 
-        service.Should().NotBeNull();
+        Assert.NotNull(service);
     }
 
     [Fact]
@@ -81,7 +81,7 @@ public class ARCAServiceCollectionExtensionsTests
 
         var service = sp.GetRequiredService<IBillingDocumentNumberingService>();
 
-        service.Should().NotBeNull();
+        Assert.NotNull(service);
     }
 
     [Fact]
@@ -92,8 +92,8 @@ public class ARCAServiceCollectionExtensionsTests
         var first = sp.GetRequiredService<IPadronService>();
         var second = sp.GetRequiredService<IPadronService>();
 
-        first.Should().NotBeNull();
-        second.Should().BeSameAs(first);
+        Assert.NotNull(first);
+        Assert.Same(first, second);
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public class ARCAServiceCollectionExtensionsTests
 
         var validator = sp.GetRequiredService<IValidator<BillingDocumentNumberingRequest>>();
 
-        validator.Should().NotBeNull();
+        Assert.NotNull(validator);
     }
 
     [Fact]
@@ -126,12 +126,12 @@ public class ARCAServiceCollectionExtensionsTests
         var valA = sp.GetRequiredService<IValidator<BillingDocumentNumberingRequest>>();
         var valB = sp.GetRequiredService<IValidator<BillingDocumentNumberingRequest>>();
 
-        optionsB.Should().BeSameAs(optionsA);
-        certB.Should().BeSameAs(certA);
-        cacheB.Should().BeSameAs(cacheA);
-        loginB.Should().BeSameAs(loginA);
-        billingB.Should().BeSameAs(billingA);
-        valB.Should().BeSameAs(valA);
+        Assert.Same(optionsA, optionsB);
+        Assert.Same(certA, certB);
+        Assert.Same(cacheA, cacheB);
+        Assert.Same(loginA, loginB);
+        Assert.Same(billingA, billingB);
+        Assert.Same(valA, valB);
     }
 
     [Fact]
@@ -145,7 +145,7 @@ public class ARCAServiceCollectionExtensionsTests
             o.CertificatePath = "/x";
         });
 
-        result.Should().BeSameAs(services);
+        Assert.Same(services, result);
     }
 
     [Fact]
@@ -161,7 +161,7 @@ public class ARCAServiceCollectionExtensionsTests
             opts.CertificatePath = "/x";
         });
 
-        callCount.Should().Be(1);
+        Assert.Equal(1, callCount);
     }
 
     [Fact]
@@ -171,6 +171,6 @@ public class ARCAServiceCollectionExtensionsTests
 
         var options = sp.GetRequiredService<ARCAOptions>();
 
-        options.IsProduction.Should().BeTrue();
+        Assert.True(options.IsProduction);
     }
 }

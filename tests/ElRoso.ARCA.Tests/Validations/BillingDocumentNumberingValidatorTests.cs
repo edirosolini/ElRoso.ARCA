@@ -29,7 +29,7 @@ public class BillingDocumentNumberingValidatorTests
     {
         var result = validator.Validate(ValidFA());
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -41,8 +41,8 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociateds));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociateds));
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -74,8 +74,8 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociatedPeriod));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociatedPeriod));
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 
     [Theory]
@@ -106,9 +106,8 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should()
-                     .Contain(e => e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociatedPeriod));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociatedPeriod));
     }
 
     [Theory]
@@ -126,7 +125,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -142,7 +141,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -158,7 +157,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -174,7 +173,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -190,7 +189,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -206,7 +205,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Theory]
@@ -224,8 +223,8 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e =>
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e =>
             e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociatedPeriod) &&
             e.ErrorMessage.Contains("mismo mes"));
     }
@@ -248,7 +247,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -261,8 +260,8 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentId));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentId));
     }
 
     [Fact]
@@ -275,8 +274,8 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingRequest.Items));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingRequest.Items));
     }
 
     [Fact]
@@ -290,8 +289,8 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage.Contains("Service invoices"));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Service invoices"));
     }
 
     [Fact]
@@ -305,7 +304,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -325,7 +324,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -336,8 +335,8 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingRequest.Currency));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingRequest.Currency));
     }
 
     [Fact]
@@ -348,7 +347,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -359,8 +358,8 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentBookPrefix));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentBookPrefix));
     }
 
     [Fact]
@@ -371,8 +370,8 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(BillingDocumentNumberingRequest.IssuingCompany));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(BillingDocumentNumberingRequest.IssuingCompany));
     }
 
     [Fact]
@@ -389,7 +388,7 @@ public class BillingDocumentNumberingValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName.StartsWith("Client."));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName.StartsWith("Client."));
     }
 }

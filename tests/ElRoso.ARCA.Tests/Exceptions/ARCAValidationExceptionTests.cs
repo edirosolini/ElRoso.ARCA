@@ -13,8 +13,8 @@ public class ARCAValidationExceptionTests
 
         var exception = new ARCAValidationException(errors);
 
-        exception.Errors.Should().BeEquivalentTo(errors);
-        exception.Errors.Should().BeAssignableTo<IReadOnlyList<string>>();
+        Assert.Equivalent(errors, exception.Errors);
+        Assert.IsAssignableFrom<IReadOnlyList<string>>(exception.Errors);
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class ARCAValidationExceptionTests
     {
         var exception = new ARCAValidationException(["any error"]);
 
-        exception.Message.Should().Be("One or more validation errors occurred.");
+        Assert.Equal("One or more validation errors occurred.", exception.Message);
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class ARCAValidationExceptionTests
     {
         var exception = new ARCAValidationException([]);
 
-        exception.Errors.Should().BeEmpty();
+        Assert.Empty(exception.Errors);
     }
 
     [Fact]
@@ -49,6 +49,6 @@ public class ARCAValidationExceptionTests
 
         _ = exception.Errors.Count; // first read
         _ = exception.Errors.Count; // second read
-        callCount.Should().Be(1, "enumerable must be materialized once at construction time");
+        Assert.Equal(1, callCount);
     }
 }

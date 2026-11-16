@@ -31,7 +31,7 @@ public class InvoiceVerificationValidatorTests
     {
         var result = validator.Validate(ValidRequest());
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -42,8 +42,8 @@ public class InvoiceVerificationValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(InvoiceVerificationRequest.RequesterCuit));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(InvoiceVerificationRequest.RequesterCuit));
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class InvoiceVerificationValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -65,8 +65,8 @@ public class InvoiceVerificationValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(InvoiceVerificationRequest.BillingDocumentBookPrefix));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(InvoiceVerificationRequest.BillingDocumentBookPrefix));
     }
 
     [Fact]
@@ -77,8 +77,8 @@ public class InvoiceVerificationValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(InvoiceVerificationRequest.BillingDocumentNumber));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(InvoiceVerificationRequest.BillingDocumentNumber));
     }
 
     [Fact]
@@ -89,8 +89,8 @@ public class InvoiceVerificationValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(InvoiceVerificationRequest.TotalAmount));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(InvoiceVerificationRequest.TotalAmount));
     }
 
     [Fact]
@@ -101,8 +101,8 @@ public class InvoiceVerificationValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(InvoiceVerificationRequest.AuthorizationCode));
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(InvoiceVerificationRequest.AuthorizationCode));
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class InvoiceVerificationValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public class InvoiceVerificationValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class InvoiceVerificationValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 
     [Theory]
@@ -149,6 +149,6 @@ public class InvoiceVerificationValidatorTests
 
         var result = validator.Validate(request);
 
-        result.IsValid.Should().BeTrue();
+        Assert.True(result.IsValid);
     }
 }

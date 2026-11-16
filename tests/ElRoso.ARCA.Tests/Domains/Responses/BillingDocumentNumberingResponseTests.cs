@@ -29,9 +29,9 @@ public class BillingDocumentNumberingResponseTests
     {
         var response = new BillingDocumentNumberingResponse();
 
-        response.Errors.Should().BeEmpty();
-        response.Result.Should().BeFalse();
-        response.Version.Should().Be(1);
+        Assert.Empty(response.Errors);
+        Assert.False(response.Result);
+        Assert.Equal(1, response.Version);
     }
 
     [Fact]
@@ -41,15 +41,15 @@ public class BillingDocumentNumberingResponseTests
 
         var response = BillingDocumentNumberingResponse.FromRequest(request);
 
-        response.BillingDocumentType.Should().Be(request.BillingDocumentType);
-        response.BillingDocumentDate.Should().Be(request.BillingDocumentDate);
-        response.BillingDocumentBookPrefix.Should().Be(request.BillingDocumentBookPrefix);
-        response.Currency.Should().Be(request.Currency);
-        response.ExchangeRate.Should().Be(request.ExchangeRate);
-        response.Total.Should().Be(request.Total);
-        response.Version.Should().Be(request.Version);
-        response.IssuingCompany.Should().BeSameAs(request.IssuingCompany);
-        response.Client.Should().BeSameAs(request.Client);
+        Assert.Equal(request.BillingDocumentType, response.BillingDocumentType);
+        Assert.Equal(request.BillingDocumentDate, response.BillingDocumentDate);
+        Assert.Equal(request.BillingDocumentBookPrefix, response.BillingDocumentBookPrefix);
+        Assert.Equal(request.Currency, response.Currency);
+        Assert.Equal(request.ExchangeRate, response.ExchangeRate);
+        Assert.Equal(request.Total, response.Total);
+        Assert.Equal(request.Version, response.Version);
+        Assert.Same(request.IssuingCompany, response.IssuingCompany);
+        Assert.Same(request.Client, response.Client);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class BillingDocumentNumberingResponseTests
         var response = BillingDocumentNumberingResponse.FromRequest(SampleRequest());
         response.CAE = null;
 
-        response.QRCode().Should().BeNull();
+        Assert.Null(response.QRCode());
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class BillingDocumentNumberingResponseTests
         var response = BillingDocumentNumberingResponse.FromRequest(SampleRequest());
         response.CAE = string.Empty;
 
-        response.QRCode().Should().BeNull();
+        Assert.Null(response.QRCode());
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class BillingDocumentNumberingResponseTests
         response.CAE = "75123456789012";
         response.IssuingCompany = null;
 
-        response.QRCode().Should().BeNull();
+        Assert.Null(response.QRCode());
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class BillingDocumentNumberingResponseTests
         response.CAE = "75123456789012";
         response.Client = null;
 
-        response.QRCode().Should().BeNull();
+        Assert.Null(response.QRCode());
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class BillingDocumentNumberingResponseTests
 
         var url = response.QRCode();
 
-        url.Should().StartWith("https://www.afip.gob.ar/fe/qr/?p=");
+        Assert.StartsWith("https://www.afip.gob.ar/fe/qr/?p=", url);
     }
 
     [Fact]
@@ -117,19 +117,19 @@ public class BillingDocumentNumberingResponseTests
         var json = Encoding.UTF8.GetString(Convert.FromBase64String(base64));
         var payload = JObject.Parse(json);
 
-        payload["ver"]!.Value<int>().Should().Be(1);
-        payload["fecha"]!.Value<string>().Should().Be("2026-05-13");
-        payload["cuit"]!.Value<long>().Should().Be(20123456789);
-        payload["ptoVta"]!.Value<int>().Should().Be(3);
-        payload["tipoCmp"]!.Value<int>().Should().Be((int)BillingDocumentTypeARCAEnum.FA);
-        payload["nroCmp"]!.Value<int>().Should().Be(42);
-        payload["importe"]!.Value<double>().Should().Be(request.Total);
-        payload["moneda"]!.Value<string>().Should().Be("Pesos");
-        payload["ctz"]!.Value<double>().Should().Be(1);
-        payload["tipoDocRec"]!.Value<int>().Should().Be((int)DocumentTypeARCAEnum.CUIT);
-        payload["nroDocRec"]!.Value<long>().Should().Be(30987654321);
-        payload["tipoCodAut"]!.Value<string>().Should().Be("E");
-        payload["codAut"]!.Value<long>().Should().Be(75123456789012);
+        Assert.Equal(1, payload["ver"]!.Value<int>());
+        Assert.Equal("2026-05-13", payload["fecha"]!.Value<string>());
+        Assert.Equal(20123456789, payload["cuit"]!.Value<long>());
+        Assert.Equal(3, payload["ptoVta"]!.Value<int>());
+        Assert.Equal((int)BillingDocumentTypeARCAEnum.FA, payload["tipoCmp"]!.Value<int>());
+        Assert.Equal(42, payload["nroCmp"]!.Value<int>());
+        Assert.Equal(request.Total, payload["importe"]!.Value<double>());
+        Assert.Equal("Pesos", payload["moneda"]!.Value<string>());
+        Assert.Equal(1, payload["ctz"]!.Value<double>());
+        Assert.Equal((int)DocumentTypeARCAEnum.CUIT, payload["tipoDocRec"]!.Value<int>());
+        Assert.Equal(30987654321, payload["nroDocRec"]!.Value<long>());
+        Assert.Equal("E", payload["tipoCodAut"]!.Value<string>());
+        Assert.Equal(75123456789012, payload["codAut"]!.Value<long>());
     }
 
     [Fact]
@@ -144,7 +144,7 @@ public class BillingDocumentNumberingResponseTests
         var base64 = url["https://www.afip.gob.ar/fe/qr/?p=".Length..];
         var json = Encoding.UTF8.GetString(Convert.FromBase64String(base64));
 
-        json.Should().Contain("\"fecha\":\"2026-03-05\"");
+        Assert.Contains("\"fecha\":\"2026-03-05\"", json);
     }
 
     [Fact]
@@ -167,8 +167,8 @@ public class BillingDocumentNumberingResponseTests
         var base64 = url["https://www.afip.gob.ar/fe/qr/?p=".Length..];
         var payload = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(base64)));
 
-        payload["moneda"]!.Value<string>().Should().Be("Dolares");
-        payload["ctz"]!.Value<double>().Should().Be(1050.50);
-        payload["tipoCmp"]!.Value<int>().Should().Be((int)BillingDocumentTypeARCAEnum.InvoiceExport);
+        Assert.Equal("Dolares", payload["moneda"]!.Value<string>());
+        Assert.Equal(1050.50, payload["ctz"]!.Value<double>());
+        Assert.Equal((int)BillingDocumentTypeARCAEnum.InvoiceExport, payload["tipoCmp"]!.Value<int>());
     }
 }

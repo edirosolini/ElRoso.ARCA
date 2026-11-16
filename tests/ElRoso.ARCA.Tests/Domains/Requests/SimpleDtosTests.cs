@@ -13,12 +13,12 @@ public class SimpleDtosTests
     {
         var request = new LoginTicketRequest();
 
-        request.XmlTemplate.Should().Contain("<loginTicketRequest>");
-        request.XmlTemplate.Should().Contain("<header>");
-        request.XmlTemplate.Should().Contain("<uniqueId>");
-        request.XmlTemplate.Should().Contain("<generationTime>");
-        request.XmlTemplate.Should().Contain("<expirationTime>");
-        request.XmlTemplate.Should().Contain("<service>");
+        Assert.Contains("<loginTicketRequest>", request.XmlTemplate);
+        Assert.Contains("<header>", request.XmlTemplate);
+        Assert.Contains("<uniqueId>", request.XmlTemplate);
+        Assert.Contains("<generationTime>", request.XmlTemplate);
+        Assert.Contains("<expirationTime>", request.XmlTemplate);
+        Assert.Contains("<service>", request.XmlTemplate);
     }
 
     [Fact]
@@ -26,10 +26,10 @@ public class SimpleDtosTests
     {
         var request = new LoginTicketRequest();
 
-        request.Service.Should().BeEmpty();
+        Assert.Empty(request.Service);
 
         request.Service = "wsfe";
-        request.Service.Should().Be("wsfe");
+        Assert.Equal("wsfe", request.Service);
     }
 
     [Fact]
@@ -37,15 +37,15 @@ public class SimpleDtosTests
     {
         var company = new IssuingCompanyRequest();
 
-        company.DocumentNumber.Should().Be(0);
+        Assert.Equal(0, company.DocumentNumber);
 
         company.DocumentType = DocumentTypeARCAEnum.CUIT;
         company.DocumentNumber = 20123456789;
         company.VATCondition = VATConditionARCAEnum.RESPONSABLE_INSCRIPTO;
 
-        company.DocumentType.Should().Be(DocumentTypeARCAEnum.CUIT);
-        company.DocumentNumber.Should().Be(20123456789);
-        company.VATCondition.Should().Be(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
+        Assert.Equal(DocumentTypeARCAEnum.CUIT, company.DocumentType);
+        Assert.Equal(20123456789, company.DocumentNumber);
+        Assert.Equal(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO, company.VATCondition);
     }
 
     [Fact]
@@ -59,10 +59,10 @@ public class SimpleDtosTests
             BillingDocumentType = BillingDocumentTypeARCAEnum.FA,
         };
 
-        associated.BillingDocumentBookPrefix.Should().Be(1);
-        associated.BillingDocumentDate.Should().Be(new DateTime(2026, 1, 15));
-        associated.BillingDocumentNumber.Should().Be(42);
-        associated.BillingDocumentType.Should().Be(BillingDocumentTypeARCAEnum.FA);
+        Assert.Equal(1, associated.BillingDocumentBookPrefix);
+        Assert.Equal(new DateTime(2026, 1, 15), associated.BillingDocumentDate);
+        Assert.Equal(42, associated.BillingDocumentNumber);
+        Assert.Equal(BillingDocumentTypeARCAEnum.FA, associated.BillingDocumentType);
     }
 
     [Fact]
@@ -74,8 +74,8 @@ public class SimpleDtosTests
             Amount = 1000.50,
         };
 
-        item.ItemDescription.Should().Be("Software license");
-        item.Amount.Should().Be(1000.50);
+        Assert.Equal("Software license", item.ItemDescription);
+        Assert.Equal(1000.50, item.Amount);
     }
 
     [Fact]
@@ -89,9 +89,9 @@ public class SimpleDtosTests
             Amount = 3,
         };
 
-        tax.Description.Should().Be("Impuestos internos");
-        tax.BaseAmount.Should().Be(100);
-        tax.PercentageTax.Should().Be(3);
-        tax.Amount.Should().Be(3);
+        Assert.Equal("Impuestos internos", tax.Description);
+        Assert.Equal(100, tax.BaseAmount);
+        Assert.Equal(3, tax.PercentageTax);
+        Assert.Equal(3, tax.Amount);
     }
 }

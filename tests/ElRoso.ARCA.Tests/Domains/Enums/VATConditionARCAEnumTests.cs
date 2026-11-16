@@ -19,13 +19,13 @@ public class VATConditionARCAEnumTests
     [InlineData(VATConditionARCAEnum.MONOTRIBUTO_TRABAJADOR_INDEPENDIENTE_PROMOVIDO, 16)]
     public void Members_should_match_the_ARCA_receiver_code(VATConditionARCAEnum condition, int expected)
     {
-        ((int)condition).Should().Be(expected);
+        Assert.Equal(expected, (int)condition);
     }
 
     [Fact]
     public void Enum_should_have_exactly_the_eleven_ARCA_conditions()
     {
-        Enum.GetValues<VATConditionARCAEnum>().Should().HaveCount(11);
+        Assert.Equal(11, Enum.GetValues<VATConditionARCAEnum>().Length);
     }
 
     [Fact]
@@ -33,6 +33,6 @@ public class VATConditionARCAEnumTests
     {
         var values = Enum.GetValues<VATConditionARCAEnum>().Select(v => (int)v);
 
-        values.Should().OnlyHaveUniqueItems();
+        Assert.Distinct(values);
     }
 }

@@ -14,27 +14,27 @@ public class WsfeAssociatedPeriodMappingTests
             DateTo = new DateTime(2026, 1, 31),
         });
 
-        result.Should().NotBeNull();
-        result!.FchDesde.Should().Be("20260102");
-        result.FchHasta.Should().Be("20260131");
+        Assert.NotNull(result);
+        Assert.Equal("20260102", result!.FchDesde);
+        Assert.Equal("20260131", result.FchHasta);
     }
 
     [Fact]
     public void MapAssociatedPeriod_returns_null_when_period_is_not_provided()
     {
-        WsfeOperations.MapAssociatedPeriod(null).Should().BeNull();
+        Assert.Null(WsfeOperations.MapAssociatedPeriod(null));
     }
 
     [Fact]
     public void MapAssociatedDocuments_returns_null_when_documents_are_not_provided()
     {
-        WsfeOperations.MapAssociatedDocuments(null).Should().BeNull();
+        Assert.Null(WsfeOperations.MapAssociatedDocuments(null));
     }
 
     [Fact]
     public void MapAssociatedDocuments_returns_null_when_documents_are_empty()
     {
-        WsfeOperations.MapAssociatedDocuments([]).Should().BeNull();
+        Assert.Null(WsfeOperations.MapAssociatedDocuments([]));
     }
 
     [Fact]
@@ -51,10 +51,10 @@ public class WsfeAssociatedPeriodMappingTests
             },
         ]);
 
-        result.Should().ContainSingle();
-        result![0].Tipo.Should().Be((int)BillingDocumentTypeARCAEnum.FA);
-        result[0].Nro.Should().Be(42);
-        result[0].PtoVta.Should().Be(3);
-        result[0].CbteFch.Should().Be("20260110");
+        Assert.Single(result!);
+        Assert.Equal((int)BillingDocumentTypeARCAEnum.FA, result![0].Tipo);
+        Assert.Equal(42, result[0].Nro);
+        Assert.Equal(3, result[0].PtoVta);
+        Assert.Equal("20260110", result[0].CbteFch);
     }
 }

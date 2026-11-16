@@ -58,7 +58,7 @@ public class BillingDocumentNumberingServiceTests
     {
         var act = CreateService;
 
-        act.Should().NotThrow();
+        Assert.Null(Record.Exception(act));
     }
 
     [Fact]
@@ -76,10 +76,10 @@ public class BillingDocumentNumberingServiceTests
 
         var act = () => service.AuthorizeAsync(MinimalRequest(BillingDocumentTypeARCAEnum.FA));
 
-        var exception = await act.Should().ThrowAsync<ARCAValidationException>();
-        exception.Which.Errors.Should().HaveCount(2);
-        exception.Which.Errors.Should().Contain(e => e.Contains("CUR001") && e.Contains("Currency is not supported"));
-        exception.Which.Errors.Should().Contain(e => e.Contains("AMT002") && e.Contains("AmountTax must be positive"));
+        var exception = await Assert.ThrowsAsync<ARCAValidationException>(act);
+        Assert.Equal(2, exception.Errors.Count());
+        Assert.Contains(exception.Errors, e => e.Contains("CUR001") && e.Contains("Currency is not supported"));
+        Assert.Contains(exception.Errors, e => e.Contains("AMT002") && e.Contains("AmountTax must be positive"));
     }
 
     [Fact]
@@ -115,9 +115,9 @@ public class BillingDocumentNumberingServiceTests
 
         var act = () => service.AuthorizeAsync(MinimalRequest(BillingDocumentTypeARCAEnum.Remittances));
 
-        var exception = await act.Should().ThrowAsync<ARCAServiceException>();
-        exception.Which.Message.Should().Contain("Unsupported document type");
-        exception.Which.Message.Should().Contain(nameof(BillingDocumentTypeARCAEnum.Remittances));
+        var exception = await Assert.ThrowsAsync<ARCAServiceException>(act);
+        Assert.Contains("Unsupported document type", exception.Message);
+        Assert.Contains(nameof(BillingDocumentTypeARCAEnum.Remittances), exception.Message);
     }
 
     [Fact]
@@ -156,8 +156,8 @@ public class BillingDocumentNumberingServiceTests
         }
         catch (ARCAServiceException ex)
         {
-            ex.Message.Should().Contain("Unsupported");
-            ex.ErrorCode.Should().BeNull("the unsupported-type guard does not have a numeric ARCA error code");
+            Assert.Contains("Unsupported", ex.Message);
+            Assert.Null(ex.ErrorCode);
         }
     }
 
@@ -222,18 +222,18 @@ public class BillingDocumentNumberingServiceTests
         var service = CreateService();
         var response = await service.AuthorizeAsync(request);
 
-        response.Result.Should().BeTrue();
-        response.CAE.Should().Be("75123456789012");
-        response.BillingDocumentNumber.Should().Be(42); // lastNumber + 1
-        response.BillingDocumentBookExpirationDate.Should().Be(new DateTime(2026, 5, 23));
+        Assert.True(response.Result);
+        Assert.Equal("75123456789012", response.CAE);
+        Assert.Equal(42, response.BillingDocumentNumber); // lastNumber + 1
+        Assert.Equal(new DateTime(2026, 5, 23), response.BillingDocumentBookExpirationDate);
 
         // EN: Verify padron WAS called (CUIT client) and condition propagated.
         // ES: Verifica que padron fue llamado (cliente CUIT) y la condición propagó.
         padronMock.Verify(p => p.GetPersonaAsync(
             It.IsAny<string>(), It.IsAny<string>(), 20123456789L, 30987654321L, It.IsAny<CancellationToken>()),
             Times.Once);
-        request.Client.ClientName.Should().Be("Cliente SA");
-        request.Client.Condition.Should().Be(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
+        Assert.Equal("Cliente SA", request.Client.ClientName);
+        Assert.Equal(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO, request.Client.Condition);
     }
 
     [Fact]
@@ -264,13 +264,13 @@ public class BillingDocumentNumberingServiceTests
         var service = CreateService();
         var response = await service.AuthorizeAsync(request);
 
-        response.Result.Should().BeTrue();
-        response.BillingDocumentNumber.Should().Be(1);
+        Assert.True(response.Result);
+        Assert.Equal(1, response.BillingDocumentNumber);
 
         padronMock.Verify(p => p.GetPersonaAsync(
             It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()),
             Times.Never, "padron must NOT be consulted for non-CUIT clients");
-        request.Client.Condition.Should().Be(VATConditionARCAEnum.CONSUMIDOR_FINAL);
+        Assert.Equal(VATConditionARCAEnum.CONSUMIDOR_FINAL, request.Client.Condition);
     }
 
     [Fact]
@@ -298,8 +298,8 @@ public class BillingDocumentNumberingServiceTests
         var service = CreateService();
         await service.AuthorizeAsync(request);
 
-        request.Client.Condition.Should().Be(VATConditionARCAEnum.MONOTRIBUTO);
-        request.Client.ClientName.Should().Be("Juan Pérez");
+        Assert.Equal(VATConditionARCAEnum.MONOTRIBUTO, request.Client.Condition);
+        Assert.Equal("Juan Pérez", request.Client.ClientName);
     }
 
     [Fact]
@@ -321,8 +321,8 @@ public class BillingDocumentNumberingServiceTests
         var service = CreateService();
         var response = await service.AuthorizeAsync(request);
 
-        response.Result.Should().BeFalse();
-        response.Errors.Should().ContainSingle(e => e.Contains("No existe persona"));
+        Assert.False(response.Result);
+        Assert.Single(response.Errors, e => e.Contains("No existe persona"));
         // EN: WSFE must NOT be called when padron fails.
         // ES: WSFE NO debe ser llamado cuando padron falla.
         wsfeMock.Verify(w => w.GetLastNumberAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(),
@@ -375,8 +375,8 @@ public class BillingDocumentNumberingServiceTests
 
         var response = await CreateService().AuthorizeAsync(request);
 
-        response.Result.Should().BeTrue();
-        request.Client.Condition.Should().Be(padronCondition);
+        Assert.True(response.Result);
+        Assert.Equal(padronCondition, request.Client.Condition);
         wsfeMock.Verify(w => w.SolicitarCaeAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(),
                                                  It.Is<BillingDocumentNumberingRequest>(r => r.Client.Condition == padronCondition),
                                                  It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -397,8 +397,8 @@ public class BillingDocumentNumberingServiceTests
 
         var response = await CreateService().AuthorizeAsync(request);
 
-        response.Result.Should().BeTrue();
-        request.Client.Condition.Should().Be(consumerCondition);
+        Assert.True(response.Result);
+        Assert.Equal(consumerCondition, request.Client.Condition);
     }
 
     [Fact]
@@ -423,8 +423,8 @@ public class BillingDocumentNumberingServiceTests
 
         var response = await CreateService().AuthorizeAsync(request);
 
-        response.Result.Should().BeTrue();
-        request.Client.Condition.Should().Be(VATConditionARCAEnum.IVA_NO_ALCANZADO);
+        Assert.True(response.Result);
+        Assert.Equal(VATConditionARCAEnum.IVA_NO_ALCANZADO, request.Client.Condition);
     }
 
     [Fact]
@@ -446,8 +446,8 @@ public class BillingDocumentNumberingServiceTests
 
         var response = await CreateService().AuthorizeAsync(request);
 
-        response.Result.Should().BeTrue();
-        request.Client.Condition.Should().Be(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
+        Assert.True(response.Result);
+        Assert.Equal(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO, request.Client.Condition);
         wsfeMock.Verify(w => w.SolicitarCaeAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(),
                                                  It.Is<BillingDocumentNumberingRequest>(r => r.Client.Condition == VATConditionARCAEnum.RESPONSABLE_INSCRIPTO),
                                                  It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -464,7 +464,7 @@ public class BillingDocumentNumberingServiceTests
 
         await CreateService().AuthorizeAsync(request);
 
-        request.Client.Condition.Should().Be(default(VATConditionARCAEnum));
+        Assert.Equal(default(VATConditionARCAEnum), request.Client.Condition);
     }
 
     [Fact]
@@ -478,7 +478,7 @@ public class BillingDocumentNumberingServiceTests
 
         await CreateService().AuthorizeAsync(request);
 
-        request.Client.Condition.Should().Be(VATConditionARCAEnum.CONSUMIDOR_FINAL);
+        Assert.Equal(VATConditionARCAEnum.CONSUMIDOR_FINAL, request.Client.Condition);
     }
 
     [Fact]
@@ -498,7 +498,7 @@ public class BillingDocumentNumberingServiceTests
 
         var act = () => CreateService().AuthorizeAsync(request);
 
-        await act.Should().ThrowAsync<ARCAServiceException>();
+        await Assert.ThrowsAsync<ARCAServiceException>(act);
         wsfeMock.Verify(w => w.SolicitarCaeAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(),
                                                  It.IsAny<BillingDocumentNumberingRequest>(), It.IsAny<int>(), It.IsAny<CancellationToken>()),
                         Times.Never);
@@ -528,15 +528,15 @@ public class BillingDocumentNumberingServiceTests
         var service = CreateService();
         var response = await service.AuthorizeAsync(request);
 
-        response.Result.Should().BeFalse();
-        response.CAE.Should().BeNull();
-        response.Errors.Should().ContainSingle(e => e.Contains("10063"));
+        Assert.False(response.Result);
+        Assert.Null(response.CAE);
+        Assert.Single(response.Errors, e => e.Contains("10063"));
     }
 
     [Fact]
     public void ARCAOptions_should_resolve_the_receiver_from_the_padron_by_default()
     {
-        new ARCAOptions().ResolveReceiverFromPadron.Should().BeTrue();
+        Assert.True(new ARCAOptions().ResolveReceiverFromPadron);
     }
 
     [Fact]
@@ -555,8 +555,8 @@ public class BillingDocumentNumberingServiceTests
         padronMock.Verify(p => p.GetPersonaAsync(
             It.IsAny<string>(), It.IsAny<string>(), 20123456789L, 30711111111L, It.IsAny<CancellationToken>()),
             Times.Once);
-        request.Client.Condition.Should().Be(VATConditionARCAEnum.IVA_SUJETO_EXENTO);
-        request.Client.ClientName.Should().Be("Cliente");
+        Assert.Equal(VATConditionARCAEnum.IVA_SUJETO_EXENTO, request.Client.Condition);
+        Assert.Equal("Cliente", request.Client.ClientName);
     }
 
     [Fact]
@@ -570,7 +570,7 @@ public class BillingDocumentNumberingServiceTests
 
         var response = await CreateService().AuthorizeAsync(CuitRequest(BillingDocumentTypeARCAEnum.FA));
 
-        response.Errors.Should().Contain("padron down");
+        Assert.Contains("padron down", response.Errors);
         wsfeMock.Verify(w => w.SolicitarCaeAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(),
                                                  It.IsAny<BillingDocumentNumberingRequest>(), It.IsAny<int>(), It.IsAny<CancellationToken>()),
                         Times.Never);
@@ -588,7 +588,7 @@ public class BillingDocumentNumberingServiceTests
 
         var response = await CreateService().AuthorizeAsync(request);
 
-        response.Result.Should().BeTrue();
+        Assert.True(response.Result);
         padronMock.Verify(p => p.GetPersonaAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()),
                           Times.Never);
         tokenCacheMock.Verify(t => t.GetAsync("ws_sr_constancia_inscripcion", It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -632,7 +632,7 @@ public class BillingDocumentNumberingServiceTests
 
         await CreateService().AuthorizeAsync(request);
 
-        request.Client.Condition.Should().Be(VATConditionARCAEnum.CONSUMIDOR_FINAL);
+        Assert.Equal(VATConditionARCAEnum.CONSUMIDOR_FINAL, request.Client.Condition);
     }
 
     [Fact]
@@ -666,10 +666,10 @@ public class BillingDocumentNumberingServiceTests
         var service = CreateService();
         var response = await service.AuthorizeAsync(request);
 
-        response.Result.Should().BeTrue();
-        response.CAE.Should().Be("75999999999999");
-        response.BillingDocumentNumber.Should().Be(101);
-        response.BillingDocumentBookExpirationDate.Should().Be(new DateTime(2026, 7, 1));
+        Assert.True(response.Result);
+        Assert.Equal("75999999999999", response.CAE);
+        Assert.Equal(101, response.BillingDocumentNumber);
+        Assert.Equal(new DateTime(2026, 7, 1), response.BillingDocumentBookExpirationDate);
 
         // EN: WSFE must NOT be called for export documents.
         // ES: WSFE NO debe ser llamado para comprobantes de exportación.
@@ -704,8 +704,8 @@ public class BillingDocumentNumberingServiceTests
         var service = CreateService();
         var response = await service.AuthorizeAsync(request);
 
-        response.Result.Should().BeFalse();
-        response.Errors.Should().ContainSingle(e => e.Contains("1500"));
+        Assert.False(response.Result);
+        Assert.Single(response.Errors, e => e.Contains("1500"));
     }
 
     [Fact]
@@ -772,7 +772,7 @@ public class BillingDocumentNumberingServiceTests
             BillingDocumentTypeARCAEnum.FC,
             3);
 
-        last.Should().Be(158);
+        Assert.Equal(158, last);
     }
 
     [Fact]
@@ -801,14 +801,14 @@ public class BillingDocumentNumberingServiceTests
             3,
             157);
 
-        found.IsApproved.Should().BeTrue();
-        found.CAE.Should().Be("86305060629012");
-        found.CAEExpirationDate.Should().Be(new DateTime(2026, 8, 2));
-        found.ProcessedDate.Should().Be(new DateTime(2026, 7, 23, 10, 39, 49));
-        found.BillingDocumentNumber.Should().Be(157);
-        found.BillingDocumentBookPrefix.Should().Be(3);
-        found.BillingDocumentType.Should().Be(BillingDocumentTypeARCAEnum.FC);
-        found.Errors.Should().BeEmpty();
+        Assert.True(found.IsApproved);
+        Assert.Equal("86305060629012", found.CAE);
+        Assert.Equal(new DateTime(2026, 8, 2), found.CAEExpirationDate);
+        Assert.Equal(new DateTime(2026, 7, 23, 10, 39, 49), found.ProcessedDate);
+        Assert.Equal(157, found.BillingDocumentNumber);
+        Assert.Equal(3, found.BillingDocumentBookPrefix);
+        Assert.Equal(BillingDocumentTypeARCAEnum.FC, found.BillingDocumentType);
+        Assert.Empty(found.Errors);
     }
 
     [Fact]
@@ -837,9 +837,9 @@ public class BillingDocumentNumberingServiceTests
             3,
             9999);
 
-        found.IsApproved.Should().BeFalse();
-        found.CAE.Should().BeNull();
-        found.Errors.Should().ContainSingle().Which.Should().Contain("Sin Resultados");
+        Assert.False(found.IsApproved);
+        Assert.Null(found.CAE);
+        Assert.Contains("Sin Resultados", Assert.Single(found.Errors));
     }
 
     [Fact]
@@ -870,8 +870,8 @@ public class BillingDocumentNumberingServiceTests
             3,
             157);
 
-        found.BillingDocumentBookPrefix.Should().Be(4);
-        found.BillingDocumentType.Should().Be(BillingDocumentTypeARCAEnum.NCC);
+        Assert.Equal(4, found.BillingDocumentBookPrefix);
+        Assert.Equal(BillingDocumentTypeARCAEnum.NCC, found.BillingDocumentType);
     }
 
     [Fact]
@@ -879,13 +879,9 @@ public class BillingDocumentNumberingServiceTests
     {
         var service = CreateService();
 
-        await FluentActions
-            .Awaiting(() => service.GetLastAuthorizedNumberAsync(null!, BillingDocumentTypeARCAEnum.FC, 3))
-            .Should().ThrowAsync<ArgumentNullException>();
+        await Assert.ThrowsAsync<ArgumentNullException>(() => service.GetLastAuthorizedNumberAsync(null!, BillingDocumentTypeARCAEnum.FC, 3));
 
-        await FluentActions
-            .Awaiting(() => service.GetAuthorizedAsync(null!, BillingDocumentTypeARCAEnum.FC, 3, 157))
-            .Should().ThrowAsync<ArgumentNullException>();
+        await Assert.ThrowsAsync<ArgumentNullException>(() => service.GetAuthorizedAsync(null!, BillingDocumentTypeARCAEnum.FC, 3, 157));
     }
 
     [Fact]
@@ -902,7 +898,7 @@ public class BillingDocumentNumberingServiceTests
         var found = await service.GetPointsOfSaleAsync(
             new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 });
 
-        found.Should().ContainSingle().Which.Should().Be(pointOfSale);
+        Assert.Equal(pointOfSale, Assert.Single(found));
         tokenCacheMock.Verify(t => t.GetAsync("wsfe", 20123456789L, It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -920,7 +916,7 @@ public class BillingDocumentNumberingServiceTests
         var found = await service.GetPointsOfSaleAsync(
             new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 });
 
-        found.Should().BeEmpty();
+        Assert.Empty(found);
     }
 
     [Fact]
@@ -939,9 +935,9 @@ public class BillingDocumentNumberingServiceTests
         var act = () => service.GetPointsOfSaleAsync(
             new IssuingCompanyRequest { DocumentType = DocumentTypeARCAEnum.CUIT, DocumentNumber = 20123456789 });
 
-        var exception = await act.Should().ThrowAsync<ARCAServiceException>();
-        exception.Which.ErrorCode.Should().Be(600);
-        exception.Which.Message.Should().Contain("No apareció CUIT en lista de relaciones");
+        var exception = await Assert.ThrowsAsync<ARCAServiceException>(act);
+        Assert.Equal(600, exception.ErrorCode);
+        Assert.Contains("No apareció CUIT en lista de relaciones", exception.Message);
     }
 
     [Fact]
@@ -949,8 +945,6 @@ public class BillingDocumentNumberingServiceTests
     {
         var service = CreateService();
 
-        await FluentActions
-            .Awaiting(() => service.GetPointsOfSaleAsync(null!))
-            .Should().ThrowAsync<ArgumentNullException>();
+        await Assert.ThrowsAsync<ArgumentNullException>(() => service.GetPointsOfSaleAsync(null!));
     }
 }

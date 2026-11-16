@@ -55,20 +55,20 @@ public class PadronMappingTests
     {
         var result = PadronOperations.MapPersona(WithGeneralRegime(Tax(30, "IVA")), Cuit);
 
-        result.Found.Should().BeTrue();
-        result.Cuit.Should().Be(Cuit);
-        result.PersonType.Should().Be("FISICA");
-        result.KeyType.Should().Be("CUIT");
-        result.KeyStatus.Should().Be("ACTIVO");
-        result.IsActive.Should().BeTrue();
-        result.LastName.Should().Be("FRANCO AGUSTIN");
-        result.FirstName.Should().Be("SEVERINO");
-        result.BusinessName.Should().BeNull();
-        result.DisplayName.Should().Be("FRANCO AGUSTIN SEVERINO");
-        result.IsSuccession.Should().BeFalse();
-        result.FiscalYearCloseMonth.Should().Be(12);
-        result.Errors.Should().BeEmpty();
-        result.PartialErrors.Should().BeEmpty();
+        Assert.True(result.Found);
+        Assert.Equal(Cuit, result.Cuit);
+        Assert.Equal("FISICA", result.PersonType);
+        Assert.Equal("CUIT", result.KeyType);
+        Assert.Equal("ACTIVO", result.KeyStatus);
+        Assert.True(result.IsActive);
+        Assert.Equal("FRANCO AGUSTIN", result.LastName);
+        Assert.Equal("SEVERINO", result.FirstName);
+        Assert.Null(result.BusinessName);
+        Assert.Equal("FRANCO AGUSTIN SEVERINO", result.DisplayName);
+        Assert.False(result.IsSuccession);
+        Assert.Equal(12, result.FiscalYearCloseMonth);
+        Assert.Empty(result.Errors);
+        Assert.Empty(result.PartialErrors);
     }
 
     [Fact]
@@ -90,10 +90,10 @@ public class PadronMappingTests
 
         var result = PadronOperations.MapPersona(persona, 30712345678);
 
-        result.PersonType.Should().Be("JURIDICA");
-        result.BusinessName.Should().Be("EMPRESA DEMO SA");
-        result.DisplayName.Should().Be("EMPRESA DEMO SA");
-        result.ContractDate.Should().Be(new DateTime(2015, 3, 10));
+        Assert.Equal("JURIDICA", result.PersonType);
+        Assert.Equal("EMPRESA DEMO SA", result.BusinessName);
+        Assert.Equal("EMPRESA DEMO SA", result.DisplayName);
+        Assert.Equal(new DateTime(2015, 3, 10), result.ContractDate);
     }
 
     [Fact]
@@ -101,8 +101,8 @@ public class PadronMappingTests
     {
         var result = PadronOperations.MapPersona(WithGeneralRegime(Tax(11, "GANANCIAS PERSONAS FISICAS"), Tax(30, "IVA")), Cuit);
 
-        result.VATCondition.Should().Be(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO);
-        result.ReceiverVATConditionId.Should().Be(1);
+        Assert.Equal(VATConditionARCAEnum.RESPONSABLE_INSCRIPTO, result.VATCondition);
+        Assert.Equal(1, result.ReceiverVATConditionId);
     }
 
     [Fact]
@@ -110,8 +110,8 @@ public class PadronMappingTests
     {
         var result = PadronOperations.MapPersona(WithGeneralRegime(Tax(32, "IVA EXENTO")), Cuit);
 
-        result.VATCondition.Should().Be(VATConditionARCAEnum.IVA_SUJETO_EXENTO);
-        result.ReceiverVATConditionId.Should().Be(4);
+        Assert.Equal(VATConditionARCAEnum.IVA_SUJETO_EXENTO, result.VATCondition);
+        Assert.Equal(4, result.ReceiverVATConditionId);
     }
 
     [Fact]
@@ -164,33 +164,33 @@ public class PadronMappingTests
 
         var result = PadronOperations.MapPersona(persona, Cuit);
 
-        result.VATCondition.Should().Be(VATConditionARCAEnum.MONOTRIBUTO);
-        result.ReceiverVATConditionId.Should().Be(6);
-        result.MonotributoCategory.Should().BeEquivalentTo(new PadronCategory
+        Assert.Equal(VATConditionARCAEnum.MONOTRIBUTO, result.VATCondition);
+        Assert.Equal(6, result.ReceiverVATConditionId);
+        Assert.Equivalent(new PadronCategory
         {
             Id = 36,
             Description = "B LOCACIONES DE SERVICIO",
             TaxId = 20,
             Period = 201804,
-        });
-        result.MonotributoActivity.Should().BeEquivalentTo(new PadronActivity
+        }, result.MonotributoCategory);
+        Assert.Equivalent(new PadronActivity
         {
             Id = 8,
             Description = "PREST. DE SERVICIO O LOCACIÓN",
             Nomenclator = 1,
             Order = 0,
             Period = 201803,
-        });
-        result.MonotributoActivities.Should().ContainSingle().Which.Id.Should().Be(620100);
-        result.MonotributoTaxes.Should().ContainSingle().Which.Id.Should().Be(20);
-        result.MonotributoCompanyMembers.Should().ContainSingle().Which.Should().BeEquivalentTo(new PadronCompanyMember
+        }, result.MonotributoActivity);
+        Assert.Equal(620100, Assert.Single(result.MonotributoActivities).Id);
+        Assert.Equal(20, Assert.Single(result.MonotributoTaxes).Id);
+        Assert.Equivalent(new PadronCompanyMember
         {
             Cuit = 23168373384,
             LastName = "PEREZ",
             FirstName = "JUAN",
             ComponentType = "SOCIO",
             RelationDate = new DateTime(2008, 11, 25),
-        });
+        }, Assert.Single(result.MonotributoCompanyMembers));
     }
 
     [Fact]
@@ -198,7 +198,7 @@ public class PadronMappingTests
     {
         var result = PadronOperations.MapPersona(WithGeneralRegime(Tax(20, "MONOTRIBUTO")), Cuit);
 
-        result.VATCondition.Should().Be(VATConditionARCAEnum.MONOTRIBUTO);
+        Assert.Equal(VATConditionARCAEnum.MONOTRIBUTO, result.VATCondition);
     }
 
     [Fact]
@@ -206,8 +206,8 @@ public class PadronMappingTests
     {
         var result = PadronOperations.MapPersona(WithGeneralRegime(Tax(11, "GANANCIAS PERSONAS FISICAS")), Cuit);
 
-        result.VATCondition.Should().BeNull();
-        result.ReceiverVATConditionId.Should().BeNull();
+        Assert.Null(result.VATCondition);
+        Assert.Null(result.ReceiverVATConditionId);
     }
 
     [Fact]
@@ -215,8 +215,8 @@ public class PadronMappingTests
     {
         var result = PadronOperations.MapPersona(WithGeneralRegime(), Cuit);
 
-        result.VATCondition.Should().BeNull();
-        result.ReceiverVATConditionId.Should().BeNull();
+        Assert.Null(result.VATCondition);
+        Assert.Null(result.ReceiverVATConditionId);
     }
 
     [Fact]
@@ -224,7 +224,7 @@ public class PadronMappingTests
     {
         var persona = WithGeneralRegime(new Padron.impuesto { descripcionImpuesto = "IVA" });
 
-        PadronOperations.MapPersona(persona, Cuit).VATCondition.Should().BeNull();
+        Assert.Null(PadronOperations.MapPersona(persona, Cuit).VATCondition);
     }
 
     [Fact]
@@ -232,14 +232,14 @@ public class PadronMappingTests
     {
         var result = PadronOperations.MapPersona(WithGeneralRegime(Tax(34, "IVA NO ALCANZADO")), Cuit);
 
-        result.VATCondition.Should().BeNull();
-        result.ReceiverVATConditionId.Should().BeNull();
-        result.Taxes.Should().ContainSingle().Which.Should().BeEquivalentTo(new PadronTax
+        Assert.Null(result.VATCondition);
+        Assert.Null(result.ReceiverVATConditionId);
+        Assert.Equivalent(new PadronTax
         {
             Id = 34,
             Description = "IVA NO ALCANZADO",
             Period = 200705,
-        });
+        }, Assert.Single(result.Taxes));
     }
 
     [Fact]
@@ -248,7 +248,7 @@ public class PadronMappingTests
         var persona = WithGeneralRegime(Tax(11, "GANANCIAS PERSONAS FISICAS"));
         persona.datosMonotributo = new Padron.datosMonotributo { impuesto = [Tax(34, "IVA NO ALCANZADO")] };
 
-        PadronOperations.MapPersona(persona, Cuit).VATCondition.Should().BeNull();
+        Assert.Null(PadronOperations.MapPersona(persona, Cuit).VATCondition);
     }
 
     [Fact]
@@ -256,7 +256,7 @@ public class PadronMappingTests
     {
         var result = PadronOperations.MapPersona(WithGeneralRegime(Tax(30, "IVA"), Tax(34, "IVA NO ALCANZADO")), Cuit);
 
-        result.VATCondition.Should().BeNull();
+        Assert.Null(result.VATCondition);
     }
 
     [Fact]
@@ -267,8 +267,8 @@ public class PadronMappingTests
 
         var result = PadronOperations.MapPersona(persona, Cuit);
 
-        result.VATCondition.Should().BeNull();
-        result.ReceiverVATConditionId.Should().BeNull();
+        Assert.Null(result.VATCondition);
+        Assert.Null(result.ReceiverVATConditionId);
     }
 
     [Theory]
@@ -289,7 +289,7 @@ public class PadronMappingTests
 
         var result = PadronOperations.MapPersona(persona, Cuit);
 
-        result.VATCondition.Should().BeNull();
+        Assert.Null(result.VATCondition);
     }
 
     [Fact]
@@ -300,7 +300,7 @@ public class PadronMappingTests
             errorConstancia = new Padron.errorConstancia { error = ["No existe persona con ese Id"] },
         };
 
-        PadronOperations.MapPersona(persona, Cuit).VATCondition.Should().BeNull();
+        Assert.Null(PadronOperations.MapPersona(persona, Cuit).VATCondition);
     }
 
     [Fact]
@@ -311,8 +311,8 @@ public class PadronMappingTests
 
         var result = PadronOperations.MapPersona(persona, Cuit);
 
-        result.KeyStatus.Should().Be("INACTIVO");
-        result.IsActive.Should().BeFalse();
+        Assert.Equal("INACTIVO", result.KeyStatus);
+        Assert.False(result.IsActive);
     }
 
     [Fact]
@@ -332,12 +332,12 @@ public class PadronMappingTests
 
         var result = PadronOperations.MapPersona(persona, Cuit);
 
-        result.Found.Should().BeTrue();
-        result.Errors.Should().ContainSingle().Which.Should().Contain("inactiva");
-        result.LastName.Should().Be("FRANCO");
-        result.FirstName.Should().Be("SEVERINO");
-        result.DisplayName.Should().Be("FRANCO SEVERINO");
-        result.IsActive.Should().BeFalse();
+        Assert.True(result.Found);
+        Assert.Contains("inactiva", Assert.Single(result.Errors));
+        Assert.Equal("FRANCO", result.LastName);
+        Assert.Equal("SEVERINO", result.FirstName);
+        Assert.Equal("FRANCO SEVERINO", result.DisplayName);
+        Assert.False(result.IsActive);
     }
 
     [Fact]
@@ -355,9 +355,9 @@ public class PadronMappingTests
 
         var result = PadronOperations.MapPersona(persona, 12345678901);
 
-        result.Found.Should().BeFalse();
-        result.Cuit.Should().Be(12345678901);
-        result.Errors.Should().ContainSingle().Which.Should().Be("No existe persona con ese Id");
+        Assert.False(result.Found);
+        Assert.Equal(12345678901, result.Cuit);
+        Assert.Equal("No existe persona con ese Id", Assert.Single(result.Errors));
     }
 
     [Fact]
@@ -380,22 +380,18 @@ public class PadronMappingTests
 
         var result = PadronOperations.MapPersona(persona, Cuit);
 
-        result.Found.Should().BeTrue();
-        result.Errors.Should().BeEmpty();
-        result.PartialErrors.Should().HaveCount(2);
-        result.PartialErrors.Should().ContainEquivalentOf(new PadronPartialError
-        {
-            Source = PadronErrorSourceEnum.GeneralRegime,
-            Message = "No cumple con las condiciones para enviar datos del regimen general",
-            Errors = ["Actividad económica principal inexistente"],
-        });
-        result.PartialErrors.Should().ContainEquivalentOf(new PadronPartialError
-        {
-            Source = PadronErrorSourceEnum.Monotributo,
-            Message = "No cumple con las condiciones para enviar datos monotributo",
-            Errors = ["Datos de monotributo incompletos- no posee categoría."],
-        });
-        result.VATCondition.Should().BeNull();
+        Assert.True(result.Found);
+        Assert.Empty(result.Errors);
+        Assert.Equal(2, result.PartialErrors.Count());
+        Assert.Contains(result.PartialErrors, e =>
+            e.Source == PadronErrorSourceEnum.GeneralRegime
+            && e.Message == "No cumple con las condiciones para enviar datos del regimen general"
+            && e.Errors.SequenceEqual(["Actividad económica principal inexistente"]));
+        Assert.Contains(result.PartialErrors, e =>
+            e.Source == PadronErrorSourceEnum.Monotributo
+            && e.Message == "No cumple con las condiciones para enviar datos monotributo"
+            && e.Errors.SequenceEqual(["Datos de monotributo incompletos- no posee categoría."]));
+        Assert.Null(result.VATCondition);
     }
 
     [Fact]
@@ -425,22 +421,22 @@ public class PadronMappingTests
 
         var result = PadronOperations.MapPersona(persona, Cuit);
 
-        result.Cuit.Should().Be(Cuit, "sin idPersona se usa el CUIT consultado");
-        result.DeathDate.Should().BeNull();
-        result.ContractDate.Should().BeNull();
-        result.FiscalYearCloseMonth.Should().BeNull();
-        result.QueriedAt.Should().BeNull();
-        result.IsSuccession.Should().BeNull();
-        result.FiscalAddress!.ProvinceCode.Should().BeNull();
-        result.Dependency!.Id.Should().BeNull();
-        result.Dependency.ProvinceCode.Should().BeNull();
-        result.Characterizations.Should().ContainSingle().Which.Should().BeEquivalentTo(new PadronCharacterization());
-        result.Taxes.Should().ContainSingle().Which.Should().BeEquivalentTo(new PadronTax { Description = "IVA" });
-        result.Activities.Should().ContainSingle().Which.Should().BeEquivalentTo(new PadronActivity());
-        result.Regimes.Should().ContainSingle().Which.Should().BeEquivalentTo(new PadronRegime());
-        result.SelfEmployedCategory.Should().BeEquivalentTo(new PadronCategory());
-        result.MainActivity.Should().BeNull("sin orden informado no hay actividad principal");
-        result.VATCondition.Should().BeNull("un impuesto sin id informado no se puede clasificar");
+        Assert.Equal(Cuit, result.Cuit);
+        Assert.Null(result.DeathDate);
+        Assert.Null(result.ContractDate);
+        Assert.Null(result.FiscalYearCloseMonth);
+        Assert.Null(result.QueriedAt);
+        Assert.Null(result.IsSuccession);
+        Assert.Null(result.FiscalAddress!.ProvinceCode);
+        Assert.Null(result.Dependency!.Id);
+        Assert.Null(result.Dependency.ProvinceCode);
+        Assert.Equivalent(new PadronCharacterization(), Assert.Single(result.Characterizations));
+        Assert.Equivalent(new PadronTax { Description = "IVA" }, Assert.Single(result.Taxes));
+        Assert.Equivalent(new PadronActivity(), Assert.Single(result.Activities));
+        Assert.Equivalent(new PadronRegime(), Assert.Single(result.Regimes));
+        Assert.Equivalent(new PadronCategory(), result.SelfEmployedCategory);
+        Assert.Null(result.MainActivity);
+        Assert.Null(result.VATCondition);
     }
 
     [Fact]
@@ -506,7 +502,7 @@ public class PadronMappingTests
 
         var result = PadronOperations.MapPersona(persona, Cuit);
 
-        result.FiscalAddress.Should().BeEquivalentTo(new PadronAddress
+        Assert.Equivalent(new PadronAddress
         {
             Street = "ALEM 5982",
             Locality = "BANFIELD",
@@ -516,8 +512,8 @@ public class PadronMappingTests
             AdditionalData = "PISO 2",
             AdditionalDataType = "OFICINA",
             AddressType = "FISCAL",
-        });
-        result.Dependency.Should().BeEquivalentTo(new PadronDependency
+        }, result.FiscalAddress);
+        Assert.Equivalent(new PadronDependency
         {
             Id = 272,
             Description = "AGENCIA-SEDE N.1 CORDOBA",
@@ -526,42 +522,42 @@ public class PadronMappingTests
             ProvinceCode = 3,
             ProvinceName = "CORDOBA",
             PostalCode = "5000",
-        });
-        result.IsSuccession.Should().BeTrue();
-        result.DeathDate.Should().Be(new DateTime(2022, 5, 1));
-        result.QueriedAt.Should().Be(new DateTime(2026, 10, 6, 12, 0, 0));
-        result.Server.Should().Be("aws.afip.gob.ar");
-        result.Characterizations.Should().ContainSingle().Which.Should().BeEquivalentTo(new PadronCharacterization
+        }, result.Dependency);
+        Assert.True(result.IsSuccession);
+        Assert.Equal(new DateTime(2022, 5, 1), result.DeathDate);
+        Assert.Equal(new DateTime(2026, 10, 6, 12, 0, 0), result.QueriedAt);
+        Assert.Equal("aws.afip.gob.ar", result.Server);
+        Assert.Equivalent(new PadronCharacterization
         {
             Id = 418,
             Description = "EXCEPTUADO DE CONSTITUIR DFE",
             Period = 201901,
-        });
-        result.Taxes.Select(t => t.Id).Should().Equal(30, 308);
-        result.Activities.Should().HaveCount(2);
-        result.MainActivity.Should().BeEquivalentTo(new PadronActivity
+        }, Assert.Single(result.Characterizations));
+        Assert.Equal(new int?[] { 30, 308 }, result.Taxes.Select(t => t.Id));
+        Assert.Equal(2, result.Activities.Count());
+        Assert.Equivalent(new PadronActivity
         {
             Id = 702092,
             Description = "SERVICIOS DE ASESORAMIENTO",
             Order = 1,
             Nomenclator = 883,
             Period = 201311,
-        });
-        result.Regimes.Should().ContainSingle().Which.Should().BeEquivalentTo(new PadronRegime
+        }, result.MainActivity);
+        Assert.Equivalent(new PadronRegime
         {
             Id = 1,
             Description = "RETENCION",
             TaxId = 30,
             Type = "RETENCION",
             Period = 201001,
-        });
-        result.SelfEmployedCategory.Should().BeEquivalentTo(new PadronCategory
+        }, Assert.Single(result.Regimes));
+        Assert.Equivalent(new PadronCategory
         {
             Id = 1,
             Description = "CAT I",
             TaxId = 308,
             Period = 200512,
-        });
+        }, result.SelfEmployedCategory);
     }
 
     [Fact]
@@ -571,8 +567,8 @@ public class PadronMappingTests
         var otherFault = new ARCAServiceException("ARCA Padron A5 getPersona failed.", new FaultException("Error interno"));
         var network = new ARCAServiceException("ARCA Padron A5 getPersona failed.", new TimeoutException());
 
-        PadronOperations.IsPersonaNotFound(notFound).Should().BeTrue();
-        PadronOperations.IsPersonaNotFound(otherFault).Should().BeFalse();
-        PadronOperations.IsPersonaNotFound(network).Should().BeFalse();
+        Assert.True(PadronOperations.IsPersonaNotFound(notFound));
+        Assert.False(PadronOperations.IsPersonaNotFound(otherFault));
+        Assert.False(PadronOperations.IsPersonaNotFound(network));
     }
 }

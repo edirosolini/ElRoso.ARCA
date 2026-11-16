@@ -47,7 +47,7 @@ public class ElectronicMailboxServiceTests
 
         var act = () => service.ListAsync(new MailboxQueryRequest { IssuingCompany = new IssuingCompanyRequest() });
 
-        await act.Should().ThrowAsync<ARCAValidationException>();
+        await Assert.ThrowsAsync<ARCAValidationException>(act);
     }
 
     [Fact]
@@ -76,9 +76,9 @@ public class ElectronicMailboxServiceTests
         var service = CreateService();
         var response = await service.ListAsync(new MailboxQueryRequest { IssuingCompany = ValidIssuer() });
 
-        response.Messages.Should().HaveCount(2);
-        response.Messages[0].Subject.Should().Be("Notificación de vencimiento");
-        response.TotalItems.Should().Be(2);
+        Assert.Equal(2, response.Messages.Count());
+        Assert.Equal("Notificación de vencimiento", response.Messages[0].Subject);
+        Assert.Equal(2, response.TotalItems);
 
         loginTicketServiceMock.VerifyNoOtherCalls();
         tokenCacheMock.Verify(t => t.GetAsync("veconsumerws", It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -123,7 +123,7 @@ public class ElectronicMailboxServiceTests
             MessageId = 100,
         });
 
-        await act.Should().ThrowAsync<ARCAValidationException>();
+        await Assert.ThrowsAsync<ARCAValidationException>(act);
     }
 
     [Fact]
@@ -137,7 +137,7 @@ public class ElectronicMailboxServiceTests
             MessageId = 0,
         });
 
-        await act.Should().ThrowAsync<ARCAValidationException>();
+        await Assert.ThrowsAsync<ARCAValidationException>(act);
     }
 
     [Fact]
@@ -169,10 +169,10 @@ public class ElectronicMailboxServiceTests
             MessageId = 100,
         });
 
-        response.Success.Should().BeTrue();
-        response.Message.Should().NotBeNull();
-        response.Message!.Subject.Should().Be("Notificación importante");
-        response.Message.Body.Should().Contain("Estimado contribuyente");
+        Assert.True(response.Success);
+        Assert.NotNull(response.Message);
+        Assert.Equal("Notificación importante", response.Message!.Subject);
+        Assert.Contains("Estimado contribuyente", response.Message.Body);
     }
 
     [Fact]
@@ -198,9 +198,9 @@ public class ElectronicMailboxServiceTests
             MessageId = 999999,
         });
 
-        response.Success.Should().BeFalse();
-        response.Errors.Should().NotBeEmpty();
-        response.Message.Should().BeNull();
+        Assert.False(response.Success);
+        Assert.NotEmpty(response.Errors);
+        Assert.Null(response.Message);
     }
 
     [Fact]
@@ -230,9 +230,9 @@ public class ElectronicMailboxServiceTests
             PageSize = 20,
         });
 
-        response.Page.Should().Be(3);
-        response.TotalPages.Should().Be(10);
-        response.ItemsPerPage.Should().Be(20);
-        response.TotalItems.Should().Be(195);
+        Assert.Equal(3, response.Page);
+        Assert.Equal(10, response.TotalPages);
+        Assert.Equal(20, response.ItemsPerPage);
+        Assert.Equal(195, response.TotalItems);
     }
 }

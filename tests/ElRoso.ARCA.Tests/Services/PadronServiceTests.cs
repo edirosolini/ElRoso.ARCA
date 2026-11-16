@@ -52,7 +52,7 @@ public class PadronServiceTests
 
         var result = await CreateService().GetPersonaAsync(RepresentedCuit, QueriedCuit);
 
-        result.Should().BeSameAs(persona);
+        Assert.Same(persona, result);
         tokenCacheMock.Verify(t => t.GetAsync("ws_sr_constancia_inscripcion", RepresentedCuit, It.IsAny<CancellationToken>()), Times.Once);
         padronMock.Verify(p => p.GetPersonaAsync("fake-sign", "fake-token", RepresentedCuit, QueriedCuit, It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -83,9 +83,9 @@ public class PadronServiceTests
 
         var result = await CreateService().GetPersonaAsync(RepresentedCuit, QueriedCuit);
 
-        result.Found.Should().BeFalse();
-        result.Cuit.Should().Be(QueriedCuit);
-        result.Errors.Should().ContainSingle().Which.Should().Be("No existe persona con ese Id");
+        Assert.False(result.Found);
+        Assert.Equal(QueriedCuit, result.Cuit);
+        Assert.Equal("No existe persona con ese Id", Assert.Single(result.Errors));
     }
 
     [Fact]
@@ -98,7 +98,7 @@ public class PadronServiceTests
 
         var act = () => CreateService().GetPersonaAsync(RepresentedCuit, QueriedCuit);
 
-        await act.Should().ThrowAsync<ARCAServiceException>();
+        await Assert.ThrowsAsync<ARCAServiceException>(act);
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public class PadronServiceTests
 
         var act = () => CreateService().GetPersonaAsync(RepresentedCuit, QueriedCuit, cts.Token);
 
-        await act.Should().ThrowAsync<OperationCanceledException>();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(act);
         tokenCacheMock.Verify(t => t.GetAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
         padronMock.Verify(p => p.GetPersonaAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -124,6 +124,6 @@ public class PadronServiceTests
 
         var act = () => CreateService().GetPersonaAsync(RepresentedCuit, QueriedCuit);
 
-        await act.Should().ThrowAsync<OperationCanceledException>();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(act);
     }
 }

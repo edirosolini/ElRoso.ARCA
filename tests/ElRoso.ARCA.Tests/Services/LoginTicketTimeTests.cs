@@ -20,8 +20,8 @@ public class LoginTicketTimeTests
         //     UTC — no puede depender del TZ del contenedor.
         var parsed = LoginTicketService.ParseExpirationTime(value);
 
-        parsed.Kind.Should().Be(DateTimeKind.Utc);
-        parsed.Should().Be(new DateTime(2026, 9, 4, 21, 22, 11, 123, DateTimeKind.Utc));
+        Assert.Equal(DateTimeKind.Utc, parsed.Kind);
+        Assert.Equal(new DateTime(2026, 9, 4, 21, 22, 11, 123, DateTimeKind.Utc), parsed);
     }
 
     [Fact]
@@ -33,8 +33,8 @@ public class LoginTicketTimeTests
         //     correria el ticket 3 h al futuro y mantendria vivo uno vencido.
         var parsed = LoginTicketService.ParseExpirationTime("2026-09-04T18:22:11");
 
-        parsed.Kind.Should().Be(DateTimeKind.Utc);
-        parsed.Should().Be(new DateTime(2026, 9, 4, 21, 22, 11, DateTimeKind.Utc));
+        Assert.Equal(DateTimeKind.Utc, parsed.Kind);
+        Assert.Equal(new DateTime(2026, 9, 4, 21, 22, 11, DateTimeKind.Utc), parsed);
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class LoginTicketTimeTests
     {
         var utc = new DateTime(2026, 9, 4, 21, 0, 0, DateTimeKind.Utc);
 
-        LoginTicketService.ToArgentinaTime(utc).Should().Be(new DateTime(2026, 9, 4, 18, 0, 0));
+        Assert.Equal(new DateTime(2026, 9, 4, 18, 0, 0), LoginTicketService.ToArgentinaTime(utc));
     }
 
     [Fact]
@@ -55,6 +55,6 @@ public class LoginTicketTimeTests
         //     de manana.
         var utc = new DateTime(2008, 1, 15, 21, 0, 0, DateTimeKind.Utc);
 
-        LoginTicketService.ToArgentinaTime(utc).Should().Be(new DateTime(2008, 1, 15, 19, 0, 0));
+        Assert.Equal(new DateTime(2008, 1, 15, 19, 0, 0), LoginTicketService.ToArgentinaTime(utc));
     }
 }

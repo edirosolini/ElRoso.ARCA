@@ -58,9 +58,9 @@ public class CertificateServiceTests : IDisposable
 
         var cert = service.LoadCertificate(path, "testpass");
 
-        cert.Should().NotBeNull();
-        cert.Subject.Should().Contain("TestCertificate");
-        cert.HasPrivateKey.Should().BeTrue();
+        Assert.NotNull(cert);
+        Assert.Contains("TestCertificate", cert.Subject);
+        Assert.True(cert.HasPrivateKey);
     }
 
     [Fact]
@@ -70,8 +70,8 @@ public class CertificateServiceTests : IDisposable
 
         var cert = service.LoadCertificate(path, password: null);
 
-        cert.Should().NotBeNull();
-        cert.HasPrivateKey.Should().BeTrue();
+        Assert.NotNull(cert);
+        Assert.True(cert.HasPrivateKey);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class CertificateServiceTests : IDisposable
         var first = service.LoadCertificate(path, "testpass");
         var second = service.LoadCertificate(path, "testpass");
 
-        second.Should().BeSameAs(first);
+        Assert.Same(first, second);
     }
 
     [Fact]
@@ -94,9 +94,9 @@ public class CertificateServiceTests : IDisposable
 
         var act = () => service.LoadCertificate(missingPath, "anypass");
 
-        act.Should().Throw<ARCAAuthException>()
-            .WithMessage($"*{missingPath}*")
-            .WithInnerException<Exception>();
+        var ex = Assert.Throws<ARCAAuthException>(act);
+        Assert.Contains(missingPath, ex.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.IsAssignableFrom<Exception>(ex.InnerException);
     }
 
     [Fact]
@@ -106,8 +106,8 @@ public class CertificateServiceTests : IDisposable
 
         var act = () => service.LoadCertificate(path, "wrongpass");
 
-        act.Should().Throw<ARCAAuthException>()
-            .WithInnerException<Exception>();
+        var ex = Assert.Throws<ARCAAuthException>(act);
+        Assert.IsAssignableFrom<Exception>(ex.InnerException);
     }
 
     [Fact]
@@ -119,15 +119,15 @@ public class CertificateServiceTests : IDisposable
 
         var signed = service.SignMessage(payload, cert);
 
-        signed.Should().NotBeNull();
-        signed.Length.Should().BeGreaterThan(payload.Length, "PKCS#7 envelope is larger than the original payload");
+        Assert.NotNull(signed);
+        Assert.True(signed.Length > payload.Length);
 
         // EN: Verify it's a valid SignedCms structure by decoding it.
         // ES: Verifica que sea una estructura SignedCms válida decodificándola.
         var verifyCms = new SignedCms();
         var decode = () => verifyCms.Decode(signed);
-        decode.Should().NotThrow();
-        verifyCms.ContentInfo.Content.Should().Equal(payload);
+        Assert.Null(Record.Exception(decode));
+        Assert.Equal(payload, verifyCms.ContentInfo.Content);
     }
 
     [Fact]
@@ -140,7 +140,7 @@ public class CertificateServiceTests : IDisposable
 
         var act = () => service.SignMessage([1, 2, 3], clone);
 
-        act.Should().Throw<ARCAAuthException>()
-            .WithMessage("*sign*");
+        var ex = Assert.Throws<ARCAAuthException>(act);
+        Assert.Contains("sign", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
 }

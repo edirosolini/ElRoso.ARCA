@@ -11,8 +11,8 @@ public class ARCAAuthExceptionTests
     {
         var exception = new ARCAAuthException("Certificate not found");
 
-        exception.Message.Should().Be("Certificate not found");
-        exception.InnerException.Should().BeNull();
+        Assert.Equal("Certificate not found", exception.Message);
+        Assert.Null(exception.InnerException);
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class ARCAAuthExceptionTests
 
         var exception = new ARCAAuthException("WSAA login failed", inner);
 
-        exception.Message.Should().Be("WSAA login failed");
-        exception.InnerException.Should().BeSameAs(inner);
+        Assert.Equal("WSAA login failed", exception.Message);
+        Assert.Same(inner, exception.InnerException);
     }
 }
