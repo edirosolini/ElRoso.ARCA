@@ -6,6 +6,17 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Unreleased]
 
+## [4.0.0] — 2026-11-16
+
+### Changed
+
+- **BREAKING: el paquete apunta a `net10.0` (LTS) en lugar de `net9.0`.** .NET 9 quedó sin soporte de Microsoft el 10/11/2026. Los proyectos que consumen la lib tienen que apuntar a .NET 10 o superior; la API pública no cambia.
+- `Microsoft.AspNetCore.DataProtection` pasa de 9.0.23 a 10.0.15 y `System.Security.Cryptography.Pkcs` queda en 10.0.15, la misma familia que el runtime.
+
+### Fixed
+
+- **Los tests no compilaban con `System.Security.Cryptography.Pkcs` 11.0.0 sobre `net9.0`.** Arrastraba `Microsoft.Bcl.Cryptography` 11 y `X509CertificateLoader` quedaba definido dos veces (CS0433). Un consumidor en `net9.0` que usara ese tipo tenía el mismo error.
+
 ## [3.4.0] — 2026-11-13
 
 ### Added

@@ -5,9 +5,9 @@
 [![NuGet](https://img.shields.io/nuget/v/ElRoso.ARCA.svg?label=NuGet)](https://www.nuget.org/packages/ElRoso.ARCA)
 [![Downloads](https://img.shields.io/nuget/dt/ElRoso.ARCA.svg)](https://www.nuget.org/packages/ElRoso.ARCA)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![.NET 9](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4)](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 
-> **Cliente .NET 9 para facturación electrónica con ARCA (ex-AFIP).** Hecho para que devs argentinos no sufran integrando como sufrimos los que vinimos antes.
+> **Cliente .NET 10 para facturación electrónica con ARCA (ex-AFIP).** Hecho para que devs argentinos no sufran integrando como sufrimos los que vinimos antes.
 
 **Soporta:**
 - ✅ Autenticación WSAA (PKCS#7 + token cache cifrado con `IDataProtection`)
@@ -51,7 +51,7 @@
 dotnet add package ElRoso.ARCA
 ```
 
-> **Requisitos:** .NET 9.0 o superior. Funciona en Windows, Linux y macOS. El cache de tokens se cifra con **`IDataProtection`** en todas las plataformas; `AddARCAClient` registra un provider por defecto y respeta el que ya tengas configurado (ver [Cookbook → cache de tokens](./docs/COOKBOOK.md#cache-de-tokens)).
+> **Requisitos:** .NET 10.0 o superior. Funciona en Windows, Linux y macOS. El cache de tokens se cifra con **`IDataProtection`** en todas las plataformas; `AddARCAClient` registra un provider por defecto y respeta el que ya tengas configurado (ver [Cookbook → cache de tokens](./docs/COOKBOOK.md#cache-de-tokens)).
 
 > ⚠️ **Upgrade a 3.0.0:** `VATConditionARCAEnum` cambió de valores (`RESPONSABLE_INSCRIPTO` pasa de 7 a 1). Si lo guardás como entero, migrá `7 → 1` antes de desplegar. Pasos en el [CHANGELOG](./CHANGELOG.md#300--2026-10-06).
 

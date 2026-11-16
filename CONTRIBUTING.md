@@ -15,7 +15,7 @@ Toda contribución que reduzca ese sufrimiento es bienvenida: bugs reportados co
 
 ## Stack y prerequisitos
 
-- .NET SDK **9.0** o superior
+- .NET SDK **10.0** o superior
 - Git
 - (Opcional) Cuenta de ARCA en ambiente de **homologación** con certificado para correr tests de integración manuales
 

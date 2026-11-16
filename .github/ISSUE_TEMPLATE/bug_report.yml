@@ -22,7 +22,7 @@ body:
     id: dotnet
     attributes:
       label: Versión de .NET
-      placeholder: ".NET 9.0"
+      placeholder: ".NET 10.0"
     validations:
       required: true
 
