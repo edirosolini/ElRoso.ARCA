@@ -38,6 +38,10 @@ updates:
       - dependency-name: "Microsoft.AspNetCore.DataProtection"
         update-types: ["version-update:semver-major"]
 
+      # Mantiene Microsoft.Extensions.* en la misma major que usa la lib.
+      - dependency-name: "Microsoft.Extensions.*"
+        update-types: ["version-update:semver-major"]
+
     # EN: Group minor/patch updates so we don't drown in PRs. Major updates stay individual.
     # ES: Agrupa minor/patch para no ahogarnos en PRs. Major queda como PR individual.
     groups:
