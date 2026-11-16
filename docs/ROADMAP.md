@@ -35,7 +35,6 @@ Sin features nuevos. Foco en pulir la lib post-refactor. Los ítems que quedaron
 | Limpiar warnings StyleCop preexistentes (`SA1101`, etc.) | Heredado del código pre-refactor. ~400 warnings que no fallan el build pero ensucian el output | 4 – 6 hs |
 | Renamespacing de Connected Services (WSAA, WSFEv1, WSFEXv1, Padron, WSCDC, WSCComu) | Hoy quedaron con namespace plano (ej. `WSCDC.ServiceSoapClient`). Re-generar con `--namespace "*,ElRoso.ARCA.Core.Wsaa"` etc. | 3 – 5 hs |
 | **Confirmar URL de producción de WSCComu** | Hoy solo tenemos la de homologación (`stable-middleware-tecno-ext.afip.gob.ar`). Pedir a `webservices-desa@arca.gob.ar` cuando un usuario lo necesite | 0 hs (gestión externa) |
-| Codecov badge en color verde | Una vez arriba de 75%, el badge pasa de amarillo a verde | 0 hs (automático con la cobertura) |
 | **Total `v2.1.0`** | | **19 – 31 hs** |
 
 ---
