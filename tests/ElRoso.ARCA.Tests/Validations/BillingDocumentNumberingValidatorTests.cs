@@ -209,6 +209,27 @@ public class BillingDocumentNumberingValidatorTests
         result.IsValid.Should().BeTrue();
     }
 
+    [Theory]
+    [InlineData(2025, 12, 20, 2026, 1, 10)]
+    [InlineData(2025, 1, 5, 2026, 1, 10)]
+    public void Invalid_when_associated_period_spans_different_months(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay)
+    {
+        var request = ValidFA();
+        request.BillingDocumentType = BillingDocumentTypeARCAEnum.NCA;
+        request.BillingDocumentNumberingAssociatedPeriod = new()
+        {
+            DateFrom = new DateTime(fromYear, fromMonth, fromDay),
+            DateTo = new DateTime(toYear, toMonth, toDay),
+        };
+
+        var result = validator.Validate(request);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =>
+            e.PropertyName == nameof(BillingDocumentNumberingRequest.BillingDocumentNumberingAssociatedPeriod) &&
+            e.ErrorMessage.Contains("mismo mes"));
+    }
+
     [Fact]
     public void Valid_when_credit_note_with_associated_documents()
     {

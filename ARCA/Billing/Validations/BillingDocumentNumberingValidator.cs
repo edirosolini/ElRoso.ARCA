@@ -62,6 +62,11 @@ internal class BillingDocumentNumberingValidator : AbstractValidator<BillingDocu
             .Must(BeValidAssociatedPeriod)
             .WithMessage("El período asociado debe tener fechas posteriores al 01/01/2006 y DateFrom no puede ser posterior a DateTo.");
 
+        // ARCA rechaza un período que cruza meses (error 10209).
+        RuleFor(x => x.BillingDocumentNumberingAssociatedPeriod)
+            .Must(p => p is null || (p.DateFrom.Year == p.DateTo.Year && p.DateFrom.Month == p.DateTo.Month))
+            .WithMessage("DateFrom y DateTo del período asociado deben corresponder al mismo mes y año.");
+
         RuleFor(x => x)
             .Must(x => x.BillingDocumentNumberingAssociatedPeriod is null ||
                        x.BillingDocumentNumberingAssociatedPeriod.DateTo.Date <= x.BillingDocumentDate.Date)
