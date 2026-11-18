@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Gracias por sugerir un feature. Antes de proponer cambios grandes, mejor abrir primero una [Discussion](https://github.com/edirosolini/ElRoso.ARCA/discussions) para alinear el approach.
+        Gracias por sugerir un feature. Antes de proponer cambios grandes, mejor abrir primero una [Discussion](https://github.com/ElRoso/ARCA/discussions) para alinear el approach.
 
   - type: textarea
     id: problem

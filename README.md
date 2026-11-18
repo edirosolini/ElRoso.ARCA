@@ -1,6 +1,6 @@
 # ElRoso.ARCA
 
-[![CI](https://github.com/edirosolini/ElRoso.ARCA/actions/workflows/ci.yml/badge.svg?branch=mainline)](https://github.com/edirosolini/ElRoso.ARCA/actions/workflows/ci.yml)
+[![CI](https://github.com/ElRoso/ARCA/actions/workflows/ci.yml/badge.svg?branch=mainline)](https://github.com/ElRoso/ARCA/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/ElRoso.ARCA.svg?label=NuGet)](https://www.nuget.org/packages/ElRoso.ARCA)
 [![Downloads](https://img.shields.io/nuget/dt/ElRoso.ARCA.svg)](https://www.nuget.org/packages/ElRoso.ARCA)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
@@ -460,7 +460,7 @@ Esa URL la generás como QR (con QRCoder, ZXing, etc.) y la imprimís en el tick
 
 ## 🤝 Contribuir
 
-PRs y issues bienvenidos. Antes de mandar un PR grande, abrí una [Discussion](https://github.com/edirosolini/ElRoso.ARCA/discussions) para alinear el approach. Ver [CONTRIBUTING.md](./CONTRIBUTING.md).
+PRs y issues bienvenidos. Antes de mandar un PR grande, abrí una [Discussion](https://github.com/ElRoso/ARCA/discussions) para alinear el approach. Ver [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 Si encontraste una vulnerabilidad de seguridad, **no la reportes como issue público** — ver [SECURITY.md](./SECURITY.md).
 
@@ -473,7 +473,7 @@ Si esta lib te ahorró horas de sufrimiento con ARCA, considerá:
 - ⭐ Darle una **star al repo**
 - 💬 Compartirlo con otros devs argentinos
 - ☕ [Invitarme un cafecito](https://cafecito.app/edirosolini)
-- 💙 [GitHub Sponsors](https://github.com/sponsors/edirosolini) *(en aprobación)*
+- 💙 [GitHub Sponsors](https://github.com/sponsors/ElRoso) *(en aprobación)*
 
 ---
 

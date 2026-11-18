@@ -2,15 +2,15 @@ blank_issues_enabled: false
 
 contact_links:
   - name: 💬 Preguntas de uso
-    url: https://github.com/edirosolini/ElRoso.ARCA/discussions/categories/q-a
+    url: https://github.com/ElRoso/ARCA/discussions/categories/q-a
     about: ¿Tenés una duda de cómo usar la lib? Abrí una Discussion, no un Issue.
 
   - name: 📣 Ideas y comentarios generales
-    url: https://github.com/edirosolini/ElRoso.ARCA/discussions/categories/ideas
+    url: https://github.com/ElRoso/ARCA/discussions/categories/ideas
     about: Compartí ideas, casos de uso, o feedback general.
 
   - name: 🔒 Reportar una vulnerabilidad de seguridad
-    url: https://github.com/edirosolini/ElRoso.ARCA/security/policy
+    url: https://github.com/ElRoso/ARCA/security/policy
     about: Las vulnerabilidades NO se reportan en issues públicos. Ver SECURITY.md.
 
   - name: ☕ Apoyar el proyecto
