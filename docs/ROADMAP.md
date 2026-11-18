@@ -1,6 +1,6 @@
 # Roadmap
 
-> 📌 Este documento lista features futuros y pendientes de `ElRoso.ARCA`. **Para reportar bugs o sugerir un feature concreto**, abrí un [Issue](https://github.com/edirosolini/ElRoso.ARCA/issues/new/choose) o una [Discussion](https://github.com/edirosolini/ElRoso.ARCA/discussions).
+> 📌 Este documento lista features futuros y pendientes de `ElRoso.ARCA`. **Para reportar bugs o sugerir un feature concreto**, abrí un [Issue](https://github.com/ElRoso/ARCA/issues/new/choose) o una [Discussion](https://github.com/ElRoso/ARCA/discussions).
 
 ---
 
@@ -77,7 +77,7 @@ Estos features tienen demanda pero ARCA no expone API SOAP/REST oficial. Si apar
 | **Libro IVA Digital — presentación automática** | RG 4597. Hoy solo se opera vía portal manualmente. Si ARCA expone WS para presentación, sumarlo |
 | **Consulta de notificaciones de Cuentas Tributarias** | Sin WS oficial conocido |
 
-Si encontrás un WS oficial que cubra alguno de estos, **abrí un [Issue](https://github.com/edirosolini/ElRoso.ARCA/issues/new/choose)** con la URL del WSDL y los reactivamos.
+Si encontrás un WS oficial que cubra alguno de estos, **abrí un [Issue](https://github.com/ElRoso/ARCA/issues/new/choose)** con la URL del WSDL y los reactivamos.
 
 ---
 
@@ -95,7 +95,7 @@ Por estar fuera del scope (sector específico, aduanas, beneficios sectoriales):
 
 `WSLPG`, `WSLSP`, `WSLCA`, `WSLTV`, `WSLUM`, `WSREMHARINA`, `WSREMAZUCAR`, `WSREMCARNE`, `WSBFE`, `WSCTA`, `WSCREATEVEP`, `WSSEG`, `WSCPE`, `WSCES`, `WSSV`, `WdiaUtiDEs`, `WGESINV`, `wgestabref`, `wConsDepFiel`, `wgestiendaslibres`, `DigDepFiel`, `WutiGOPDeclaraciones`, `wdepmovimientos`, `wEnysa`, `sud_restricciones`, `sud_contrataciones`, `wscec`, `JAZA`, `Régimen Percepción IVA`, `WSPresentaciondeDDJJ`, `AGR`, `WSTABACO`, `WSICDB`.
 
-Si tu caso de uso requiere alguno de estos, **abrí una [Discussion](https://github.com/edirosolini/ElRoso.ARCA/discussions/new?category=ideas)** explicando el contexto. Lo revaluamos.
+Si tu caso de uso requiere alguno de estos, **abrí una [Discussion](https://github.com/ElRoso/ARCA/discussions/new?category=ideas)** explicando el contexto. Lo revaluamos.
 
 ---
 
@@ -118,7 +118,7 @@ Si tu caso de uso requiere alguno de estos, **abrí una [Discussion](https://git
 ## Cómo proponer features nuevos
 
 1. Verificar primero que el WS de ARCA existe en https://www.afip.gob.ar/ws/documentacion/catalogo.asp
-2. Abrir una [Discussion](https://github.com/edirosolini/ElRoso.ARCA/discussions/new?category=ideas) describiendo el caso de uso real
+2. Abrir una [Discussion](https://github.com/ElRoso/ARCA/discussions/new?category=ideas) describiendo el caso de uso real
 3. Si hay alineación → abrir un Issue para tracking
 
 **Lo que NO se va a implementar nunca:**

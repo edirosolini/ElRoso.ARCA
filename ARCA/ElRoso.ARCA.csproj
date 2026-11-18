@@ -25,9 +25,9 @@
 		<PackageTags>arca;afip;facturacion-electronica;cae;wsaa;wsfe;wsfev1;wsfexv1;padron;argentina;electronic-invoicing;dotnet;csharp</PackageTags>
 
 		<!-- Package URLs / repo -->
-		<RepositoryUrl>https://github.com/edirosolini/ElRoso.ARCA</RepositoryUrl>
+		<RepositoryUrl>https://github.com/ElRoso/ARCA</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageProjectUrl>https://github.com/edirosolini/ElRoso.ARCA</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/ElRoso/ARCA</PackageProjectUrl>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 
 		<!-- License -->

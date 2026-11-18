@@ -8,8 +8,8 @@ Toda contribución que reduzca ese sufrimiento es bienvenida: bugs reportados co
 
 ## Antes de empezar
 
-- **¿Tenés una duda de uso?** Abrí una [Discussion](https://github.com/edirosolini/ElRoso.ARCA/discussions) — no abras un Issue para preguntas.
-- **¿Encontraste un bug?** Abrí un [Issue](https://github.com/edirosolini/ElRoso.ARCA/issues/new/choose) usando el template de bug.
+- **¿Tenés una duda de uso?** Abrí una [Discussion](https://github.com/ElRoso/ARCA/discussions) — no abras un Issue para preguntas.
+- **¿Encontraste un bug?** Abrí un [Issue](https://github.com/ElRoso/ARCA/issues/new/choose) usando el template de bug.
 - **¿Querés agregar un feature grande?** Abrí primero un Issue o Discussion para alinear el approach antes de codear. Evita PRs grandes que terminan rechazados.
 - **Vulnerabilidades de seguridad:** **no** abrir issue público. Ver [SECURITY.md](./SECURITY.md).
 
@@ -22,7 +22,7 @@ Toda contribución que reduzca ese sufrimiento es bienvenida: bugs reportados co
 ## Levantar el proyecto localmente
 
 ```bash
-git clone https://github.com/edirosolini/ElRoso.ARCA.git
+git clone https://github.com/ElRoso/ARCA.git
 cd ElRoso.ARCA
 dotnet restore
 dotnet build
